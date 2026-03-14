@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import VirtualKeyboard from './VirtualKeyboard';
-import { fingerColors, keyFingerMap } from '../data/fingerMapping';
 
 interface FallingLettersModeProps {
   text: string;
@@ -125,20 +124,16 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
           ref={lettersAreaRef}
           style={{ position: 'relative', width: '100%', height: `${VISIBLE_ROWS * ROW_HEIGHT}px`, overflow: 'visible' }}
         >
-          {/* Row backgrounds */}
-          {Array.from({ length: VISIBLE_ROWS }).map((_, slot) => (
-            <div key={slot} style={{
-              position: 'absolute',
-              top: `${slot * ROW_HEIGHT}px`,
-              left: 0, right: 0,
-              height: `${ROW_HEIGHT}px`,
-              backgroundColor: slot === VISIBLE_ROWS - 1 ? (correctFlash ? '#8b5cf622' : '#8b5cf60a') : 'transparent',
-              borderBottom: slot === VISIBLE_ROWS - 1
-                ? `2px solid #8b5cf644`
-                : '1px solid #1e1e1e',
-              transition: 'background-color 120ms ease',
-            }} />
-          ))}
+          {/* Active row highlight only */}
+          <div style={{
+            position: 'absolute',
+            top: `${(VISIBLE_ROWS - 1) * ROW_HEIGHT}px`,
+            left: 0, right: 0,
+            height: `${ROW_HEIGHT}px`,
+            backgroundColor: correctFlash ? '#8b5cf620' : '#8b5cf60a',
+            borderBottom: '2px solid #8b5cf633',
+            transition: 'background-color 120ms ease',
+          }} />
 
           {/* Gradient connector: from active slot bottom down to the keyboard key */}
           {activeMetrics !== null && (
@@ -161,8 +156,6 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
             const x = m?.x ?? null;
             const w = m?.width ?? 48;
             const isActive = slot === VISIBLE_ROWS - 1;
-            const finger = keyFingerMap[char];
-            const color = finger ? fingerColors[finger] : '#8b5cf6';
             const opacity = 0.3 + (slot / (VISIBLE_ROWS - 1)) * 0.7;
 
             return (
@@ -181,15 +174,14 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  // Same font as VirtualKeyboard keys
                   fontSize: isActive ? '0.9rem' : '0.75rem',
                   fontWeight: 700,
                   fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                   textTransform: 'uppercase',
-                  backgroundColor: isActive ? `${color}33` : '#242424',
-                  border: isActive ? `2px solid ${color}` : `1px solid #333`,
-                  color: isActive ? '#fff' : '#e5e7eb',
-                  boxShadow: isActive ? `0 0 24px ${color}44` : 'none',
+                  backgroundColor: isActive ? '#8b5cf633' : '#1e1e1e',
+                  border: isActive ? '2px solid #8b5cf6' : '1px solid #2a2a2a',
+                  color: isActive ? '#fff' : '#9ca3af',
+                  boxShadow: isActive ? '0 0 24px #8b5cf644' : 'none',
                   opacity,
                   zIndex: isActive ? 3 : 1,
                 }}
