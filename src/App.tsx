@@ -6,6 +6,7 @@ import { useAuth } from './hooks/useAuth';
 import { useFirestoreProgress } from './hooks/useFirestoreProgress';
 import { useLeaderboard } from './hooks/useLeaderboard';
 import { getLessonById, getNextLessonId, getAllLessons } from './data/lessons';
+import { getExerciseMode } from './utils/exerciseMode';
 import Dashboard from './components/Dashboard';
 import LessonMenu from './components/LessonMenu';
 import ExerciseScreen from './components/ExerciseScreen';
@@ -16,7 +17,7 @@ import Leaderboard from './components/Leaderboard';
 import FallingLettersMode from './components/FallingLettersMode';
 import type { ExerciseResult } from './types';
 
-type Screen = 'dashboard' | 'lesson-menu' | 'exercise' | 'results' | 'falling-test';
+type Screen = 'dashboard' | 'lesson-menu' | 'exercise' | 'falling' | 'results';
 
 function isMobileDevice(): boolean {
   const ua = navigator.userAgent;
@@ -53,12 +54,8 @@ export default function App() {
   const { user, profile, loading: authLoading, needsProfile, signInWithGoogle, signOutUser, saveProfile } = useAuth();
   const { entries: leaderboardEntries, loading: leaderboardLoading, updateLeaderboard, refresh: refreshLeaderboard } = useLeaderboard();
 
-  // Track whether user explicitly chose to skip login
-
-
   const { syncToFirestore } = useFirestoreProgress(user?.uid ?? null);
 
-  // Compute leaderboard score and push update when progress changes
   const handleProgressSave = useCallback((p: typeof progress) => {
     if (!profile) return;
     const allLessons = getAllLessons();
@@ -110,10 +107,8 @@ export default function App() {
     resetExercise,
   } = useExercise(currentExerciseText);
 
-  // Track if we've already processed this result
   const processedResultRef = useRef<ExerciseResult | null>(null);
 
-  // Watch for exercise completion
   useEffect(() => {
     if (exerciseResult && exerciseResult !== processedResultRef.current && screen === 'exercise') {
       processedResultRef.current = exerciseResult;
@@ -123,22 +118,20 @@ export default function App() {
     }
   }, [exerciseResult, screen, currentLessonId, currentExerciseId, completeExercise]);
 
-  // Handle key in exercise
   const onKey = useCallback((key: string) => {
     handleKey(key, playCorrect, playWrong);
   }, [handleKey, playCorrect, playWrong]);
 
-  // Navigate to exercise from lesson menu
   const handleSelectExercise = useCallback((exerciseIndex: number) => {
     const lesson = getLessonById(currentLessonId);
     const text = lesson?.exercises[exerciseIndex]?.text ?? '';
     setCurrentExerciseIndex(exerciseIndex);
     processedResultRef.current = null;
     resetExercise(text);
-    setScreen('exercise');
+    const mode = lesson ? getExerciseMode(lesson, exerciseIndex) : 'classic';
+    setScreen(mode === 'falling' ? 'falling' : 'exercise');
   }, [currentLessonId, resetExercise]);
 
-  // Next exercise
   const handleNext = useCallback(() => {
     if (!currentLesson) return;
     const nextIdx = currentExerciseIndex + 1;
@@ -147,9 +140,9 @@ export default function App() {
       setCurrentExerciseIndex(nextIdx);
       processedResultRef.current = null;
       resetExercise(nextText);
-      setScreen('exercise');
+      const mode = getExerciseMode(currentLesson, nextIdx);
+      setScreen(mode === 'falling' ? 'falling' : 'exercise');
     } else {
-      // All exercises in lesson done — mark lesson complete
       const nextLessonId = getNextLessonId(currentLessonId);
       completeLesson(currentLessonId, nextLessonId);
       setScreen('dashboard');
@@ -159,8 +152,9 @@ export default function App() {
   const handleRestart = useCallback(() => {
     processedResultRef.current = null;
     resetExercise(currentExerciseText);
-    setScreen('exercise');
-  }, [currentExerciseText, resetExercise]);
+    const mode = currentLesson ? getExerciseMode(currentLesson, currentExerciseIndex) : 'classic';
+    setScreen(mode === 'falling' ? 'falling' : 'exercise');
+  }, [currentExerciseText, resetExercise, currentLesson, currentExerciseIndex]);
 
   const handleRestartAll = useCallback(() => {
     if (!currentLesson) return;
@@ -168,7 +162,8 @@ export default function App() {
     setCurrentExerciseIndex(0);
     processedResultRef.current = null;
     resetExercise(firstText);
-    setScreen('exercise');
+    const mode = getExerciseMode(currentLesson, 0);
+    setScreen(mode === 'falling' ? 'falling' : 'exercise');
   }, [currentLesson, resetExercise]);
 
   const handleSelectLesson = useCallback((lessonId: string) => {
@@ -177,7 +172,6 @@ export default function App() {
     setScreen('lesson-menu');
   }, []);
 
-  // Auth loading spinner
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#1a1a1a' }}>
@@ -186,7 +180,6 @@ export default function App() {
     );
   }
 
-  // Leaderboard node reused in multiple screens
   const leaderboardNode = (
     <Leaderboard
       entries={leaderboardEntries}
@@ -196,7 +189,6 @@ export default function App() {
     />
   );
 
-  // Not logged in → show login screen (no skip allowed)
   if (!user) {
     return (
       <LoginScreen
@@ -206,7 +198,6 @@ export default function App() {
     );
   }
 
-  // Logged in but needs to set up profile
   if (user && needsProfile) {
     return (
       <ProfileSetup
@@ -217,17 +208,26 @@ export default function App() {
     );
   }
 
-  if (screen === 'falling-test') {
-    const lesson11 = getLessonById('1.1');
-    const testText = lesson11?.exercises[0]?.text ?? 'f j f j f j f j f j';
+  if (screen === 'falling') {
     return (
       <FallingLettersMode
-        text={testText}
-        lessonTitle="F a J (1.1)"
+        text={currentExerciseText}
+        lessonTitle={currentLesson?.title ?? ''}
         playCorrect={playCorrect}
         playWrong={playWrong}
-        onBack={() => setScreen('dashboard')}
-        onComplete={() => setScreen('dashboard')}
+        onBack={() => setScreen('lesson-menu')}
+        onComplete={(stats) => {
+          const total = stats.correct + stats.errors;
+          const result: ExerciseResult = {
+            cpm: stats.timeSeconds > 0 ? Math.round((stats.correct / stats.timeSeconds) * 60) : 0,
+            accuracy: total > 0 ? Math.round((stats.correct / total) * 100) : 100,
+            errors: stats.errors,
+            timeSeconds: stats.timeSeconds,
+          };
+          setLastResult(result);
+          completeExercise(currentLessonId, currentExerciseId, result.cpm, result.accuracy, currentLesson?.exercises.length ?? 1, result.errors, result.timeSeconds);
+          setScreen('results');
+        }}
       />
     );
   }
@@ -241,7 +241,6 @@ export default function App() {
         onSignIn={!user ? signInWithGoogle : undefined}
         onSignOut={user ? signOutUser : undefined}
         leaderboardSection={leaderboardNode}
-        onTestFalling={() => setScreen('falling-test')}
       />
     );
   }
@@ -273,7 +272,6 @@ export default function App() {
     );
   }
 
-  // Exercise screen
   return (
     <ExerciseScreen
       state={state}

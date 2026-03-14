@@ -11,10 +11,9 @@ interface DashboardProps {
   onSignIn?: () => void;
   onSignOut?: () => void;
   leaderboardSection?: React.ReactNode;
-  onTestFalling?: () => void;
 }
 
-export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection, onTestFalling }: DashboardProps) {
+export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection }: DashboardProps) {
   const handleSelectLesson = (lessonId: string) => {
     console.log('[scroll] Saving scroll Y before navigation:', window.scrollY);
     sessionStorage.setItem('dashboardScrollY', String(window.scrollY));
@@ -135,23 +134,6 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
             >
               Lekce ↓
             </button>
-            {onTestFalling && (
-              <button
-                onClick={onTestFalling}
-                style={{
-                  backgroundColor: 'transparent',
-                  color: '#eab308',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  padding: '0.65rem 1rem',
-                  borderRadius: '0.75rem',
-                  border: '1px solid #eab30888',
-                  cursor: 'pointer',
-                }}
-              >
-                🧪 Padající písmena
-              </button>
-            )}
           </div>
           {nextLessonHint && (
             <div style={{ marginTop: '0.6rem', fontSize: '0.65rem', color: '#6b7280' }}>
