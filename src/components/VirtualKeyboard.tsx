@@ -76,6 +76,7 @@ export default function VirtualKeyboard({
             return (
               <div
                 key={keyIndex}
+                data-key={keyDef.key}
                 className="flex items-center justify-center rounded border text-xs font-mono transition-all duration-100 cursor-default"
                 style={{
                   width,

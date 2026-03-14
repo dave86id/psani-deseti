@@ -13,9 +13,10 @@ import ResultsScreen from './components/ResultsScreen';
 import LoginScreen from './components/LoginScreen';
 import ProfileSetup from './components/ProfileSetup';
 import Leaderboard from './components/Leaderboard';
+import FallingLettersMode from './components/FallingLettersMode';
 import type { ExerciseResult } from './types';
 
-type Screen = 'dashboard' | 'lesson-menu' | 'exercise' | 'results';
+type Screen = 'dashboard' | 'lesson-menu' | 'exercise' | 'results' | 'falling-test';
 
 function isMobileDevice(): boolean {
   const ua = navigator.userAgent;
@@ -216,6 +217,19 @@ export default function App() {
     );
   }
 
+  if (screen === 'falling-test') {
+    const lesson11 = getLessonById('1.1');
+    const testText = lesson11?.exercises[0]?.text ?? 'f j f j f j f j f j';
+    return (
+      <FallingLettersMode
+        text={testText}
+        lessonTitle="F a J (1.1)"
+        onBack={() => setScreen('dashboard')}
+        onComplete={() => setScreen('dashboard')}
+      />
+    );
+  }
+
   if (screen === 'dashboard') {
     return (
       <Dashboard
@@ -225,6 +239,7 @@ export default function App() {
         onSignIn={!user ? signInWithGoogle : undefined}
         onSignOut={user ? signOutUser : undefined}
         leaderboardSection={leaderboardNode}
+        onTestFalling={() => setScreen('falling-test')}
       />
     );
   }

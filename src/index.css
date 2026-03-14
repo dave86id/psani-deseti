@@ -41,6 +41,16 @@ body,
   flex-direction: column;
 }
 
+/* ── Falling letters mode animations ── */
+@keyframes fallOut {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to   { opacity: 0; transform: translate(-50%, 60%) scale(0.7); }
+}
+@keyframes fadeInTop {
+  from { opacity: 0; transform: translate(-50%, -50%) translateY(-16px); }
+  to   { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
+}
+
 /* ── Hover effects on all interactive elements ── */
 
 button {
