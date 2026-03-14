@@ -207,7 +207,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
       </div>
 
       {/* Footer */}
-      <div style={{ textAlign: 'center', paddingBottom: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '1rem' }}>
         <img src="/footer-characters.png" alt="" style={{ width: '75%', maxWidth: '36rem', height: 'auto', opacity: 0.6 }} />
       </div>
     </div>
