@@ -162,9 +162,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
         <div className="text-center mb-8" style={{ padding: '2rem 1rem 1.5rem' }}>
           <h1 className="font-bold mb-3" style={{ fontSize: '1.6rem', color: '#ffffff', lineHeight: 1.2 }}>
             {HEADING.slice(0, typedLen)}
-            {!cursorDone && (
-              <span style={{ display: 'inline-block', width: '2px', height: '1.4em', backgroundColor: '#fff', marginLeft: '2px', verticalAlign: 'middle', opacity: cursorVisible ? 1 : 0 }} />
-            )}
+            <span style={{ display: 'inline-block', width: '2px', height: '1.4em', backgroundColor: '#fff', marginLeft: '2px', verticalAlign: 'middle', opacity: cursorVisible && !cursorDone ? 1 : 0 }} />
           </h1>
           <p className="mb-5" style={{ fontSize: '0.8rem', color: '#9ca3af', maxWidth: '32rem', margin: '0 auto 1.5rem' }}>
             Procházej cvičení krok za krokem a sleduj, jak se zlepšuješ.
