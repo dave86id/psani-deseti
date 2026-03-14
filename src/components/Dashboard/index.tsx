@@ -115,7 +115,6 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
         <div className="flex items-center justify-between max-w-3xl mx-auto">
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="logo" style={{ height: '1.6rem', width: 'auto' }} />
-            <h1 className="font-bold" style={{ color: '#8b5cf6', fontSize: '1rem' }}>psaní deseti</h1>
           </div>
           <div className="flex items-center gap-2">
             {isGuest ? (
