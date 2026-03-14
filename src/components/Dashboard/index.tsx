@@ -174,7 +174,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
             <h2 className="font-semibold mb-3 text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>
               {section.id}. {section.title}
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px' }}>
               {section.lessons.map(lesson => {
                 const lessonProg = progress.lessons[lesson.id];
                 const completedCount = lessonProg?.completedExercises.length ?? 0;
@@ -188,8 +188,8 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
                     onClick={() => onSelectLesson(lesson.id)}
                     className="text-left rounded-xl transition-all duration-150"
                     style={{
-                      backgroundColor: '#242424',
-                      border: completed ? '1px solid #22c55e44' : '1px solid #333',
+                      backgroundColor: completed ? '#1a2e1a' : '#242424',
+                      border: completed ? '1px solid #22c55e55' : '1px solid #333',
                       cursor: 'pointer',
                       padding: '10px 12px',
                     }}
