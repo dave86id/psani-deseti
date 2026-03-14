@@ -15,6 +15,15 @@ interface DashboardProps {
 export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection }: DashboardProps) {
   const allLessons = getAllLessons();
   const completedCount = allLessons.filter(l => progress.lessons[l.id]?.completed).length;
+
+  const hasStarted = allLessons.some(l => (progress.lessons[l.id]?.completedExercises.length ?? 0) > 0);
+  const nextLesson = allLessons.find(l => {
+    const done = progress.lessons[l.id]?.completedExercises.length ?? 0;
+    return done < l.exercises.length;
+  }) ?? allLessons[0];
+  const nextLessonHint = nextLesson
+    ? `Lekce ${nextLesson.id} — ${nextLesson.newLetters.length > 0 ? nextLesson.newLetters.map(c => c.toUpperCase()).join(', ') : nextLesson.title}`
+    : '';
   const totalCount = allLessons.length;
   const completedPct = Math.round((completedCount / totalCount) * 100);
 
@@ -63,6 +72,37 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-6">
+        {/* Hero section */}
+        <div className="text-center mb-8" style={{ padding: '2rem 1rem 1.5rem' }}>
+          <h1 className="font-bold mb-3" style={{ fontSize: '1.6rem', color: '#ffffff', lineHeight: 1.2 }}>
+            Přestaň datlovat.<br />Začni psát všemi deseti.
+          </h1>
+          <p className="mb-5" style={{ fontSize: '0.8rem', color: '#9ca3af', maxWidth: '32rem', margin: '0 auto 1.5rem' }}>
+            Procházej cvičení krok za krokem, sleduj svůj pokrok a porovnej se s ostatními v žebříčku.
+          </p>
+          <button
+            onClick={() => nextLesson && onSelectLesson(nextLesson.id)}
+            style={{
+              backgroundColor: '#8b5cf6',
+              color: '#fff',
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              padding: '0.65rem 2rem',
+              borderRadius: '0.75rem',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 0 24px #8b5cf655',
+            }}
+          >
+            {hasStarted ? 'Pokračovat →' : 'Jdu na to! →'}
+          </button>
+          {nextLessonHint && (
+            <div style={{ marginTop: '0.6rem', fontSize: '0.65rem', color: '#6b7280' }}>
+              {hasStarted ? 'Pokračuješ v' : ''} {nextLessonHint}
+            </div>
+          )}
+        </div>
+
         {/* Hero image */}
         <div className="rounded-xl overflow-hidden mb-6">
           <img
