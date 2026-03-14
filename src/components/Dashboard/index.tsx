@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { sections, getAllLessons } from '../../data/lessons';
 import type { UserProgress } from '../../types';
 import { getLessonMedal } from '../../utils/stats';
@@ -13,7 +13,29 @@ interface DashboardProps {
   leaderboardSection?: React.ReactNode;
 }
 
+const TIPS = [
+  'Takhle patří prsty na klávesnici.',
+  'Napřed přesně, rychlost přijde sama.',
+  'Dva měsíce a máš to.',
+  'Stačí 10 minut denně.',
+  'Dávej si pauzy.',
+];
+
 export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection }: DashboardProps) {
+  const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIPS.length));
+  const [tipVisible, setTipVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTipVisible(false);
+      setTimeout(() => {
+        setTipIndex(i => (i + 1) % TIPS.length);
+        setTipVisible(true);
+      }, 400);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleSelectLesson = (lessonId: string) => {
     console.log('[scroll] Saving scroll Y before navigation:', window.scrollY);
     sessionStorage.setItem('dashboardScrollY', String(window.scrollY));
@@ -151,8 +173,8 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           />
         </div>
         <div className="mb-6 text-center">
-          <span style={{ fontSize: '0.65rem', color: '#6b7280', backgroundColor: '#242424', border: '1px solid #333', borderRadius: '0.4rem', padding: '0.25rem 0.75rem' }}>
-            💡 Takhle patří prsty na klávesnici.
+          <span style={{ fontSize: '0.65rem', color: '#6b7280', backgroundColor: '#242424', border: '1px solid #333', borderRadius: '0.4rem', padding: '0.25rem 0.75rem', display: 'inline-block', transition: 'opacity 400ms ease', opacity: tipVisible ? 1 : 0 }}>
+            💡 {TIPS[tipIndex]}
           </span>
         </div>
 
@@ -192,26 +214,6 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
               {leaderboardSection}
             </div>
           )}
-        </div>
-
-        {/* Info boxes */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }} className="info-boxes">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
-            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Přesnost před rychlostí</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Piš pomalu a přesně. Rychlost přijde sama. Tvé prsty se učí správné pohyby — nech je pracovat.</div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
-            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Dva měsíce a máš to</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Celý kurz zvládneš za zhruba 2 měsíce. Záleží na tobě, kolik času tomu věnuješ. Pravidelnost je klíč.</div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
-            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Stačí 10 minut denně</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Každý den krátké cvičení. Prsty si zapamatují správné pohyby a ty si vytvoříš návyk, který vydrží.</div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
-            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Dávej si pauzy</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Protáhni si ruce, záda, odpočiň oči. Krátká přestávka mezi lekcemi vždy pomůže</div>
-          </div>
         </div>
 
         {/* Sections */}
