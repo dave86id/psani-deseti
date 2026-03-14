@@ -209,7 +209,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
         {/* Hero image */}
         <div className="rounded-xl overflow-hidden" style={{ marginBottom: '0.5rem' }}>
           <img
-            src="/hero-keyboard.png"
+            src="/hero-keyboard.jpg"
             alt="Klávesnice s barevnými prsty"
             style={{ width: '100%', height: 'auto', display: 'block' }}
           />
