@@ -2,10 +2,11 @@ import { useState } from 'react';
 
 interface LoginScreenProps {
   onSignIn: () => Promise<void>;
+  onSkip: () => void;
   leaderboardSection: React.ReactNode;
 }
 
-export default function LoginScreen({ onSignIn, leaderboardSection }: LoginScreenProps) {
+export default function LoginScreen({ onSignIn, onSkip, leaderboardSection }: LoginScreenProps) {
   const [loading, setLoading] = useState(false);
 
   const handleSignIn = async () => {
@@ -51,6 +52,12 @@ export default function LoginScreen({ onSignIn, leaderboardSection }: LoginScree
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
             {loading ? 'Přihlašování…' : 'Přihlásit se přes Google'}
+          </button>
+          <button
+            onClick={onSkip}
+            style={{ marginTop: '0.75rem', background: 'none', border: 'none', color: '#6b7280', fontSize: '0.7rem', cursor: 'pointer' }}
+          >
+            Pokračovat bez přihlášení
           </button>
         </div>
         {leaderboardSection}

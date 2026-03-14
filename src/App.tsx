@@ -47,6 +47,34 @@ function MobileBlock() {
   );
 }
 
+function TransferDialog({ onYes, onNo }: { onYes: () => void; onNo: () => void }) {
+  return (
+    <div style={{ position: 'fixed', inset: 0, backgroundColor: '#0009', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+      <div style={{ backgroundColor: '#242424', border: '1px solid #3a3a3a', borderRadius: '1rem', padding: '1.5rem', maxWidth: '22rem', width: '90%', textAlign: 'center' }}>
+        <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📦</div>
+        <h2 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>Převést pokrok do účtu?</h2>
+        <p style={{ fontSize: '0.65rem', color: '#9ca3af', marginBottom: '1.25rem', lineHeight: 1.6 }}>
+          Máš rozdělaný kurz jako host. Chceš ho převést do svého nového účtu?
+        </p>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button
+            onClick={onYes}
+            style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', backgroundColor: '#8b5cf6', color: '#fff', border: 'none', fontWeight: 600, fontSize: '0.7rem' }}
+          >
+            Ano, převést
+          </button>
+          <button
+            onClick={onNo}
+            style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', backgroundColor: 'transparent', color: '#9ca3af', border: '1px solid #444', fontSize: '0.7rem' }}
+          >
+            Ne, začít znovu
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   if (isMobileDevice()) return <MobileBlock />;
 
@@ -55,6 +83,26 @@ export default function App() {
   const { entries: leaderboardEntries, loading: leaderboardLoading, updateLeaderboard, refresh: refreshLeaderboard } = useLeaderboard();
 
   const { syncToFirestore } = useFirestoreProgress(user?.uid ?? null);
+
+  // Guest mode — persisted in localStorage
+  const [isGuest, setIsGuest] = useState(() => localStorage.getItem('psani-guest') === '1');
+  const [showTransferDialog, setShowTransferDialog] = useState(false);
+  const wasGuestRef = useRef(isGuest);
+
+  // When user signs in, check if they were a guest with progress
+  useEffect(() => {
+    if (user && wasGuestRef.current) {
+      wasGuestRef.current = false;
+      localStorage.removeItem('psani-guest');
+      setIsGuest(false);
+      // Show transfer dialog only after profile is set up
+      // We detect "profile ready" below
+      setShowTransferDialog(true);
+    }
+    if (user) {
+      localStorage.removeItem('psani-guest');
+    }
+  }, [user]);
 
   const handleProgressSave = useCallback((p: typeof progress) => {
     if (!profile) return;
@@ -172,6 +220,17 @@ export default function App() {
     setScreen('lesson-menu');
   }, []);
 
+  const handleSkipLogin = useCallback(() => {
+    localStorage.setItem('psani-guest', '1');
+    wasGuestRef.current = true;
+    setIsGuest(true);
+  }, []);
+
+  const handleGuestSignIn = useCallback(async () => {
+    wasGuestRef.current = true;
+    await signInWithGoogle();
+  }, [signInWithGoogle]);
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#1a1a1a' }}>
@@ -189,10 +248,11 @@ export default function App() {
     />
   );
 
-  if (!user) {
+  if (!user && !isGuest) {
     return (
       <LoginScreen
         onSignIn={signInWithGoogle}
+        onSkip={handleSkipLogin}
         leaderboardSection={leaderboardNode}
       />
     );
@@ -206,6 +266,27 @@ export default function App() {
         onSave={saveProfile}
       />
     );
+  }
+
+  // Transfer dialog — shown after sign-in when user had guest progress
+  if (showTransferDialog && user && !needsProfile) {
+    const hasProgress = Object.values(progress.lessons).some(
+      l => (l?.completedExercises?.length ?? 0) > 0
+    );
+    if (hasProgress) {
+      return (
+        <TransferDialog
+          onYes={() => {
+            syncToFirestore(progress);
+            setShowTransferDialog(false);
+          }}
+          onNo={() => setShowTransferDialog(false)}
+        />
+      );
+    } else {
+      // No progress to transfer, just dismiss
+      setShowTransferDialog(false);
+    }
   }
 
   if (screen === 'falling') {
@@ -238,9 +319,10 @@ export default function App() {
         progress={progress}
         onSelectLesson={handleSelectLesson}
         profile={profile}
-        onSignIn={!user ? signInWithGoogle : undefined}
+        onSignIn={isGuest ? handleGuestSignIn : undefined}
         onSignOut={user ? signOutUser : undefined}
         leaderboardSection={leaderboardNode}
+        isGuest={isGuest}
       />
     );
   }

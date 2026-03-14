@@ -11,6 +11,7 @@ interface DashboardProps {
   onSignIn?: () => void;
   onSignOut?: () => void;
   leaderboardSection?: React.ReactNode;
+  isGuest?: boolean;
 }
 
 const TIPS = [
@@ -21,7 +22,7 @@ const TIPS = [
   'Dávej si pauzy.',
 ];
 
-export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection }: DashboardProps) {
+export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection, isGuest }: DashboardProps) {
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIPS.length));
   const [tipVisible, setTipVisible] = useState(true);
 
@@ -86,7 +87,17 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
             <h1 className="font-bold" style={{ color: '#8b5cf6', fontSize: '1rem' }}>psaní deseti</h1>
           </div>
           <div className="flex items-center gap-2">
-            {profile ? (
+            {isGuest ? (
+              <>
+                <span className="text-xs" style={{ color: '#6b7280' }}>Host</span>
+                {onSignIn && (
+                  <button onClick={onSignIn} className="text-xs px-2 py-0.5 rounded font-medium"
+                    style={{ backgroundColor: '#8b5cf6', color: '#fff' }}>
+                    Přihlásit se
+                  </button>
+                )}
+              </>
+            ) : profile ? (
               <>
                 <div className="rounded-full overflow-hidden flex items-center justify-center flex-shrink-0"
                   style={{ width: '1.4rem', height: '1.4rem', backgroundColor: '#333', border: '1px solid #8b5cf6' }}>
