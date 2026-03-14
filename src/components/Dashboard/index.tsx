@@ -75,7 +75,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
         {/* Top row: progress + leaderboard side by side */}
         <div className="flex flex-col md:flex-row gap-4 mb-6" style={{ alignItems: 'stretch' }}>
           {/* Overall stats */}
-          <div className="rounded-xl p-4 flex-1" style={{ backgroundColor: '#242424', border: '1px solid #333' }}>
+          <div className="rounded-xl p-4" style={{ backgroundColor: '#242424', border: '1px solid #333', flex: '0 0 30%' }}>
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm" style={{ color: '#9ca3af' }}>Celkový postup</span>
               <span className="font-bold" style={{ color: '#8b5cf6' }}>{completedPct}%</span>
@@ -104,7 +104,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
 
           {/* Leaderboard */}
           {leaderboardSection && (
-            <div className="flex-1 min-w-0">
+            <div style={{ flex: '1 1 0', minWidth: 0 }}>
               {leaderboardSection}
             </div>
           )}
