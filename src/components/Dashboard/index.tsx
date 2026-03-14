@@ -32,7 +32,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
         setTipIndex(i => (i + 1) % TIPS.length);
         setTipVisible(true);
       }, 400);
-    }, 10000);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
