@@ -222,7 +222,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
               <path d="M20 10 Q20 6 24 6 Q28 6 28 10" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round"/>
             </svg>
             <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#ffffff', lineHeight: 1.3 }}>Dávej si pauzy</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Protáhni si ruce, záda, odpočiň oči. Krátká přestávka mezi lekcemi pomůže víc než hodina v kuse.</div>
+            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Protáhni si ruce, záda, odpočiň oči. Krátká přestávka mezi lekcemi vždy pomůže</div>
           </div>
         </div>
 
