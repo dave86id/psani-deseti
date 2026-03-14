@@ -174,58 +174,6 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           </span>
         </div>
 
-        {/* Info boxes */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}
-          className="info-boxes">
-          {/* Box 1 — Přesnost před rychlostí */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem 0.75rem' }}>
-            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="24" cy="24" r="22" stroke="#ef4444" strokeWidth="2.5" fill="none"/>
-              <circle cx="24" cy="24" r="14" stroke="#ef4444" strokeWidth="2" fill="none" opacity="0.5"/>
-              <circle cx="24" cy="24" r="6" fill="#ef4444"/>
-              <line x1="36" y1="10" x2="26" y2="21" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round"/>
-              <polygon points="38,6 42,14 34,12" fill="#ffffff"/>
-            </svg>
-            <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#ffffff', lineHeight: 1.3 }}>Přesnost před rychlostí</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Piš pomalu a přesně. Rychlost přijde sama. Tvé prsty se učí správné pohyby — nech je pracovat.</div>
-          </div>
-
-          {/* Box 2 — Dva měsíce a máš to */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem 0.75rem' }}>
-            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="4" y="10" width="40" height="34" rx="4" stroke="#8b5cf6" strokeWidth="2.5" fill="none"/>
-              <line x1="4" y1="20" x2="44" y2="20" stroke="#8b5cf6" strokeWidth="2"/>
-              <line x1="14" y1="4" x2="14" y2="14" stroke="#8b5cf6" strokeWidth="2.5" strokeLinecap="round"/>
-              <line x1="34" y1="4" x2="34" y2="14" stroke="#8b5cf6" strokeWidth="2.5" strokeLinecap="round"/>
-              <text x="24" y="37" textAnchor="middle" fill="#8b5cf6" fontSize="14" fontWeight="bold" fontFamily="monospace">2</text>
-            </svg>
-            <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#ffffff', lineHeight: 1.3 }}>Dva měsíce a máš to</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Celý kurz zvládneš za zhruba 2 měsíce. Záleží na tobě, kolik času tomu věnuješ. Pravidelnost je klíč.</div>
-          </div>
-
-          {/* Box 3 — 10 minut denně */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem 0.75rem' }}>
-            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="2" y="8" width="44" height="32" rx="5" fill="#052e16" stroke="#22c55e" strokeWidth="2"/>
-              <text x="24" y="30" textAnchor="middle" fill="#22c55e" fontSize="15" fontWeight="bold" fontFamily="monospace">10min</text>
-            </svg>
-            <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#ffffff', lineHeight: 1.3 }}>Stačí 10 minut denně</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Každý den krátké cvičení. Prsty si zapamatují správné pohyby a ty si vytvoříš návyk, který vydrží.</div>
-          </div>
-
-          {/* Box 4 — Dávej si pauzy */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem 0.75rem' }}>
-            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 20 Q12 10 24 10 Q36 10 36 20 L34 34 H14 Z" fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinejoin="round"/>
-              <path d="M36 18 Q42 18 42 24 Q42 30 36 30" fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round"/>
-              <rect x="10" y="34" width="28" height="4" rx="2" fill="#f97316" opacity="0.7"/>
-              <path d="M20 10 Q20 6 24 6 Q28 6 28 10" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-            <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#ffffff', lineHeight: 1.3 }}>Dávej si pauzy</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Protáhni si ruce, záda, odpočiň oči. Krátká přestávka mezi lekcemi vždy pomůže</div>
-          </div>
-        </div>
-
         {/* Top row: progress + leaderboard side by side */}
         <div className="flex flex-col md:flex-row gap-4 mb-6" style={{ alignItems: 'stretch' }}>
           {/* Overall stats */}
@@ -313,6 +261,26 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
             </div>
           </div>
         ))}
+
+        {/* Info boxes — bottom */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginTop: '1rem', marginBottom: '1.5rem' }} className="info-boxes">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
+            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Přesnost před rychlostí</div>
+            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Piš pomalu a přesně. Rychlost přijde sama. Tvé prsty se učí správné pohyby — nech je pracovat.</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
+            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Dva měsíce a máš to</div>
+            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Celý kurz zvládneš za zhruba 2 měsíce. Záleží na tobě, kolik času tomu věnuješ. Pravidelnost je klíč.</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
+            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Stačí 10 minut denně</div>
+            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Každý den krátké cvičení. Prsty si zapamatují správné pohyby a ty si vytvoříš návyk, který vydrží.</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
+            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Dávej si pauzy</div>
+            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Protáhni si ruce, záda, odpočiň oči. Krátká přestávka mezi lekcemi vždy pomůže</div>
+          </div>
+        </div>
 
       </div>
 
