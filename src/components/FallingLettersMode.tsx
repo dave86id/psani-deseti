@@ -21,7 +21,6 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
   const [errors, setErrors] = useState(0);
   const [startTime] = useState(() => Date.now());
   const [wrongFlash, setWrongFlash] = useState<string | null>(null);
-  const [correctFlash, setCorrectFlash] = useState(false);
   const [keyMetrics, setKeyMetrics] = useState<Record<string, KeyMetrics>>({});
 
   const kbRef = useRef<HTMLDivElement>(null);
@@ -71,9 +70,6 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
       const expected = chars[currentIndex];
       if (e.key === expected) {
         playCorrect();
-        setCorrectFlash(true);
-        setTimeout(() => setCorrectFlash(false), 120);
-
         const next = currentIndex + 1;
         setCurrentIndex(next);
 
@@ -130,9 +126,8 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
             top: `${(VISIBLE_ROWS - 1) * ROW_HEIGHT}px`,
             left: 0, right: 0,
             height: `${ROW_HEIGHT}px`,
-            backgroundColor: correctFlash ? '#8b5cf620' : '#8b5cf60a',
+            backgroundColor: '#8b5cf60a',
             borderBottom: '2px solid #8b5cf633',
-            transition: 'background-color 120ms ease',
           }} />
 
           {/* Gradient connector: from active slot bottom down to the keyboard key */}
