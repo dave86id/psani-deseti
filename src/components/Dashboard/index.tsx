@@ -75,7 +75,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
         {/* Hero section */}
         <div className="text-center mb-8" style={{ padding: '2rem 1rem 1.5rem' }}>
           <h1 className="font-bold mb-3" style={{ fontSize: '1.6rem', color: '#ffffff', lineHeight: 1.2 }}>
-            Přestaň datlovat.<br />Začni psát všemi deseti.
+            Nauč se psát všemi deseti.
           </h1>
           <p className="mb-5" style={{ fontSize: '0.8rem', color: '#9ca3af', maxWidth: '32rem', margin: '0 auto 1.5rem' }}>
             Procházej cvičení krok za krokem, sleduj svůj pokrok a porovnej se s ostatními v žebříčku.
