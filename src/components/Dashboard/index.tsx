@@ -22,9 +22,40 @@ const TIPS = [
   'Dávej si pauzy.',
 ];
 
+const HEADING = 'Nauč se psát všemi deseti.';
+
 export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection, isGuest }: DashboardProps) {
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIPS.length));
   const [tipVisible, setTipVisible] = useState(true);
+
+  // Typewriter
+  const [typedLen, setTypedLen] = useState(0);
+  const [cursorVisible, setCursorVisible] = useState(true);
+  const [cursorDone, setCursorDone] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    // 0.5s initial blink, then type
+    const startTyping = setTimeout(() => {
+      let i = 0;
+      const interval = setInterval(() => {
+        if (cancelled) { clearInterval(interval); return; }
+        i++;
+        setTypedLen(i);
+        if (i >= HEADING.length) {
+          clearInterval(interval);
+          // blink cursor 2 more times then hide
+          let blinks = 0;
+          const blinkInterval = setInterval(() => {
+            if (cancelled) { clearInterval(blinkInterval); return; }
+            setCursorVisible(v => !v);
+            blinks++;
+            if (blinks >= 4) { clearInterval(blinkInterval); setCursorDone(true); }
+          }, 530);
+        }
+      }, 60);
+    }, 500);
+    return () => { cancelled = true; clearTimeout(startTyping); };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -130,7 +161,10 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
         {/* Hero section */}
         <div className="text-center mb-8" style={{ padding: '2rem 1rem 1.5rem' }}>
           <h1 className="font-bold mb-3" style={{ fontSize: '1.6rem', color: '#ffffff', lineHeight: 1.2 }}>
-            Nauč se psát všemi deseti.
+            {HEADING.slice(0, typedLen)}
+            {!cursorDone && (
+              <span style={{ display: 'inline-block', width: '2px', height: '1.4em', backgroundColor: '#fff', marginLeft: '2px', verticalAlign: 'middle', opacity: cursorVisible ? 1 : 0 }} />
+            )}
           </h1>
           <p className="mb-5" style={{ fontSize: '0.8rem', color: '#9ca3af', maxWidth: '32rem', margin: '0 auto 1.5rem' }}>
             Procházej cvičení krok za krokem a sleduj, jak se zlepšuješ.
