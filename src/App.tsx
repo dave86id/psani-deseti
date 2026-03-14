@@ -224,6 +224,8 @@ export default function App() {
       <FallingLettersMode
         text={testText}
         lessonTitle="F a J (1.1)"
+        playCorrect={playCorrect}
+        playWrong={playWrong}
         onBack={() => setScreen('dashboard')}
         onComplete={() => setScreen('dashboard')}
       />
