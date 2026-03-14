@@ -181,7 +181,7 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
                   zIndex: isActive ? 3 : 1,
                 }}
               >
-                {char === ' ' ? '␣' : char.toUpperCase()}
+                {char === ' ' ? '⎵' : char.toUpperCase()}
               </div>
             );
           })}
