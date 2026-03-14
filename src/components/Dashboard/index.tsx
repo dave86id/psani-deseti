@@ -93,22 +93,39 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           <p className="mb-5" style={{ fontSize: '0.8rem', color: '#9ca3af', maxWidth: '32rem', margin: '0 auto 1.5rem' }}>
             Procházej cvičení krok za krokem a sleduj, jak se zlepšuješ.
           </p>
-          <button
-            onClick={() => nextLesson && onSelectLesson(nextLesson.id)}
-            style={{
-              backgroundColor: '#8b5cf6',
-              color: '#fff',
-              fontSize: '0.95rem',
-              fontWeight: 700,
-              padding: '0.65rem 2rem',
-              borderRadius: '0.75rem',
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 0 24px #8b5cf655',
-            }}
-          >
-            Jdu na to! →
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+            <button
+              onClick={() => nextLesson && onSelectLesson(nextLesson.id)}
+              style={{
+                backgroundColor: '#8b5cf6',
+                color: '#fff',
+                fontSize: '0.95rem',
+                fontWeight: 700,
+                padding: '0.65rem 2rem',
+                borderRadius: '0.75rem',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 0 24px #8b5cf655',
+              }}
+            >
+              Jdu na to! →
+            </button>
+            <button
+              onClick={() => document.getElementById('lekce-sekce')?.scrollIntoView({ behavior: 'smooth' })}
+              style={{
+                backgroundColor: 'transparent',
+                color: '#8b5cf6',
+                fontSize: '0.95rem',
+                fontWeight: 600,
+                padding: '0.65rem 1.5rem',
+                borderRadius: '0.75rem',
+                border: '1px solid #8b5cf6',
+                cursor: 'pointer',
+              }}
+            >
+              Lekce ↓
+            </button>
+          </div>
           {nextLessonHint && (
             <div style={{ marginTop: '0.6rem', fontSize: '0.65rem', color: '#6b7280' }}>
               {hasStarted ? 'Pokračuješ v' : ''} {nextLessonHint}
@@ -169,6 +186,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
         </div>
 
         {/* Sections */}
+        <div id="lekce-sekce" />
         {sections.map(section => (
           <div key={section.id} className="mb-6">
             <h2 className="font-semibold mb-3 text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>
