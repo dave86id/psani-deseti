@@ -35,7 +35,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}>
       {/* Header */}
-      <div style={{ backgroundColor: '#222222', borderBottom: '1px solid #333' }} className="px-6 py-2">
+      <div style={{ backgroundColor: '#1a1a1a' }} className="px-6 py-2">
         <div className="flex items-center justify-between max-w-3xl mx-auto">
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="logo" style={{ height: '1.6rem', width: 'auto' }} />
