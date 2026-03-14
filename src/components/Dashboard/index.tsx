@@ -149,7 +149,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
                   cursor: 'pointer',
                 }}
               >
-                Padající písmena
+                🧪 Padající písmena
               </button>
             )}
           </div>
