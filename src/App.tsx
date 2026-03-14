@@ -29,24 +29,13 @@ function isMobileDevice(): boolean {
 
 function MobileBlock() {
   return (
-    <div style={{
-      minHeight: '100dvh',
-      backgroundColor: '#1a1a1a',
-      color: '#ffffff',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '2rem',
-      textAlign: 'center',
-      gap: '1.5rem',
-    }}>
+    <div style={{ minHeight: '100dvh', backgroundColor: '#1a1a1a', color: '#ffffff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', gap: '1.5rem' }}>
       <img
         src="/mobile-preview.png"
         alt="psaní deseti"
-        style={{ width: '100%', maxWidth: '22rem', borderRadius: '0.75rem', opacity: 0.85 }}
+        style={{ width: '100%', display: 'block' }}
       />
-      <p style={{ fontSize: '1rem', color: '#9ca3af', maxWidth: '22rem', lineHeight: 1.6 }}>
+      <p style={{ fontSize: '1rem', color: '#9ca3af', maxWidth: '22rem', lineHeight: 1.6, padding: '0 2rem' }}>
         Hele, kámo, tohle tě má naučit psát na klávesnici. Takže si ten telefon strč do kapsy a vrať se, až budeš u kompu.
       </p>
     </div>
