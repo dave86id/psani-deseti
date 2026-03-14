@@ -90,7 +90,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
               </div>
               <div>
                 <div className="font-bold text-lg" style={{ color: '#8b5cf6' }}>{avgCpm > 0 ? avgCpm : '—'}</div>
-                <div className="text-xs" style={{ color: '#6b7280' }}>Průměr ZPM</div>
+                <div className="text-xs" style={{ color: '#6b7280' }}>Průměr CPM</div>
               </div>
               <div>
                 <div className="font-bold text-lg" style={{ color: '#06b6d4' }}>{avgAcc > 0 ? `${avgAcc}%` : '—'}</div>

@@ -93,7 +93,7 @@ export default function ResultsScreen({
             >
               {result.cpm}
             </div>
-            <div className="text-gray-400 text-sm mt-1">ZPM</div>
+            <div className="text-gray-400 text-sm mt-1">CPM</div>
             <div className="text-xs mt-1" style={{ color: '#8b5cf6' }}>
               {getCpmRating(result.cpm)}
             </div>

@@ -40,7 +40,7 @@ export default function Leaderboard({ entries, loading, currentUid, onRefresh }:
             <span>Hráč</span>
             <span className="text-right">Lekce</span>
             <span className="text-right">Přesnost</span>
-            <span className="text-right">ZPM</span>
+            <span className="text-right">CPM</span>
             <span className="text-right">Čas</span>
             <span className="text-right">Skóre</span>
           </div>
