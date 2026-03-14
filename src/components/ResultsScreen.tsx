@@ -62,131 +62,93 @@ export default function ResultsScreen({
       style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}
     >
       <div
-        className="rounded-2xl p-8 w-full max-w-md text-center"
-        style={{ backgroundColor: '#242424', border: '1px solid #3a3a3a' }}
+        className="rounded-xl w-full text-center"
+        style={{ backgroundColor: '#242424', border: '1px solid #3a3a3a', maxWidth: '22rem', padding: '1.25rem' }}
       >
         {/* Header */}
-        <div className="mb-6">
-          <div className="text-5xl mb-2">
+        <div style={{ marginBottom: '0.75rem' }}>
+          <div style={{ fontSize: '1.8rem', marginBottom: '0.2rem' }}>
             {result.accuracy >= 95 ? '🎯' : result.accuracy >= 80 ? '👍' : '💪'}
           </div>
-          <h2
-            className="text-2xl font-bold mb-1"
-            style={{ color: '#8b5cf6' }}
-          >
+          <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#8b5cf6', marginBottom: '0.2rem' }}>
             Cvičení dokončeno!
           </h2>
-          <p className="text-gray-400 text-sm">
+          <p style={{ color: '#6b7280', fontSize: '0.55rem' }}>
             Lekce {lessonId} — {lessonTitle} — Cvičení {exerciseIndex + 1}/{totalExercises}
           </p>
         </div>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div
-            className="rounded-xl p-4"
-            style={{ backgroundColor: '#2a2a2a' }}
-          >
-            <div
-              className="text-3xl font-bold font-mono"
-              style={{ color: '#8b5cf6' }}
-            >
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem', marginBottom: '0.75rem' }}>
+          <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: '#8b5cf6' }}>
               {result.cpm}
             </div>
-            <div className="text-gray-400 text-sm mt-1">CPM</div>
-            <div className="text-xs mt-1" style={{ color: '#8b5cf6' }}>
+            <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>CPM</div>
+            <div style={{ fontSize: '0.5rem', color: '#8b5cf6', marginTop: '0.1rem' }}>
               {getCpmRating(result.cpm)}
             </div>
           </div>
 
-          <div
-            className="rounded-xl p-4"
-            style={{ backgroundColor: '#2a2a2a' }}
-          >
-            <div
-              className="text-3xl font-bold font-mono"
-              style={{ color: getAccuracyColor(result.accuracy) }}
-            >
+          <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: getAccuracyColor(result.accuracy) }}>
               {result.accuracy}%
             </div>
-            <div className="text-gray-400 text-sm mt-1">Přesnost</div>
+            <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>Přesnost</div>
           </div>
 
-          <div
-            className="rounded-xl p-4"
-            style={{ backgroundColor: '#2a2a2a' }}
-          >
-            <div
-              className="text-3xl font-bold font-mono"
-              style={{ color: result.errors === 0 ? '#22c55e' : '#ef4444' }}
-            >
+          <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: result.errors === 0 ? '#22c55e' : '#ef4444' }}>
               {result.errors}
             </div>
-            <div className="text-gray-400 text-sm mt-1">Chyby</div>
+            <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>Chyby</div>
           </div>
 
-          <div
-            className="rounded-xl p-4"
-            style={{ backgroundColor: '#2a2a2a' }}
-          >
-            <div
-              className="text-3xl font-bold font-mono"
-              style={{ color: '#06b6d4' }}
-            >
+          <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: '#06b6d4' }}>
               {formatTime(result.timeSeconds)}
             </div>
-            <div className="text-gray-400 text-sm mt-1">Čas</div>
+            <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>Čas</div>
           </div>
         </div>
 
         {/* Action buttons */}
-        <div className="flex flex-col gap-3">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           {!isLastExercise && (
-            <div className="flex flex-col items-center gap-1">
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.15rem' }}>
               <button
                 onClick={onNext}
-                className="w-full py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-95"
-                style={{ backgroundColor: '#8b5cf6' }}
+                style={{ width: '100%', padding: '0.5rem', borderRadius: '0.6rem', fontWeight: 600, fontSize: '0.7rem', color: '#fff', backgroundColor: '#8b5cf6', border: 'none' }}
               >
                 Další cvičení →
               </button>
-              <span style={{ color: '#6b7280', fontSize: '0.65rem' }}>nebo stiskni mezerník</span>
+              <span style={{ color: '#6b7280', fontSize: '0.5rem' }}>nebo stiskni mezerník</span>
             </div>
           )}
 
           {isLastExercise && (
-            <div
-              className="py-3 px-4 rounded-xl text-sm mb-2"
-              style={{ backgroundColor: '#22c55e22', color: '#22c55e', border: '1px solid #22c55e55' }}
-            >
+            <div style={{ padding: '0.4rem', borderRadius: '0.6rem', fontSize: '0.6rem', marginBottom: '0.2rem', backgroundColor: '#22c55e22', color: '#22c55e', border: '1px solid #22c55e55' }}>
               Gratulujeme! Dokončil jsi všechna cvičení lekce {lessonId}!
             </div>
           )}
 
           <button
             onClick={onRestart}
-            className="w-full py-3 rounded-xl font-semibold transition-all duration-200 hover:opacity-90 active:scale-95"
-            style={{
-              backgroundColor: 'transparent',
-              border: '1px solid #4b5563',
-              color: '#d1d5db',
-            }}
+            style={{ width: '100%', padding: '0.5rem', borderRadius: '0.6rem', fontWeight: 600, fontSize: '0.7rem', backgroundColor: 'transparent', border: '1px solid #4b5563', color: '#d1d5db' }}
           >
             Zopakovat cvičení
           </button>
 
           <button
             onClick={onRestartAll}
-            className="w-full py-2 rounded-xl text-sm transition-all duration-200 hover:opacity-90"
-            style={{ color: '#6b7280' }}
+            style={{ width: '100%', padding: '0.35rem', borderRadius: '0.6rem', fontSize: '0.6rem', color: '#6b7280', backgroundColor: 'transparent', border: 'none' }}
           >
             Začít lekci od začátku
           </button>
 
           <button
             onClick={onBack}
-            className="w-full py-2 rounded-xl text-sm transition-all duration-200 hover:opacity-90"
-            style={{ color: '#6b7280' }}
+            style={{ width: '100%', padding: '0.35rem', borderRadius: '0.6rem', fontSize: '0.6rem', color: '#6b7280', backgroundColor: 'transparent', border: 'none' }}
           >
             ← Zpět na seznam cvičení
           </button>
