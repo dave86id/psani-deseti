@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { collection, getDocs, setDoc, doc, orderBy, query } from 'firebase/firestore';
+import { collection, getDocs, setDoc, doc, query } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export interface LeaderboardEntry {
@@ -20,13 +20,16 @@ export function useLeaderboard() {
   const [loading, setLoading] = useState(true);
 
   const fetchLeaderboard = useCallback(async () => {
+    setLoading(true);
     try {
-      const q = query(collection(db, 'leaderboard'), orderBy('score', 'desc'));
-      const snap = await getDocs(q);
-      const data = snap.docs.map(d => ({ uid: d.id, ...d.data() } as LeaderboardEntry));
+      // No orderBy to avoid requiring a Firestore composite index — sort client-side
+      const snap = await getDocs(query(collection(db, 'leaderboard')));
+      const data = snap.docs
+        .map(d => ({ uid: d.id, ...d.data() } as LeaderboardEntry))
+        .sort((a, b) => b.score - a.score);
       setEntries(data);
-    } catch {
-      // offline or not configured yet
+    } catch (e) {
+      console.error('Leaderboard fetch error:', e);
     }
     setLoading(false);
   }, []);

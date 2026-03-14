@@ -73,11 +73,11 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
 
       <div className="max-w-3xl mx-auto px-4 py-6">
         {/* Hero image */}
-        <div className="rounded-xl overflow-hidden mb-6" style={{ maxHeight: '280px' }}>
+        <div className="rounded-xl overflow-hidden mb-6">
           <img
             src="/hero-keyboard.png"
             alt="Klávesnice s barevnými prsty"
-            style={{ width: '100%', height: '280px', objectFit: 'cover', objectPosition: 'center 30%', display: 'block' }}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
           />
         </div>
 
