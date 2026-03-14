@@ -88,7 +88,10 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
     return () => window.removeEventListener('keydown', handler);
   }, [currentIndex, isFinished, chars, errors, startTime, onBack, onComplete, keyMetrics, playCorrect, playWrong]);
 
-  const activeMetrics = activeChar ? (keyMetrics[activeChar] ?? null) : null;
+  const activeMetrics = activeChar ? (keyMetrics[activeChar === ' ' ? 'j' : activeChar] ?? null) : null;
+
+  // Fixed token width = width of a standard letter key (j or f as reference)
+  const tokenWidth = keyMetrics['j']?.width ?? keyMetrics['f']?.width ?? 48;
 
   // Line extends from bottom of active slot into keyboard area (approx 80px to reach key center)
   const lineTop = (VISIBLE_ROWS - 1) * ROW_HEIGHT + ROW_HEIGHT * 0.75;
@@ -147,9 +150,9 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
 
           {/* Letter tokens */}
           {queueItems.map(({ slot, textIndex, char, isNew }) => {
-            const m = keyMetrics[char];
-            const x = m?.x ?? null;
-            const w = Math.min(m?.width ?? 48, 60);
+            const m = keyMetrics[char === ' ' ? 'j' : char];
+            const x = char === ' ' ? (keyMetrics[' ']?.x ?? null) : (m?.x ?? null);
+            const w = tokenWidth;
             const isActive = slot === VISIBLE_ROWS - 1;
             const opacity = 0.3 + (slot / (VISIBLE_ROWS - 1)) * 0.7;
 
