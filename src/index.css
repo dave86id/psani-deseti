@@ -73,6 +73,13 @@ button:disabled {
   opacity: 0.5;
 }
 
+/* Info boxes — 2×2 on narrow screens */
+@media (max-width: 640px) {
+  .info-boxes {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
 /* Leaderboard refresh button — smaller scale */
 .lb-refresh:hover {
   filter: brightness(1.3);
