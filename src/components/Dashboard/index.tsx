@@ -72,41 +72,43 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-6">
-        {/* Overall stats */}
-        <div className="rounded-xl p-4 mb-6" style={{ backgroundColor: '#242424', border: '1px solid #333' }}>
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-sm" style={{ color: '#9ca3af' }}>Celkový postup</span>
-            <span className="font-bold" style={{ color: '#8b5cf6' }}>{completedPct}%</span>
-          </div>
-          {/* Progress bar */}
-          <div className="rounded-full h-2 mb-4" style={{ backgroundColor: '#333' }}>
-            <div
-              className="rounded-full h-2 transition-all duration-500"
-              style={{ width: `${completedPct}%`, backgroundColor: '#22c55e' }}
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="font-bold text-lg" style={{ color: '#22c55e' }}>{completedCount}/{totalCount}</div>
-              <div className="text-xs" style={{ color: '#6b7280' }}>Lekcí dokončeno</div>
+        {/* Top row: progress + leaderboard side by side */}
+        <div className="flex flex-col md:flex-row gap-4 mb-6" style={{ alignItems: 'stretch' }}>
+          {/* Overall stats */}
+          <div className="rounded-xl p-4 flex-1" style={{ backgroundColor: '#242424', border: '1px solid #333' }}>
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-sm" style={{ color: '#9ca3af' }}>Celkový postup</span>
+              <span className="font-bold" style={{ color: '#8b5cf6' }}>{completedPct}%</span>
             </div>
-            <div>
-              <div className="font-bold text-lg" style={{ color: '#8b5cf6' }}>{avgCpm > 0 ? avgCpm : '—'}</div>
-              <div className="text-xs" style={{ color: '#6b7280' }}>Průměr ZPM</div>
+            <div className="rounded-full h-2 mb-4" style={{ backgroundColor: '#333' }}>
+              <div
+                className="rounded-full h-2 transition-all duration-500"
+                style={{ width: `${completedPct}%`, backgroundColor: '#22c55e' }}
+              />
             </div>
-            <div>
-              <div className="font-bold text-lg" style={{ color: '#06b6d4' }}>{avgAcc > 0 ? `${avgAcc}%` : '—'}</div>
-              <div className="text-xs" style={{ color: '#6b7280' }}>Průměr přesnost</div>
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div className="font-bold text-lg" style={{ color: '#22c55e' }}>{completedCount}/{totalCount}</div>
+                <div className="text-xs" style={{ color: '#6b7280' }}>Lekcí dokončeno</div>
+              </div>
+              <div>
+                <div className="font-bold text-lg" style={{ color: '#8b5cf6' }}>{avgCpm > 0 ? avgCpm : '—'}</div>
+                <div className="text-xs" style={{ color: '#6b7280' }}>Průměr ZPM</div>
+              </div>
+              <div>
+                <div className="font-bold text-lg" style={{ color: '#06b6d4' }}>{avgAcc > 0 ? `${avgAcc}%` : '—'}</div>
+                <div className="text-xs" style={{ color: '#6b7280' }}>Průměr přesnost</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Leaderboard — above lesson sections */}
-        {leaderboardSection && (
-          <div className="mb-6">
-            {leaderboardSection}
-          </div>
-        )}
+          {/* Leaderboard */}
+          {leaderboardSection && (
+            <div className="flex-1 min-w-0">
+              {leaderboardSection}
+            </div>
+          )}
+        </div>
 
         {/* Sections */}
         {sections.map(section => (
@@ -145,7 +147,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
                           {completedCount}/{totalCount}
                         </span>
                         {completed && medal && (
-                          <span style={{ fontSize: '0.9rem' }}>{medal}</span>
+                          <span style={{ fontSize: '1.2rem' }}>{medal}</span>
                         )}
                         {completed
                           ? <span style={{ color: '#22c55e' }}>✓</span>

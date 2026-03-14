@@ -60,7 +60,7 @@ export default function Leaderboard({ entries, loading, currentUid, onRefresh }:
                 }}
               >
                 {/* Rank */}
-                <span style={{ color: isTop3 ? RANK_COLORS[idx] : '#6b7280', fontWeight: isTop3 ? 700 : 400 }}>
+                <span style={{ color: isTop3 ? RANK_COLORS[idx] : '#6b7280', fontWeight: isTop3 ? 700 : 400, fontSize: isTop3 ? '1.35rem' : undefined }}>
                   {isTop3 ? RANK_ICONS[idx] : idx + 1}
                 </span>
 

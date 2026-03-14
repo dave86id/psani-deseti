@@ -64,7 +64,7 @@ export default function LessonMenu({ lesson, progress, onSelectExercise, onBack 
                         <span className="text-xs font-mono" style={{ color: score.accuracy >= 95 ? '#22c55e' : score.accuracy >= 80 ? '#eab308' : '#ef4444' }}>🎯 {score.accuracy}%</span>
                         <span className="text-xs font-mono" style={{ color: score.errors === 0 ? '#22c55e' : '#ef4444' }}>✕ {score.errors}</span>
                         <span className="text-xs font-mono" style={{ color: '#06b6d4' }}>⏱ {formatTime(score.timeSeconds)}</span>
-                        {medal && <span style={{ fontSize: '1rem' }}>{medal}</span>}
+                        {medal && <span style={{ fontSize: '1.35rem' }}>{medal}</span>}
                       </>
                     ) : (
                       <span className="text-xs" style={{ color: '#4b5563' }}>—</span>
