@@ -22,7 +22,7 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
   const [errors, setErrors] = useState(0);
   const [startTime] = useState(() => Date.now());
   const [wrongFlash, setWrongFlash] = useState<string | null>(null);
-  const [exitingItem, setExitingItem] = useState<{ char: string; x: number | null; w: number } | null>(null);
+  const [correctFlash, setCorrectFlash] = useState(false);
   const [keyMetrics, setKeyMetrics] = useState<Record<string, KeyMetrics>>({});
 
   const kbRef = useRef<HTMLDivElement>(null);
@@ -72,9 +72,8 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
       const expected = chars[currentIndex];
       if (e.key === expected) {
         playCorrect();
-        const m = keyMetrics[expected];
-        setExitingItem({ char: expected, x: m?.x ?? null, w: m?.width ?? 48 });
-        setTimeout(() => setExitingItem(null), 250);
+        setCorrectFlash(true);
+        setTimeout(() => setCorrectFlash(false), 120);
 
         const next = currentIndex + 1;
         setCurrentIndex(next);
@@ -94,7 +93,6 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
     return () => window.removeEventListener('keydown', handler);
   }, [currentIndex, isFinished, chars, errors, startTime, onBack, onComplete, keyMetrics, playCorrect, playWrong]);
 
-  const activeColor = activeChar && keyFingerMap[activeChar] ? fingerColors[keyFingerMap[activeChar]] : '#8b5cf6';
   const activeMetrics = activeChar ? (keyMetrics[activeChar] ?? null) : null;
 
   // Line extends from bottom of active slot into keyboard area (approx 80px to reach key center)
@@ -134,10 +132,11 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
               top: `${slot * ROW_HEIGHT}px`,
               left: 0, right: 0,
               height: `${ROW_HEIGHT}px`,
-              backgroundColor: slot === VISIBLE_ROWS - 1 ? '#8b5cf60d' : 'transparent',
+              backgroundColor: slot === VISIBLE_ROWS - 1 ? (correctFlash ? '#8b5cf622' : '#8b5cf60a') : 'transparent',
               borderBottom: slot === VISIBLE_ROWS - 1
-                ? `2px solid ${activeColor}44`
+                ? `2px solid #8b5cf644`
                 : '1px solid #1e1e1e',
+              transition: 'background-color 120ms ease',
             }} />
           ))}
 
@@ -149,7 +148,7 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
               top: `${lineTop}px`,
               width: '3px',
               height: `${lineHeight}px`,
-              background: `linear-gradient(to bottom, ${activeColor}cc 0%, ${activeColor}88 30%, ${activeColor}22 80%, transparent 100%)`,
+              background: `linear-gradient(to bottom, #8b5cf6cc 0%, #8b5cf688 30%, #8b5cf622 80%, transparent 100%)`,
               transform: 'translateX(-50%)',
               borderRadius: '2px',
               pointerEvents: 'none',
@@ -200,32 +199,6 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
             );
           })}
 
-          {/* Exiting letter (correct keypress animation) */}
-          {exitingItem && (
-            <div style={{
-              position: 'absolute',
-              top: `${(VISIBLE_ROWS - 1) * ROW_HEIGHT + ROW_HEIGHT / 2}px`,
-              left: exitingItem.x !== null ? `${exitingItem.x}px` : '50%',
-              transform: 'translate(-50%, -50%)',
-              animation: 'fallOut 250ms ease forwards',
-              width: `${exitingItem.w}px`,
-              height: `${Math.max(exitingItem.w, 52)}px`,
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '0.9rem',
-              fontWeight: 700,
-              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-              textTransform: 'uppercase',
-              backgroundColor: '#22c55e33',
-              border: '2px solid #22c55e',
-              color: '#22c55e',
-              zIndex: 4,
-            }}>
-              {exitingItem.char === ' ' ? '␣' : exitingItem.char.toUpperCase()}
-            </div>
-          )}
         </div>
 
         {/* Virtual keyboard */}
