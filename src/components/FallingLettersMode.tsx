@@ -161,7 +161,7 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
                   top: `${slot * ROW_HEIGHT + ROW_HEIGHT / 2}px`,
                   left: x !== null ? `${x}px` : '50%',
                   transform: 'translate(-50%, -50%)',
-                  transition: 'top 130ms ease-in-out',
+                  transition: isActive ? undefined : 'top 130ms ease-in-out',
                   animation: isNew ? 'fadeInTop 150ms ease forwards' : undefined,
                   width: `${w}px`,
                   height: isActive ? `${Math.max(w, 52)}px` : `${Math.min(w, ROW_HEIGHT - 12)}px`,
