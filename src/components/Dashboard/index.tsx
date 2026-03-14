@@ -231,7 +231,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           {/* Overall stats */}
           <div className="rounded-xl p-4" style={{ backgroundColor: '#242424', border: '1px solid #333', flex: '0 0 30%' }}>
             <div className="flex justify-between items-center mb-3">
-              <span className="text-sm" style={{ color: '#9ca3af' }}>Celkový postup</span>
+              <span className="text-sm" style={{ color: '#9ca3af' }}>Tvůj postup</span>
               <span className="font-bold" style={{ color: '#8b5cf6' }}>{completedPct}%</span>
             </div>
             <div className="rounded-full h-2 mb-4" style={{ backgroundColor: '#333' }}>
