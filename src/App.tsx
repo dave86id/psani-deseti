@@ -38,10 +38,6 @@ function MobileBlock() {
       padding: '2rem',
       textAlign: 'center',
     }}>
-      <div style={{ fontSize: '5rem', marginBottom: '1.5rem' }}>⌨️</div>
-      <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#8b5cf6', marginBottom: '1rem' }}>
-        Počítač, ne mobil!
-      </h1>
       <p style={{ fontSize: '1rem', color: '#9ca3af', maxWidth: '22rem', lineHeight: 1.6 }}>
         Hele, kámo, tohle tě má naučit psát na klávesnici. Takže si ten telefon strč do kapsy a vrať se, až budeš u kompu.
       </p>
