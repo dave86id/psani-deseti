@@ -78,7 +78,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
             Nauč se psát všemi deseti.
           </h1>
           <p className="mb-5" style={{ fontSize: '0.8rem', color: '#9ca3af', maxWidth: '32rem', margin: '0 auto 1.5rem' }}>
-            Procházej cvičení krok za krokem, sleduj svůj pokrok.
+            Procházej cvičení krok za krokem a sleduj jak se zlepšuješ.
           </p>
           <button
             onClick={() => nextLesson && onSelectLesson(nextLesson.id)}
