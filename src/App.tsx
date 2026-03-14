@@ -103,15 +103,14 @@ export default function App() {
     if (!profile) return;
     const allLessons = getAllLessons();
     const completedLessons = allLessons.filter(l => p.lessons[l.id]?.completed).length;
-    const allCpms = allLessons.map(l => p.lessons[l.id]?.bestCpm ?? 0).filter(c => c > 0);
+    // Compute averages from all individual exercise scores across all lessons
+    const allExerciseScores = allLessons.flatMap(l => Object.values(p.lessons[l.id]?.exerciseScores ?? {}));
+    const allCpms = allExerciseScores.map(s => s.cpm).filter(c => c > 0);
     const avgCpm = allCpms.length > 0 ? Math.round(allCpms.reduce((a, b) => a + b, 0) / allCpms.length) : 0;
-    const allAccs = allLessons.map(l => p.lessons[l.id]?.bestAccuracy ?? 0).filter(a => a > 0);
+    const allAccs = allExerciseScores.map(s => s.accuracy).filter(a => a > 0);
     const avgAccuracy = allAccs.length > 0 ? Math.round(allAccs.reduce((a, b) => a + b, 0) / allAccs.length) : 0;
     const totalExercises = allLessons.reduce((sum, l) => sum + (p.lessons[l.id]?.completedExercises.length ?? 0), 0);
-    const totalTime = allLessons.reduce((sum, l) => {
-      const scores = p.lessons[l.id]?.exerciseScores ?? {};
-      return sum + Object.values(scores).reduce((s, sc) => s + sc.timeSeconds, 0);
-    }, 0);
+    const totalTime = allExerciseScores.reduce((sum, s) => sum + s.timeSeconds, 0);
     const score = completedLessons * 100 + avgAccuracy * 10 + avgCpm;
 
     syncToFirestore(p);
