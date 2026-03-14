@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { sections, getAllLessons } from '../../data/lessons';
 import type { UserProgress } from '../../types';
 import { getLessonMedal } from '../../utils/stats';
@@ -15,6 +16,18 @@ interface DashboardProps {
 export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection }: DashboardProps) {
   const allLessons = getAllLessons();
   const completedCount = allLessons.filter(l => progress.lessons[l.id]?.completed).length;
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem('dashboardScrollY');
+    if (saved) {
+      const y = parseInt(saved);
+      requestAnimationFrame(() => window.scrollTo(0, y));
+      sessionStorage.removeItem('dashboardScrollY');
+    }
+    return () => {
+      sessionStorage.setItem('dashboardScrollY', String(window.scrollY));
+    };
+  }, []);
 
   const hasStarted = allLessons.some(l => (progress.lessons[l.id]?.completedExercises.length ?? 0) > 0);
   const nextLesson = allLessons.find(l => {
