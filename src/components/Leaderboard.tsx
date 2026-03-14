@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import type { LeaderboardEntry } from '../hooks/useLeaderboard';
-import { formatTime } from '../utils/stats';
 
 interface LeaderboardProps {
   entries: LeaderboardEntry[];
@@ -37,7 +36,6 @@ export default function Leaderboard({ entries, loading, currentUid, onRefresh }:
               <th style={{ padding: '6px 8px', textAlign: 'right', color: '#6b7280', fontSize: '0.7rem', fontWeight: 400, whiteSpace: 'nowrap' }}>Lekce</th>
               <th style={{ padding: '6px 8px', textAlign: 'right', color: '#6b7280', fontSize: '0.7rem', fontWeight: 400, whiteSpace: 'nowrap' }}>Přesnost</th>
               <th style={{ padding: '6px 8px', textAlign: 'right', color: '#6b7280', fontSize: '0.7rem', fontWeight: 400, whiteSpace: 'nowrap' }}>CPM</th>
-              <th style={{ padding: '6px 16px 6px 8px', textAlign: 'right', color: '#6b7280', fontSize: '0.7rem', fontWeight: 400, whiteSpace: 'nowrap' }}>Čas</th>
             </tr>
           </thead>
           <tbody>
@@ -93,9 +91,6 @@ export default function Leaderboard({ entries, loading, currentUid, onRefresh }:
                   </td>
                   <td style={{ padding: '10px 8px', textAlign: 'right', color: '#8b5cf6', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
                     {entry.avgCpm}
-                  </td>
-                  <td style={{ padding: '10px 16px 10px 8px', textAlign: 'right', color: '#06b6d4', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
-                    {formatTime(entry.totalTime)}
                   </td>
                 </tr>
               );
