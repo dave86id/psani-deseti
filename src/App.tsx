@@ -39,7 +39,13 @@ function MobileBlock() {
       justifyContent: 'center',
       padding: '2rem',
       textAlign: 'center',
+      gap: '1.5rem',
     }}>
+      <img
+        src="/mobile-preview.png"
+        alt="psaní deseti"
+        style={{ width: '100%', maxWidth: '22rem', borderRadius: '0.75rem', opacity: 0.85 }}
+      />
       <p style={{ fontSize: '1rem', color: '#9ca3af', maxWidth: '22rem', lineHeight: 1.6 }}>
         Hele, kámo, tohle tě má naučit psát na klávesnici. Takže si ten telefon strč do kapsy a vrať se, až budeš u kompu.
       </p>
