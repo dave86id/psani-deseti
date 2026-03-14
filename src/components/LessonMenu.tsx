@@ -57,19 +57,19 @@ export default function LessonMenu({ lesson, progress, onSelectExercise, onBack 
                   <span className="text-sm font-mono truncate" style={{ color: '#e5e7eb' }}>
                     {ex.text.slice(0, 24)}{ex.text.length > 24 ? '…' : ''}
                   </span>
-                  <div className="flex items-center gap-3 flex-shrink-0" style={{ whiteSpace: 'nowrap' }}>
+                  <div className="flex items-center gap-2 flex-shrink-0" style={{ whiteSpace: 'nowrap' }}>
                     {score ? (
                       <>
-                        <span className="text-xs font-mono" style={{ color: '#8b5cf6', whiteSpace: 'nowrap' }}>⚡ {score.cpm} ZPM</span>
-                        <span className="text-xs font-mono" style={{ color: score.accuracy >= 95 ? '#22c55e' : score.accuracy >= 80 ? '#eab308' : '#ef4444', whiteSpace: 'nowrap' }}>🎯 {score.accuracy}%</span>
-                        <span className="text-xs font-mono" style={{ color: score.errors === 0 ? '#22c55e' : '#ef4444', whiteSpace: 'nowrap' }}>✕ {score.errors}</span>
-                        <span className="text-xs font-mono" style={{ color: '#06b6d4', whiteSpace: 'nowrap' }}>⏱ {formatTime(score.timeSeconds)}</span>
-                        {medal && <span style={{ fontSize: '1.35rem' }}>{medal}</span>}
+                        <span style={{ color: '#8b5cf6', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>⚡{score.cpm}</span>
+                        <span style={{ color: score.accuracy >= 95 ? '#22c55e' : score.accuracy >= 80 ? '#eab308' : '#ef4444', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>🎯{score.accuracy}%</span>
+                        <span style={{ color: score.errors === 0 ? '#22c55e' : '#ef4444', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>✕{score.errors}</span>
+                        <span style={{ color: '#06b6d4', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>⏱{formatTime(score.timeSeconds)}</span>
+                        {medal && <span style={{ fontSize: '1.1rem' }}>{medal}</span>}
                       </>
                     ) : (
-                      <span className="text-xs" style={{ color: '#4b5563' }}>—</span>
+                      <span style={{ color: '#4b5563', fontSize: '0.65rem' }}>—</span>
                     )}
-                    {done && <span style={{ color: '#22c55e' }}>✓</span>}
+                    {done && <span style={{ color: '#22c55e', fontSize: '0.75rem' }}>✓</span>}
                   </div>
                 </div>
               </button>
