@@ -113,7 +113,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
             <h2 className="font-semibold mb-3 text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>
               {section.id}. {section.title}
             </h2>
-            <div className="flex flex-col gap-2">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
               {section.lessons.map(lesson => {
                 const lessonProg = progress.lessons[lesson.id];
                 const completedCount = lessonProg?.completedExercises.length ?? 0;
@@ -125,32 +125,29 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
                   <button
                     key={lesson.id}
                     onClick={() => onSelectLesson(lesson.id)}
-                    className="w-full text-left rounded-xl px-4 py-3 transition-all duration-150"
+                    className="text-left rounded-xl transition-all duration-150"
                     style={{
                       backgroundColor: '#242424',
                       border: completed ? '1px solid #22c55e44' : '1px solid #333',
                       cursor: 'pointer',
+                      padding: '10px 12px',
                     }}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs font-mono" style={{ color: '#6b7280' }}>{lesson.id}</span>
-                        <span className="font-medium" style={{ color: '#e5e7eb', fontSize: '0.9rem' }}>
-                          {lesson.title}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs" style={{ color: '#6b7280' }}>
-                          {completedCount}/{totalCount}
-                        </span>
-                        {completed && medal && (
-                          <span style={{ fontSize: '1.2rem' }}>{medal}</span>
-                        )}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: '#6b7280' }}>{lesson.id}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        {completed && medal && <span style={{ fontSize: '0.9rem' }}>{medal}</span>}
                         {completed
-                          ? <span style={{ color: '#22c55e' }}>✓</span>
-                          : <span style={{ color: '#8b5cf6', fontSize: '0.8rem' }}>→</span>
+                          ? <span style={{ color: '#22c55e', fontSize: '0.75rem' }}>✓</span>
+                          : <span style={{ color: '#8b5cf6', fontSize: '0.7rem' }}>→</span>
                         }
                       </div>
+                    </div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 500, color: '#e5e7eb', marginBottom: '4px', lineHeight: 1.2 }}>
+                      {lesson.title}
+                    </div>
+                    <div style={{ fontSize: '0.6rem', color: completed ? '#22c55e99' : '#4b5563' }}>
+                      {completedCount}/{totalCount} cvičení
                     </div>
                   </button>
                 );
