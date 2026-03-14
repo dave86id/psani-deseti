@@ -265,7 +265,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
             <h2 className="font-semibold mb-3 text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>
               {section.id}. {section.title}
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${section.lessons.length}, 1fr)`, gap: '8px' }}>
               {section.lessons.map(lesson => {
                 const lessonProg = progress.lessons[lesson.id];
                 const completedCount = lessonProg?.completedExercises.length ?? 0;
