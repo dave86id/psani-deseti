@@ -65,8 +65,8 @@ export default function Leaderboard({ entries, loading, currentUid, onRefresh }:
                   </td>
 
                   {/* Player */}
-                  <td style={{ padding: '10px 8px', maxWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+                  <td style={{ padding: '10px 8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <div style={{
                         width: '28px', height: '28px', borderRadius: '50%',
                         flexShrink: 0, overflow: 'hidden', backgroundColor: '#333',
@@ -77,14 +77,7 @@ export default function Leaderboard({ entries, loading, currentUid, onRefresh }:
                           : <span style={{ fontSize: '0.7rem' }}>👤</span>
                         }
                       </div>
-                      <span style={{
-                        color: isCurrent ? '#a78bfa' : '#e5e7eb',
-                        fontSize: '0.8rem',
-                        fontWeight: 500,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}>
+                      <span style={{ color: isCurrent ? '#a78bfa' : '#e5e7eb', fontSize: '0.8rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
                         {entry.displayName}
                         {isCurrent && <span style={{ marginLeft: '4px', fontSize: '0.65rem', color: '#8b5cf6' }}>(vy)</span>}
                       </span>
