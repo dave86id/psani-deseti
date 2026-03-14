@@ -41,7 +41,7 @@ export default function LoginScreen({ onSignIn, leaderboardSection }: LoginScree
           <button
             onClick={handleSignIn}
             disabled={loading}
-            className="inline-flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all hover:opacity-90"
+            className="inline-flex items-center gap-3 px-6 py-3 rounded-xl font-semibold"
             style={{ backgroundColor: '#ffffff', color: '#1a1a1a', fontSize: '0.9rem' }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24">

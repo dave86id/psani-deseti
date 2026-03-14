@@ -40,3 +40,31 @@ body,
   display: flex;
   flex-direction: column;
 }
+
+/* ── Hover effects on all interactive elements ── */
+
+button {
+  cursor: pointer;
+  transition: filter 150ms ease, transform 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+}
+
+button:hover:not(:disabled) {
+  filter: brightness(1.12);
+  transform: scale(1.015);
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
+  filter: brightness(1.05);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Leaderboard refresh button — smaller scale */
+.lb-refresh:hover {
+  filter: brightness(1.3);
+  transform: scale(1.05);
+}

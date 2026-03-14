@@ -19,7 +19,7 @@ export default function Leaderboard({ entries, loading, currentUid, onRefresh }:
     <div className="rounded-xl overflow-hidden" style={{ backgroundColor: '#242424', border: '1px solid #333' }}>
       <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #333' }}>
         <h2 className="font-semibold text-sm" style={{ color: '#9ca3af' }}>🏆 ŽEBŘÍČEK</h2>
-        <button onClick={onRefresh} className="text-xs" style={{ color: '#6b7280' }}>↻ Obnovit</button>
+        <button onClick={onRefresh} className="lb-refresh text-xs" style={{ color: '#6b7280' }}>↻ Obnovit</button>
       </div>
 
       {loading ? (
