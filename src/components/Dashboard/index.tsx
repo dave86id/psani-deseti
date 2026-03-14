@@ -197,7 +197,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
                       <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: '#6b7280' }}>{lesson.id}</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        {completed && medal && <span style={{ fontSize: '0.9rem' }}>{medal}</span>}
+                        {completed && medal && <span style={{ fontSize: '1.3rem' }}>{medal}</span>}
                         {completed
                           ? <span style={{ color: '#22c55e', fontSize: '0.75rem' }}>✓</span>
                           : <span style={{ color: '#8b5cf6', fontSize: '0.7rem' }}>→</span>
