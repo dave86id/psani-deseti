@@ -6,7 +6,7 @@ interface LoginScreenProps {
   leaderboardSection: React.ReactNode;
 }
 
-export default function LoginScreen({ onSignIn, onSkip, leaderboardSection }: LoginScreenProps) {
+export default function LoginScreen({ onSignIn, onSkip }: LoginScreenProps) {
   const [loading, setLoading] = useState(false);
 
   const handleSignIn = async () => {
@@ -15,37 +15,29 @@ export default function LoginScreen({ onSignIn, onSkip, leaderboardSection }: Lo
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}>
-      {/* Header — identical to Dashboard header */}
-      <div style={{ backgroundColor: '#1a1a1a' }} className="px-6 py-2">
-        <div className="flex items-center justify-between max-w-3xl mx-auto">
-          <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="logo" style={{ height: '1.6rem', width: 'auto' }} />
-            <span className="font-bold" style={{ color: '#8b5cf6', fontSize: '1rem' }}>psaní deseti</span>
-          </div>
-          <button
-            onClick={handleSignIn}
-            disabled={loading}
-            className="text-xs px-2 py-0.5 rounded font-medium"
-            style={{ backgroundColor: '#8b5cf6', color: '#fff' }}
-          >
-            {loading ? 'Přihlašování…' : 'Přihlásit se'}
-          </button>
+    <div className="min-h-screen flex flex-col items-center justify-center" style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}>
+      <div style={{ textAlign: 'center', maxWidth: '32rem', width: '100%', padding: '0 1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
+          <img src="/logo.png" alt="logo" style={{ height: '1.8rem', width: 'auto' }} />
+          <span style={{ fontWeight: 700, color: '#8b5cf6', fontSize: '1.1rem' }}>psaní deseti</span>
         </div>
-      </div>
 
-      <div className="max-w-3xl mx-auto px-4 py-12">
-        <div className="rounded-2xl p-8 text-center mb-8" style={{ backgroundColor: '#242424', border: '1px solid #333' }}>
-          <p className="text-sm mb-6" style={{ color: '#9ca3af' }}>
-            Pro pokračování se přihlaste Googlem.
-          </p>
+        <p style={{ color: '#9ca3af', fontSize: '0.7rem', marginBottom: '1.5rem' }}>
+          Přihlas se, aby se tvůj pokrok uložil. Nebo pokračuj jako host.
+        </p>
+
+        <div style={{ display: 'flex', gap: '0.6rem', justifyContent: 'center' }}>
           <button
             onClick={handleSignIn}
             disabled={loading}
-            className="inline-flex items-center gap-3 px-6 py-3 rounded-xl font-semibold"
-            style={{ backgroundColor: '#ffffff', color: '#1a1a1a', fontSize: '0.9rem' }}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+              padding: '0.45rem 1rem', borderRadius: '0.6rem',
+              backgroundColor: '#ffffff', color: '#1a1a1a',
+              fontSize: '0.65rem', fontWeight: 600, border: 'none',
+            }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24">
+            <svg width="14" height="14" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -53,14 +45,19 @@ export default function LoginScreen({ onSignIn, onSkip, leaderboardSection }: Lo
             </svg>
             {loading ? 'Přihlašování…' : 'Přihlásit se přes Google'}
           </button>
+
           <button
             onClick={onSkip}
-            style={{ marginTop: '0.75rem', background: 'none', border: 'none', color: '#6b7280', fontSize: '0.7rem', cursor: 'pointer' }}
+            style={{
+              padding: '0.45rem 1rem', borderRadius: '0.6rem',
+              backgroundColor: 'transparent', color: '#9ca3af',
+              fontSize: '0.65rem', fontWeight: 500,
+              border: '1px solid #444',
+            }}
           >
             Pokračovat bez přihlášení
           </button>
         </div>
-        {leaderboardSection}
       </div>
     </div>
   );
