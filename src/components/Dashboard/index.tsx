@@ -101,6 +101,13 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           </div>
         </div>
 
+        {/* Leaderboard — above lesson sections */}
+        {leaderboardSection && (
+          <div className="mb-6">
+            {leaderboardSection}
+          </div>
+        )}
+
         {/* Sections */}
         {sections.map(section => (
           <div key={section.id} className="mb-6">
@@ -153,12 +160,6 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           </div>
         ))}
 
-        {/* Leaderboard section */}
-        {leaderboardSection && (
-          <div className="mt-4">
-            {leaderboardSection}
-          </div>
-        )}
       </div>
     </div>
   );
