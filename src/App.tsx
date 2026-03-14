@@ -17,7 +17,41 @@ import type { ExerciseResult } from './types';
 
 type Screen = 'dashboard' | 'lesson-menu' | 'exercise' | 'results';
 
+function isMobileDevice(): boolean {
+  const ua = navigator.userAgent;
+  const isTouchOnly = navigator.maxTouchPoints > 0 && !window.matchMedia('(pointer: fine)').matches;
+  const isNarrow = window.innerWidth < 1024;
+  const isMobileUA = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(ua);
+  return (isMobileUA || isTouchOnly) && isNarrow;
+}
+
+function MobileBlock() {
+  return (
+    <div style={{
+      minHeight: '100dvh',
+      backgroundColor: '#1a1a1a',
+      color: '#ffffff',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '2rem',
+      textAlign: 'center',
+    }}>
+      <div style={{ fontSize: '5rem', marginBottom: '1.5rem' }}>⌨️</div>
+      <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#8b5cf6', marginBottom: '1rem' }}>
+        Počítač, ne mobil!
+      </h1>
+      <p style={{ fontSize: '1rem', color: '#9ca3af', maxWidth: '22rem', lineHeight: 1.6 }}>
+        Hele, kámo, tohle tě má naučit psát na klávesnici. Takže si ten telefon strč do kapsy a vrať se, až budeš u kompu.
+      </p>
+    </div>
+  );
+}
+
 export default function App() {
+  if (isMobileDevice()) return <MobileBlock />;
+
   const { playCorrect, playWrong } = useSound();
   const { user, profile, loading: authLoading, needsProfile, signInWithGoogle, signOutUser, saveProfile } = useAuth();
   const { entries: leaderboardEntries, loading: leaderboardLoading, updateLeaderboard, refresh: refreshLeaderboard } = useLeaderboard();
