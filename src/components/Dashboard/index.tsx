@@ -72,6 +72,15 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-6">
+        {/* Hero image */}
+        <div className="rounded-xl overflow-hidden mb-6" style={{ maxHeight: '280px' }}>
+          <img
+            src="/hero-keyboard.png"
+            alt="Klávesnice s barevnými prsty"
+            style={{ width: '100%', height: '280px', objectFit: 'cover', objectPosition: 'center 30%', display: 'block' }}
+          />
+        </div>
+
         {/* Top row: progress + leaderboard side by side */}
         <div className="flex flex-col md:flex-row gap-4 mb-6" style={{ alignItems: 'stretch' }}>
           {/* Overall stats */}
