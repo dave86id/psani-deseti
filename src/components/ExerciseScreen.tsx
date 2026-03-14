@@ -110,14 +110,16 @@ export default function ExerciseScreen({
   // Focus trap - capture keyboard events
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore modifier-only keys
+      // Ignore modifier-only keys and dead keys (dead keys must not get preventDefault
+      // so the browser can compose them into ď, ť, ň etc.)
       if (
         e.key === 'Shift' ||
         e.key === 'Control' ||
         e.key === 'Alt' ||
         e.key === 'Meta' ||
         e.key === 'CapsLock' ||
-        e.key === 'Tab'
+        e.key === 'Tab' ||
+        e.key === 'Dead'
       ) {
         return;
       }

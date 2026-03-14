@@ -1,13 +1,18 @@
 import { sections, getAllLessons } from '../../data/lessons';
 import type { UserProgress } from '../../types';
 import { getLessonMedal } from '../../utils/stats';
+import type { UserProfile } from '../../hooks/useAuth';
 
 interface DashboardProps {
   progress: UserProgress;
   onSelectLesson: (lessonId: string) => void;
+  profile?: UserProfile | null;
+  onSignIn?: () => void;
+  onSignOut?: () => void;
+  leaderboardSection?: React.ReactNode;
 }
 
-export default function Dashboard({ progress, onSelectLesson }: DashboardProps) {
+export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection }: DashboardProps) {
   const allLessons = getAllLessons();
   const completedCount = allLessons.filter(l => progress.lessons[l.id]?.completed).length;
   const totalCount = allLessons.length;
@@ -22,8 +27,48 @@ export default function Dashboard({ progress, onSelectLesson }: DashboardProps) 
     <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}>
       {/* Header */}
       <div style={{ backgroundColor: '#222222', borderBottom: '1px solid #333' }} className="px-6 py-4">
-        <h1 className="text-2xl font-bold" style={{ color: '#8b5cf6' }}>psaní deseti</h1>
-        <p className="text-sm mt-1" style={{ color: '#9ca3af' }}>Naučte se psát všemi deseti prsty</p>
+        <div className="flex items-center justify-between max-w-3xl mx-auto">
+          <div>
+            <h1 className="text-2xl font-bold" style={{ color: '#8b5cf6' }}>psaní deseti</h1>
+            <p className="text-sm mt-1" style={{ color: '#9ca3af' }}>Naučte se psát všemi deseti prsty</p>
+          </div>
+          {/* Auth area */}
+          <div className="flex items-center gap-3">
+            {profile ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <div className="rounded-full overflow-hidden flex items-center justify-center flex-shrink-0"
+                    style={{ width: '2rem', height: '2rem', backgroundColor: '#333', border: '1px solid #8b5cf6' }}>
+                    {profile.avatarBase64
+                      ? <img src={profile.avatarBase64} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : <span style={{ fontSize: '0.9rem' }}>👤</span>
+                    }
+                  </div>
+                  <span className="text-sm font-medium" style={{ color: '#e5e7eb' }}>{profile.displayName}</span>
+                </div>
+                {onSignOut && (
+                  <button
+                    onClick={onSignOut}
+                    className="text-xs px-3 py-1 rounded-lg"
+                    style={{ backgroundColor: '#333', color: '#9ca3af', border: '1px solid #444' }}
+                  >
+                    Odhlásit
+                  </button>
+                )}
+              </>
+            ) : (
+              onSignIn && (
+                <button
+                  onClick={onSignIn}
+                  className="text-xs px-3 py-1 rounded-lg font-medium"
+                  style={{ backgroundColor: '#8b5cf6', color: '#fff' }}
+                >
+                  Přihlásit se
+                </button>
+              )
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-6">
@@ -107,6 +152,13 @@ export default function Dashboard({ progress, onSelectLesson }: DashboardProps) 
             </div>
           </div>
         ))}
+
+        {/* Leaderboard section */}
+        {leaderboardSection && (
+          <div className="mt-4">
+            {leaderboardSection}
+          </div>
+        )}
       </div>
     </div>
   );

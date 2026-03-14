@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import type { UserProgress, LessonProgress } from '../types';
 
 const STORAGE_KEY = 'psani-deseti-progress';
@@ -30,7 +30,9 @@ function saveProgress(p: UserProgress) {
   }
 }
 
-export function useProgress() {
+export function useProgress(onSave?: (p: UserProgress) => void) {
+  const onSaveRef = useRef(onSave);
+  onSaveRef.current = onSave;
   const [progress, setProgress] = useState<UserProgress>(loadProgress);
 
   const updateLesson = useCallback((lessonId: string, update: Partial<LessonProgress>) => {
@@ -44,6 +46,7 @@ export function useProgress() {
         },
       };
       saveProgress(updated);
+      onSaveRef.current?.(updated);
       return updated;
     });
   }, []);
@@ -70,6 +73,7 @@ export function useProgress() {
         },
       };
       saveProgress(updated);
+      onSaveRef.current?.(updated);
       return updated;
     });
   }, []);
@@ -87,6 +91,7 @@ export function useProgress() {
       }
       const updated: UserProgress = { ...prev, lessons: newLessons };
       saveProgress(updated);
+      onSaveRef.current?.(updated);
       return updated;
     });
   }, []);

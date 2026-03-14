@@ -2,18 +2,64 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSound } from './hooks/useSound';
 import { useProgress } from './hooks/useProgress';
 import { useExercise } from './hooks/useExercise';
-import { getLessonById, getNextLessonId } from './data/lessons';
+import { useAuth } from './hooks/useAuth';
+import { useFirestoreProgress } from './hooks/useFirestoreProgress';
+import { useLeaderboard } from './hooks/useLeaderboard';
+import { getLessonById, getNextLessonId, getAllLessons } from './data/lessons';
 import Dashboard from './components/Dashboard';
 import LessonMenu from './components/LessonMenu';
 import ExerciseScreen from './components/ExerciseScreen';
 import ResultsScreen from './components/ResultsScreen';
+import LoginScreen from './components/LoginScreen';
+import ProfileSetup from './components/ProfileSetup';
+import Leaderboard from './components/Leaderboard';
 import type { ExerciseResult } from './types';
 
 type Screen = 'dashboard' | 'lesson-menu' | 'exercise' | 'results';
 
 export default function App() {
   const { playCorrect, playWrong } = useSound();
-  const { progress, completeExercise, completeLesson } = useProgress();
+  const { user, profile, loading: authLoading, needsProfile, signInWithGoogle, signOutUser, saveProfile } = useAuth();
+  const { entries: leaderboardEntries, loading: leaderboardLoading, updateLeaderboard, refresh: refreshLeaderboard } = useLeaderboard();
+
+  // Track whether user explicitly chose to skip login
+  const [skippedLogin, setSkippedLogin] = useState(false);
+
+  const { syncToFirestore } = useFirestoreProgress(user?.uid ?? null);
+
+  // Compute leaderboard score and push update when progress changes
+  const handleProgressSave = useCallback((p: typeof progress) => {
+    if (!profile) return;
+    const allLessons = getAllLessons();
+    const completedLessons = allLessons.filter(l => p.lessons[l.id]?.completed).length;
+    const allCpms = allLessons.map(l => p.lessons[l.id]?.bestCpm ?? 0).filter(c => c > 0);
+    const avgCpm = allCpms.length > 0 ? Math.round(allCpms.reduce((a, b) => a + b, 0) / allCpms.length) : 0;
+    const allAccs = allLessons.map(l => p.lessons[l.id]?.bestAccuracy ?? 0).filter(a => a > 0);
+    const avgAccuracy = allAccs.length > 0 ? Math.round(allAccs.reduce((a, b) => a + b, 0) / allAccs.length) : 0;
+    const totalExercises = allLessons.reduce((sum, l) => sum + (p.lessons[l.id]?.completedExercises.length ?? 0), 0);
+    const totalTime = allLessons.reduce((sum, l) => {
+      const scores = p.lessons[l.id]?.exerciseScores ?? {};
+      return sum + Object.values(scores).reduce((s, sc) => s + sc.timeSeconds, 0);
+    }, 0);
+    const score = completedLessons * 100 + avgAccuracy * 10 + avgCpm;
+
+    syncToFirestore(p);
+    updateLeaderboard({
+      uid: profile.uid,
+      displayName: profile.displayName,
+      avatarBase64: profile.avatarBase64,
+      completedLessons,
+      totalExercises,
+      avgAccuracy,
+      avgCpm,
+      totalTime,
+      score,
+    });
+  }, [profile, syncToFirestore, updateLeaderboard]);
+
+  const { progress, completeExercise, completeLesson } = useProgress(
+    profile ? handleProgressSave : undefined
+  );
 
   const [screen, setScreen] = useState<Screen>('dashboard');
   const [currentLessonId, setCurrentLessonId] = useState<string>('1.1');
@@ -100,8 +146,58 @@ export default function App() {
     setScreen('lesson-menu');
   }, []);
 
+  // Auth loading spinner
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#1a1a1a' }}>
+        <div className="text-sm" style={{ color: '#6b7280' }}>Načítání…</div>
+      </div>
+    );
+  }
+
+  // Leaderboard node reused in multiple screens
+  const leaderboardNode = (
+    <Leaderboard
+      entries={leaderboardEntries}
+      loading={leaderboardLoading}
+      currentUid={user?.uid ?? null}
+      onRefresh={refreshLeaderboard}
+    />
+  );
+
+  // Not logged in and hasn't skipped → show login screen
+  if (!user && !skippedLogin) {
+    return (
+      <LoginScreen
+        onSignIn={signInWithGoogle}
+        onSkip={() => setSkippedLogin(true)}
+        leaderboardSection={leaderboardNode}
+      />
+    );
+  }
+
+  // Logged in but needs to set up profile
+  if (user && needsProfile) {
+    return (
+      <ProfileSetup
+        googleDisplayName={user.displayName}
+        googleAvatar={user.photoURL}
+        onSave={saveProfile}
+      />
+    );
+  }
+
   if (screen === 'dashboard') {
-    return <Dashboard progress={progress} onSelectLesson={handleSelectLesson} />;
+    return (
+      <Dashboard
+        progress={progress}
+        onSelectLesson={handleSelectLesson}
+        profile={profile}
+        onSignIn={!user ? () => setSkippedLogin(false) : undefined}
+        onSignOut={user ? signOutUser : undefined}
+        leaderboardSection={leaderboardNode}
+      />
+    );
   }
 
   if (screen === 'lesson-menu' && currentLesson) {
