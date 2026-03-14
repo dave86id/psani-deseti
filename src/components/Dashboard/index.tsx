@@ -26,43 +26,31 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}>
       {/* Header */}
-      <div style={{ backgroundColor: '#222222', borderBottom: '1px solid #333' }} className="px-6 py-4">
+      <div style={{ backgroundColor: '#222222', borderBottom: '1px solid #333' }} className="px-6 py-2">
         <div className="flex items-center justify-between max-w-3xl mx-auto">
-          <div>
-            <h1 className="text-2xl font-bold" style={{ color: '#8b5cf6' }}>psaní deseti</h1>
-            <p className="text-sm mt-1" style={{ color: '#9ca3af' }}>Naučte se psát všemi deseti prsty</p>
-          </div>
-          {/* Auth area */}
-          <div className="flex items-center gap-3">
+          <h1 className="font-bold" style={{ color: '#8b5cf6', fontSize: '1rem' }}>psaní deseti</h1>
+          <div className="flex items-center gap-2">
             {profile ? (
               <>
-                <div className="flex items-center gap-2">
-                  <div className="rounded-full overflow-hidden flex items-center justify-center flex-shrink-0"
-                    style={{ width: '2rem', height: '2rem', backgroundColor: '#333', border: '1px solid #8b5cf6' }}>
-                    {profile.avatarBase64
-                      ? <img src={profile.avatarBase64} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      : <span style={{ fontSize: '0.9rem' }}>👤</span>
-                    }
-                  </div>
-                  <span className="text-sm font-medium" style={{ color: '#e5e7eb' }}>{profile.displayName}</span>
+                <div className="rounded-full overflow-hidden flex items-center justify-center flex-shrink-0"
+                  style={{ width: '1.4rem', height: '1.4rem', backgroundColor: '#333', border: '1px solid #8b5cf6' }}>
+                  {profile.avatarBase64
+                    ? <img src={profile.avatarBase64} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    : <span style={{ fontSize: '0.65rem' }}>👤</span>
+                  }
                 </div>
+                <span className="text-xs" style={{ color: '#e5e7eb' }}>{profile.displayName}</span>
                 {onSignOut && (
-                  <button
-                    onClick={onSignOut}
-                    className="text-xs px-3 py-1 rounded-lg"
-                    style={{ backgroundColor: '#333', color: '#9ca3af', border: '1px solid #444' }}
-                  >
+                  <button onClick={onSignOut} className="text-xs px-2 py-0.5 rounded"
+                    style={{ backgroundColor: '#333', color: '#9ca3af', border: '1px solid #444' }}>
                     Odhlásit
                   </button>
                 )}
               </>
             ) : (
               onSignIn && (
-                <button
-                  onClick={onSignIn}
-                  className="text-xs px-3 py-1 rounded-lg font-medium"
-                  style={{ backgroundColor: '#8b5cf6', color: '#fff' }}
-                >
+                <button onClick={onSignIn} className="text-xs px-2 py-0.5 rounded font-medium"
+                  style={{ backgroundColor: '#8b5cf6', color: '#fff' }}>
                   Přihlásit se
                 </button>
               )
