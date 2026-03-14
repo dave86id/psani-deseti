@@ -53,7 +53,7 @@ export default function App() {
   const { entries: leaderboardEntries, loading: leaderboardLoading, updateLeaderboard, refresh: refreshLeaderboard } = useLeaderboard();
 
   // Track whether user explicitly chose to skip login
-  const [skippedLogin, setSkippedLogin] = useState(false);
+
 
   const { syncToFirestore } = useFirestoreProgress(user?.uid ?? null);
 
@@ -195,12 +195,11 @@ export default function App() {
     />
   );
 
-  // Not logged in and hasn't skipped → show login screen
-  if (!user && !skippedLogin) {
+  // Not logged in → show login screen (no skip allowed)
+  if (!user) {
     return (
       <LoginScreen
         onSignIn={signInWithGoogle}
-        onSkip={() => setSkippedLogin(true)}
         leaderboardSection={leaderboardNode}
       />
     );
@@ -223,7 +222,7 @@ export default function App() {
         progress={progress}
         onSelectLesson={handleSelectLesson}
         profile={profile}
-        onSignIn={!user ? () => setSkippedLogin(false) : undefined}
+        onSignIn={!user ? signInWithGoogle : undefined}
         onSignOut={user ? signOutUser : undefined}
         leaderboardSection={leaderboardNode}
       />

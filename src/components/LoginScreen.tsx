@@ -2,11 +2,10 @@ import { useState } from 'react';
 
 interface LoginScreenProps {
   onSignIn: () => Promise<void>;
-  onSkip: () => void;
   leaderboardSection: React.ReactNode;
 }
 
-export default function LoginScreen({ onSignIn, onSkip, leaderboardSection }: LoginScreenProps) {
+export default function LoginScreen({ onSignIn, leaderboardSection }: LoginScreenProps) {
   const [loading, setLoading] = useState(false);
 
   const handleSignIn = async () => {
@@ -16,16 +15,28 @@ export default function LoginScreen({ onSignIn, onSkip, leaderboardSection }: Lo
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}>
-      <div style={{ backgroundColor: '#222222', borderBottom: '1px solid #333' }} className="px-6 py-4">
-        <h1 className="text-2xl font-bold" style={{ color: '#8b5cf6' }}>psaní deseti</h1>
-        <p className="text-sm mt-1" style={{ color: '#9ca3af' }}>Naučte se psát všemi deseti prsty</p>
+      {/* Header — identical to Dashboard header */}
+      <div style={{ backgroundColor: '#1a1a1a' }} className="px-6 py-2">
+        <div className="flex items-center justify-between max-w-3xl mx-auto">
+          <div className="flex items-center gap-2">
+            <img src="/logo.png" alt="logo" style={{ height: '1.6rem', width: 'auto' }} />
+            <span className="font-bold" style={{ color: '#8b5cf6', fontSize: '1rem' }}>psaní deseti</span>
+          </div>
+          <button
+            onClick={handleSignIn}
+            disabled={loading}
+            className="text-xs px-2 py-0.5 rounded font-medium"
+            style={{ backgroundColor: '#8b5cf6', color: '#fff' }}
+          >
+            {loading ? 'Přihlašování…' : 'Přihlásit se'}
+          </button>
+        </div>
       </div>
+
       <div className="max-w-3xl mx-auto px-4 py-12">
         <div className="rounded-2xl p-8 text-center mb-8" style={{ backgroundColor: '#242424', border: '1px solid #333' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⌨️</div>
-          <h2 className="text-xl font-bold mb-2">Přihlaste se a sledujte svůj pokrok</h2>
           <p className="text-sm mb-6" style={{ color: '#9ca3af' }}>
-            Váš postup se uloží do cloudu a zobrazíte se v žebříčku
+            Pro pokračování se přihlaste Googlem.
           </p>
           <button
             onClick={handleSignIn}
@@ -41,11 +52,6 @@ export default function LoginScreen({ onSignIn, onSkip, leaderboardSection }: Lo
             </svg>
             {loading ? 'Přihlašování…' : 'Přihlásit se přes Google'}
           </button>
-          <div className="mt-4">
-            <button onClick={onSkip} className="text-xs underline" style={{ color: '#6b7280' }}>
-              Pokračovat bez přihlášení
-            </button>
-          </div>
         </div>
         {leaderboardSection}
       </div>
