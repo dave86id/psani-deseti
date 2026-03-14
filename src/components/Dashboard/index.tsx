@@ -178,7 +178,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}
           className="info-boxes">
           {/* Box 1 — Přesnost před rychlostí */}
-          <div style={{ backgroundColor: '#2a2a2a', border: '1px solid #333', borderRadius: '0.75rem', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem 0.75rem' }}>
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="24" cy="24" r="22" stroke="#ef4444" strokeWidth="2.5" fill="none"/>
               <circle cx="24" cy="24" r="14" stroke="#ef4444" strokeWidth="2" fill="none" opacity="0.5"/>
@@ -191,7 +191,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           </div>
 
           {/* Box 2 — Dva měsíce a máš to */}
-          <div style={{ backgroundColor: '#2a2a2a', border: '1px solid #333', borderRadius: '0.75rem', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem 0.75rem' }}>
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="4" y="10" width="40" height="34" rx="4" stroke="#8b5cf6" strokeWidth="2.5" fill="none"/>
               <line x1="4" y1="20" x2="44" y2="20" stroke="#8b5cf6" strokeWidth="2"/>
@@ -204,7 +204,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           </div>
 
           {/* Box 3 — 10 minut denně */}
-          <div style={{ backgroundColor: '#2a2a2a', border: '1px solid #333', borderRadius: '0.75rem', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem 0.75rem' }}>
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="2" y="8" width="44" height="32" rx="5" fill="#052e16" stroke="#22c55e" strokeWidth="2"/>
               <text x="24" y="30" textAnchor="middle" fill="#22c55e" fontSize="15" fontWeight="bold" fontFamily="monospace">10min</text>
@@ -214,7 +214,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           </div>
 
           {/* Box 4 — Dávej si pauzy */}
-          <div style={{ backgroundColor: '#2a2a2a', border: '1px solid #333', borderRadius: '0.75rem', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem 0.75rem' }}>
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 20 Q12 10 24 10 Q36 10 36 20 L34 34 H14 Z" fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinejoin="round"/>
               <path d="M36 18 Q42 18 42 24 Q42 30 36 30" fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round"/>

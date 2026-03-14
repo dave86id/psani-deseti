@@ -116,7 +116,7 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
       </div>
 
       {/* Main — same width as ExerciseScreen (max-w-3xl) */}
-      <div className="w-full max-w-3xl mx-auto" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '0 1rem' }}>
+      <div className="w-full max-w-3xl mx-auto" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 1rem' }}>
 
         {/* Falling letters area */}
         <div
