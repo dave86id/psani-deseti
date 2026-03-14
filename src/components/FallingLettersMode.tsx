@@ -149,7 +149,7 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
           {queueItems.map(({ slot, textIndex, char, isNew }) => {
             const m = keyMetrics[char];
             const x = m?.x ?? null;
-            const w = m?.width ?? 48;
+            const w = Math.min(m?.width ?? 48, 60);
             const isActive = slot === VISIBLE_ROWS - 1;
             const opacity = 0.3 + (slot / (VISIBLE_ROWS - 1)) * 0.7;
 
