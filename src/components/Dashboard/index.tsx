@@ -194,6 +194,26 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           )}
         </div>
 
+        {/* Info boxes */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }} className="info-boxes">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
+            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Přesnost před rychlostí</div>
+            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Piš pomalu a přesně. Rychlost přijde sama. Tvé prsty se učí správné pohyby — nech je pracovat.</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
+            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Dva měsíce a máš to</div>
+            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Celý kurz zvládneš za zhruba 2 měsíce. Záleží na tobě, kolik času tomu věnuješ. Pravidelnost je klíč.</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
+            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Stačí 10 minut denně</div>
+            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Každý den krátké cvičení. Prsty si zapamatují správné pohyby a ty si vytvoříš návyk, který vydrží.</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
+            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Dávej si pauzy</div>
+            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Protáhni si ruce, záda, odpočiň oči. Krátká přestávka mezi lekcemi vždy pomůže</div>
+          </div>
+        </div>
+
         {/* Sections */}
         <div id="lekce-sekce" />
         {sections.map(section => (
@@ -244,25 +264,6 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           </div>
         ))}
 
-        {/* Info boxes — bottom */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginTop: '1rem', marginBottom: '1.5rem' }} className="info-boxes">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
-            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Přesnost před rychlostí</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Piš pomalu a přesně. Rychlost přijde sama. Tvé prsty se učí správné pohyby — nech je pracovat.</div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
-            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Dva měsíce a máš to</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Celý kurz zvládneš za zhruba 2 měsíce. Záleží na tobě, kolik času tomu věnuješ. Pravidelnost je klíč.</div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
-            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Stačí 10 minut denně</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Každý den krátké cvičení. Prsty si zapamatují správné pohyby a ty si vytvoříš návyk, který vydrží.</div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0.5rem 0.75rem' }}>
-            <div style={{ fontSize: '0.7rem', color: '#ffffff', lineHeight: 1.3 }}>Dávej si pauzy</div>
-            <div style={{ fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.5 }}>Protáhni si ruce, záda, odpočiň oči. Krátká přestávka mezi lekcemi vždy pomůže</div>
-          </div>
-        </div>
 
       </div>
 
