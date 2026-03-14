@@ -194,11 +194,6 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           )}
         </div>
 
-        {/* Characters divider */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
-          <img src="/footer-characters.png" alt="" style={{ width: '75%', maxWidth: '36rem', height: 'auto', opacity: 0.6 }} />
-        </div>
-
         {/* Sections */}
         <div id="lekce-sekce" />
         {sections.map(section => (
