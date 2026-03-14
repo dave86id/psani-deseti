@@ -14,19 +14,28 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection }: DashboardProps) {
+  const handleSelectLesson = (lessonId: string) => {
+    console.log('[scroll] Saving scroll Y before navigation:', window.scrollY);
+    sessionStorage.setItem('dashboardScrollY', String(window.scrollY));
+    onSelectLesson(lessonId);
+  };
   const allLessons = getAllLessons();
   const completedCount = allLessons.filter(l => progress.lessons[l.id]?.completed).length;
 
   useEffect(() => {
     const saved = sessionStorage.getItem('dashboardScrollY');
+    console.log('[scroll] Dashboard mounted, saved Y:', saved);
     if (saved) {
       const y = parseInt(saved);
-      requestAnimationFrame(() => window.scrollTo(0, y));
       sessionStorage.removeItem('dashboardScrollY');
+      // Double RAF ensures DOM is fully painted before scrolling
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          console.log('[scroll] Restoring scroll to', y);
+          window.scrollTo(0, y);
+        });
+      });
     }
-    return () => {
-      sessionStorage.setItem('dashboardScrollY', String(window.scrollY));
-    };
   }, []);
 
   const hasStarted = allLessons.some(l => (progress.lessons[l.id]?.completedExercises.length ?? 0) > 0);
@@ -95,7 +104,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           </p>
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
             <button
-              onClick={() => nextLesson && onSelectLesson(nextLesson.id)}
+              onClick={() => nextLesson && handleSelectLesson(nextLesson.id)}
               style={{
                 backgroundColor: '#8b5cf6',
                 color: '#fff',
@@ -203,7 +212,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
                 return (
                   <button
                     key={lesson.id}
-                    onClick={() => onSelectLesson(lesson.id)}
+                    onClick={() => handleSelectLesson(lesson.id)}
                     className="text-left rounded-xl transition-all duration-150"
                     style={{
                       backgroundColor: completed ? '#1a2e1a' : '#242424',
