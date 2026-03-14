@@ -104,12 +104,17 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
         </div>
 
         {/* Hero image */}
-        <div className="rounded-xl overflow-hidden mb-6">
+        <div className="rounded-xl overflow-hidden" style={{ marginBottom: '0.5rem' }}>
           <img
             src="/hero-keyboard.png"
             alt="Klávesnice s barevnými prsty"
             style={{ width: '100%', height: 'auto', display: 'block' }}
           />
+        </div>
+        <div className="mb-6 text-center">
+          <span style={{ fontSize: '0.65rem', color: '#6b7280', backgroundColor: '#242424', border: '1px solid #333', borderRadius: '0.4rem', padding: '0.25rem 0.75rem' }}>
+            💡 Takhle patří prsty na klávesnici.
+          </span>
         </div>
 
         {/* Top row: progress + leaderboard side by side */}
