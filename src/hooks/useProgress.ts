@@ -3,12 +3,18 @@ import type { UserProgress, LessonProgress } from '../types';
 
 const STORAGE_KEY = 'psani-deseti-progress';
 
-const emptyLesson = (): LessonProgress => ({
-  completed: false, bestCpm: 0, bestAccuracy: 0, completedExercises: [], exerciseScores: {}, characterErrors: {},
+const emptyLesson = (id: string): LessonProgress => ({
+  id,
+  bestCpm: 0,
+  bestAccuracy: 0,
+  completedExercises: [],
+  completed: false,
+  exerciseScores: {},
+  errorsByChar: {},
 });
 
 const defaultProgress = (): UserProgress => ({
-  lessons: { '1.1': emptyLesson() },
+  lessons: { '1.1': emptyLesson('1.1') },
   settings: { soundEnabled: true },
 });
 
@@ -39,7 +45,7 @@ export function useProgress(onSave?: (p: UserProgress) => void) {
 
   const updateLesson = useCallback((lessonId: string, update: Partial<LessonProgress>) => {
     setProgress(prev => {
-      const existing = prev.lessons[lessonId] ?? emptyLesson();
+      const existing = prev.lessons[lessonId] ?? emptyLesson(lessonId);
       const updated: UserProgress = {
         ...prev,
         lessons: {
@@ -53,50 +59,60 @@ export function useProgress(onSave?: (p: UserProgress) => void) {
     });
   }, []);
 
-  const completeExercise = useCallback((lessonId: string, exerciseId: number, cpm: number, accuracy: number, totalExercises: number, errors: number, timeSeconds: number, characterErrors: Record<string, number>) => {
+  const completeExercise = useCallback((lessonId: string, exerciseId: number, cpm: number, accuracy: number, totalExercises: number, errors: number, timeSeconds: number, errorsByChar?: Record<string, number>) => {
     setProgress(prev => {
-      const existing = prev.lessons[lessonId] ?? emptyLesson();
-      const completedExercises = existing.completedExercises.includes(exerciseId)
-        ? existing.completedExercises
-        : [...existing.completedExercises, exerciseId];
-      const allDone = completedExercises.length >= totalExercises;
+      const lesson = prev.lessons[lessonId] || emptyLesson(lessonId);
+      
+      const updatedExercises = lesson.completedExercises.includes(exerciseId)
+        ? lesson.completedExercises
+        : [...lesson.completedExercises, exerciseId];
 
-      const newCharacterErrors = { ...existing.characterErrors };
-      Object.entries(characterErrors).forEach(([char, count]) => {
-        newCharacterErrors[char] = (newCharacterErrors[char] || 0) + count;
-      });
+      const existingErrors = prev.lessons[lessonId]?.errorsByChar || {};
+      const mergedErrors = { ...existingErrors };
+      
+      if (errorsByChar) {
+        Object.entries(errorsByChar).forEach(([char, count]) => {
+          mergedErrors[char] = (mergedErrors[char] || 0) + count;
+        });
+      }
 
-      const updated: UserProgress = {
+      const updatedLesson: LessonProgress = {
+        ...lesson,
+        bestCpm: Math.max(lesson.bestCpm, cpm),
+        bestAccuracy: Math.max(lesson.bestAccuracy, accuracy),
+        completedExercises: updatedExercises,
+        completed: updatedExercises.length === totalExercises,
+        exerciseScores: {
+          ...lesson.exerciseScores,
+          [exerciseId]: { cpm, accuracy, errors, timeSeconds, errorsByChar: errorsByChar || {} },
+        },
+        errorsByChar: mergedErrors,
+      };
+
+      const newState = {
         ...prev,
         lessons: {
           ...prev.lessons,
-          [lessonId]: {
-            ...existing,
-            completed: existing.completed || allDone,
-            completedExercises,
-            exerciseScores: { ...existing.exerciseScores, [exerciseId]: { cpm, accuracy, errors, timeSeconds, characterErrors } },
-            bestCpm: Math.max(existing.bestCpm, cpm),
-            bestAccuracy: Math.max(existing.bestAccuracy, accuracy),
-            characterErrors: newCharacterErrors,
-          },
+          [lessonId]: updatedLesson,
         },
       };
-      saveProgress(updated);
-      onSaveRef.current?.(updated);
-      return updated;
+
+      saveProgress(newState);
+      if (onSaveRef.current) onSaveRef.current(newState);
+      return newState;
     });
   }, []);
 
   const completeLesson = useCallback((lessonId: string, nextLessonId: string | null) => {
     setProgress(prev => {
-      const existing = prev.lessons[lessonId] ?? emptyLesson();
+      const existing = prev.lessons[lessonId] ?? emptyLesson(lessonId);
       const newLessons: UserProgress['lessons'] = {
         ...prev.lessons,
         [lessonId]: { ...existing, completed: true },
       };
       // Unlock next lesson
       if (nextLessonId && !newLessons[nextLessonId]) {
-        newLessons[nextLessonId] = emptyLesson();
+        newLessons[nextLessonId] = emptyLesson(nextLessonId);
       }
       const updated: UserProgress = { ...prev, lessons: newLessons };
       saveProgress(updated);

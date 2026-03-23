@@ -2,30 +2,76 @@ import { keyboardRows } from '../data/keyboardLayout';
 import { keyFingerMap, fingerColors } from '../data/fingerMapping';
 import type { KeyDef } from '../types';
 
+const DIACRITIC_MAP: Record<string, Record<string, string>> = {
+  'ˇ': {
+    'C': 'Č', 'c': 'č', 'D': 'Ď', 'd': 'ď', 'E': 'Ě', 'e': 'ě',
+    'L': 'Ľ', 'l': 'ľ', 'N': 'Ň', 'n': 'ň', 'R': 'Ř', 'r': 'ř',
+    'S': 'Š', 's': 'š', 'T': 'Ť', 't': 'ť', 'Z': 'Ž', 'z': 'ž',
+  },
+  '´': {
+    'A': 'Á', 'a': 'á', 'E': 'É', 'e': 'é', 'I': 'Í', 'i': 'í',
+    'O': 'Ó', 'o': 'ó', 'U': 'Ú', 'u': 'ú', 'Y': 'Ý', 'y': 'ý',
+  },
+  '°': {
+    'U': 'Ů', 'u': 'ů',
+  },
+};
+
+const REVERSE_MAP: Record<string, { dead: string; base: string }> = {};
+Object.entries(DIACRITIC_MAP).forEach(([dead, baseMap]) => {
+  Object.entries(baseMap).forEach(([base, result]) => {
+    REVERSE_MAP[result] = { dead, base };
+  });
+});
+
 interface VirtualKeyboardProps {
   activeKey: string;
   wrongKeyFlash: string | null;
   pressedKeys?: Set<string>;
+  pendingDeadKey: string | null;
 }
 
 function getKeyStyle(
   keyDef: KeyDef,
   activeKey: string,
   wrongKeyFlash: string | null,
-  pressedKeys?: Set<string>
+  pressedKeys?: Set<string>,
+  pendingDeadKey?: string | null
 ): React.CSSProperties {
-  const isTarget = keyDef.key === activeKey || 
-                   (keyDef.shift && keyDef.shift === activeKey) ||
-                   (keyDef.altChar && keyDef.altChar === activeKey);
-                   
-  const isWrong = keyDef.key === wrongKeyFlash || 
-                  (keyDef.shift && keyDef.shift === wrongKeyFlash);
+  const needsDiacritic = REVERSE_MAP[activeKey];
+  const isUppercaseDiacritic = needsDiacritic && needsDiacritic.base === needsDiacritic.base.toUpperCase() && /[A-ZČĎĚĽŇŘŠŤŽÁÉÍÓÚÝ]/.test(needsDiacritic.base);
   
-  // Real-time highlighting of pressed keys
-  const isPressed = pressedKeys?.has(keyDef.key) || 
+  let isTarget = false;
+  let isShiftTarget = false;
+
+  if (needsDiacritic) {
+    if (pendingDeadKey) {
+      // Second stage: highlight base letter (case-insensitively) and Shift if uppercase
+      const baseKey = needsDiacritic.base.toLowerCase();
+      isTarget = keyDef.key.toLowerCase() === baseKey;
+      // Also highlight Shift when the target is an uppercase diacritic
+      isShiftTarget = !!(isUppercaseDiacritic && (keyDef.key === 'ShiftLeft' || keyDef.key === 'ShiftRight'));
+    } else {
+      // First stage: highlight dead key
+      isTarget = keyDef.key === needsDiacritic.dead || 
+                 !!(keyDef.shift && keyDef.shift === needsDiacritic.dead);
+    }
+  } else {
+    isTarget = keyDef.key === activeKey || 
+               !!(keyDef.shift && keyDef.shift === activeKey) ||
+               !!(keyDef.altChar && keyDef.altChar === activeKey);
+    // Highlight Shift when the active key is an uppercase letter
+    isShiftTarget = !!(activeKey.length === 1 && activeKey === activeKey.toUpperCase() && activeKey !== activeKey.toLowerCase() &&
+      (keyDef.key === 'ShiftLeft' || keyDef.key === 'ShiftRight'));
+  }
+                    
+  const isWrong = keyDef.key === wrongKeyFlash || 
+                  !!(keyDef.shift && keyDef.shift === wrongKeyFlash);
+  
+  const isPressed = !!(pressedKeys?.has(keyDef.key) || 
                     pressedKeys?.has(keyDef.shift || '') ||
                     (keyDef.key === 'ShiftLeft' && pressedKeys?.has('Shift')) ||
-                    (keyDef.key === 'ShiftRight' && pressedKeys?.has('Shift'));
+                    (keyDef.key === 'ShiftRight' && pressedKeys?.has('Shift')));
 
   if (isWrong) {
     return {
@@ -45,9 +91,9 @@ function getKeyStyle(
     };
   }
 
-  if (isTarget) {
+  if (isTarget || isShiftTarget) {
     return {
-      backgroundColor: '#8b5cf6',
+      backgroundColor: isShiftTarget && !isTarget ? '#6d28d9' : '#8b5cf6',
       borderColor: '#a78bfa',
       color: '#ffffff',
       boxShadow: '0 0 12px rgba(139, 92, 246, 0.6)',
@@ -82,6 +128,7 @@ export default function VirtualKeyboard({
   activeKey,
   wrongKeyFlash,
   pressedKeys,
+  pendingDeadKey,
 }: VirtualKeyboardProps) {
   return (
     <div
@@ -91,7 +138,7 @@ export default function VirtualKeyboard({
       {keyboardRows.map((row, rowIndex) => (
         <div key={rowIndex} className="flex justify-between gap-1">
           {row.map((keyDef, keyIndex) => {
-            const style = getKeyStyle(keyDef, activeKey, wrongKeyFlash, pressedKeys);
+            const style = getKeyStyle(keyDef, activeKey, wrongKeyFlash, pressedKeys, pendingDeadKey);
             const width = getKeyWidth(keyDef);
 
             return (

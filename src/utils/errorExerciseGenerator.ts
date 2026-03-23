@@ -6,12 +6,12 @@ import { filterWords, pickWords } from './wordFilter';
  * allLetters: all letters available in the current context (to mix in)
  */
 export function generateErrorExerciseText(
-  characterErrors: Record<string, number>,
+  errorsByChar: Record<string, number>,
   allLetters: string[],
   length = 60
 ): string {
   // Sort characters by error count descending
-  const sortedErrors = Object.entries(characterErrors)
+  const sortedErrors = Object.entries(errorsByChar)
     .filter(([char]) => char !== ' ') // Ignore spaces
     .sort((a, b) => b[1] - a[1]);
 

@@ -201,7 +201,7 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
 
         {/* Virtual keyboard */}
         <div ref={kbRef} style={{ width: '100%' }}>
-          <VirtualKeyboard activeKey={activeChar ?? ''} wrongKeyFlash={wrongFlash} />
+          <VirtualKeyboard activeKey={activeChar ?? ''} wrongKeyFlash={wrongFlash} pendingDeadKey={null} />
         </div>
       </div>
     </div>

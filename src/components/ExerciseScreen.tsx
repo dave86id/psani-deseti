@@ -12,10 +12,12 @@ interface ExerciseScreenProps {
   flashCorrect: boolean;
   wrongKeyFlash: string | null;
   onKey: (key: string) => void;
+  onDeadKey: (isShift: boolean) => void;
   onBack: () => void;
   playCorrect: () => void;
   playWrong: () => void;
   isErrorPractice?: boolean;
+  pendingDeadKey: string | null;
 }
 
 function CharDisplay({
@@ -59,12 +61,12 @@ function CharDisplay({
       <span
         style={{
           display: 'inline-block',
-          width: isCurrent ? '0.6em' : '0.5em',
+          width: '1.4rem',
           height: '1.2em',
           backgroundColor: bgColor,
           borderRadius: '2px',
           verticalAlign: 'middle',
-          margin: '0 1px',
+          margin: '0',
           transition: 'background-color 0.1s',
         }}
       />
@@ -77,11 +79,11 @@ function CharDisplay({
         color: textColor,
         backgroundColor: bgColor,
         borderRadius: '3px',
-        padding: isCurrent ? '0 2px' : '0 1px',
+        padding: '0',
         transition: 'all 0.1s',
         fontFamily: 'monospace',
         display: 'inline-block',
-        minWidth: '0.6em',
+        minWidth: '1.4rem',
         textAlign: 'center',
       }}
     >
@@ -99,8 +101,10 @@ export default function ExerciseScreen({
   flashCorrect,
   wrongKeyFlash,
   onKey,
+  onDeadKey,
   onBack,
   isErrorPractice,
+  pendingDeadKey,
 }: ExerciseScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
@@ -113,14 +117,21 @@ export default function ExerciseScreen({
         return next;
       });
 
-      if (
-        ['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Tab', 'Dead'].includes(e.key)
-      ) {
+      if (['Control', 'Alt', 'Meta', 'CapsLock', 'Tab'].includes(e.key)) {
         return;
       }
 
-      e.preventDefault();
-      onKey(e.key);
+      if (e.key === 'Dead') {
+        // Don't preventDefault — let the browser compose the diacritic natively.
+        // Just notify the parent so the keyboard can show the pending dead key.
+        onDeadKey(e.shiftKey);
+        return;
+      }
+
+      if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') {
+        e.preventDefault();
+        onKey(e.key);
+      }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
@@ -137,7 +148,7 @@ export default function ExerciseScreen({
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [onKey]);
+  }, [onKey, onDeadKey]);
 
   const activeKey = state.text[state.currentIndex] ?? '';
   const chars = state.text.split('');
@@ -173,21 +184,27 @@ export default function ExerciseScreen({
       </div>
 
       <div
-        className="w-full max-w-3xl rounded-xl mb-6"
+        className="w-full max-w-3xl rounded-xl mb-6 relative"
         style={{
           backgroundColor: '#2a2a2a',
           border: '1px solid #3a3a3a',
-          padding: '0.75rem 1.5rem',
-          height: '6rem',
+          padding: '0.75rem 0',
+          height: '5rem',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
           overflow: 'hidden',
         }}
       >
         <div
-          className="leading-relaxed flex flex-wrap justify-center items-center gap-y-1"
-          style={{ fontFamily: 'monospace', letterSpacing: '0.05em', fontSize: '1.4rem' }}
+          className="flex items-center"
+          style={{
+            fontFamily: 'monospace',
+            paddingLeft: '0',
+            fontSize: '1.4rem',
+            transition: 'transform 0.15s ease-out',
+            transform: `translateX(calc(50% - ${(state.currentIndex * 1.4) + 0.7}rem))`,
+            whiteSpace: 'nowrap',
+          }}
         >
           {chars.map((char, i) => (
             <CharDisplay
@@ -200,9 +217,23 @@ export default function ExerciseScreen({
             />
           ))}
         </div>
+        {/* Cursor indicator */}
+        <div 
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '0.75rem',
+            bottom: '0.75rem',
+            width: '2px',
+            backgroundColor: '#8b5cf6',
+            opacity: 0.3,
+            pointerEvents: 'none',
+            transform: 'translateX(-50%)'
+          }}
+        />
       </div>
 
-      {!state.startTime && (
+      {state.status === 'idle' && (
         <div className="mb-4 text-sm text-gray-400 animate-pulse">
           Začni psát pro spuštění cvičení...
         </div>
@@ -213,6 +244,7 @@ export default function ExerciseScreen({
           activeKey={activeKey} 
           wrongKeyFlash={wrongKeyFlash} 
           pressedKeys={pressedKeys}
+          pendingDeadKey={pendingDeadKey}
         />
       </div>
 

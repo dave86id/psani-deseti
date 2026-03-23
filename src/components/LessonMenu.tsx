@@ -12,6 +12,7 @@ interface LessonMenuProps {
 export default function LessonMenu({ lesson, progress, onSelectExercise, onPracticeErrors, onBack }: LessonMenuProps) {
   const lessonProg = progress.lessons[lesson.id];
   const completedExercises = lessonProg?.completedExercises ?? [];
+  const hasErrors = lessonProg && lessonProg.errorsByChar && Object.values(lessonProg.errorsByChar).some(v => v > 0);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}>
@@ -33,21 +34,12 @@ export default function LessonMenu({ lesson, progress, onSelectExercise, onPract
         </div>
       </div>
 
-      <div className="max-w-xl mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-3 text-sm" style={{ color: '#6b7280' }}>
+      <div className="max-w-xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-4 text-sm" style={{ color: '#6b7280' }}>
           <span>Splněno: {completedExercises.length}/{lesson.exercises.length}</span>
-          {Object.keys(lessonProg?.characterErrors ?? {}).length > 0 && (
-            <button
-              onClick={onPracticeErrors}
-              className="text-xs px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 font-bold animate-pulse-slow"
-              style={{ backgroundColor: '#8b5cf622', color: '#a78bfa', border: '1px solid #8b5cf644' }}
-            >
-              <span>🎯</span>
-              Procvičovat, kde mám chyby
-            </button>
-          )}
         </div>
-        <div className="flex flex-col gap-2">
+        
+        <div className="flex flex-col gap-2 mb-8">
           {lesson.exercises.map((ex, idx) => {
             const done = completedExercises.includes(ex.id);
             const score = lessonProg?.exerciseScores?.[ex.id];
@@ -86,6 +78,25 @@ export default function LessonMenu({ lesson, progress, onSelectExercise, onPract
               </button>
             );
           })}
+        </div>
+
+        {/* Custom Practice Button at the end */}
+        <div className="flex justify-center">
+          <button
+            onClick={onPracticeErrors}
+            disabled={!hasErrors}
+            className="w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-3"
+            style={{
+              backgroundColor: hasErrors ? '#8b5cf6' : '#2a2a2a',
+              color: hasErrors ? '#ffffff' : '#4b5563',
+              border: hasErrors ? 'none' : '1px dashed #444',
+              cursor: hasErrors ? 'pointer' : 'not-allowed',
+              opacity: hasErrors ? 1 : 0.7,
+            }}
+          >
+            <span style={{ fontSize: '1.2rem' }}>🎯</span>
+            {hasErrors ? 'Procvičovat moje chyby' : 'Nejdřív dokonči alespoň jedno cvičení'}
+          </button>
         </div>
       </div>
     </div>

@@ -6,32 +6,33 @@ function createInitialState(text: string): ExerciseState {
   return {
     text,
     currentIndex: 0,
-    errors: new Set<number>(),
-    startTime: null,
-    isComplete: false,
     totalErrors: 0,
-    characterErrors: {},
+    errorsByChar: {},
+    errors: new Set<number>(),
+    status: 'idle',
   };
 }
 
 export function useExercise(initialText: string) {
-  const [state, setState] = useState<ExerciseState>(
-    () => createInitialState(initialText)
-  );
+  const [state, setState] = useState<ExerciseState>(() => createInitialState(initialText));
   const [flashCorrect, setFlashCorrect] = useState(false);
   const [wrongKeyFlash, setWrongKeyFlash] = useState<string | null>(null);
   const [exerciseResult, setExerciseResult] = useState<ExerciseResult | null>(null);
+  const startTimeRef = useRef<number>(0);
   const endTimeRef = useRef<number>(0);
 
   const handleKey = useCallback(
     (key: string, onCorrect: () => void, onWrong: () => void) => {
       setState((prev) => {
-        if (prev.isComplete) return prev;
-
-        const expectedChar = prev.text[prev.currentIndex];
+        if (prev.status === 'completed') return prev;
 
         // Start timer on first keystroke
-        const startTime = prev.startTime ?? Date.now();
+        if (prev.status === 'idle') {
+          startTimeRef.current = Date.now();
+          prev = { ...prev, status: 'running' };
+        }
+
+        const expectedChar = prev.text[prev.currentIndex];
 
         if (key === expectedChar) {
           // Correct key
@@ -51,26 +52,31 @@ export function useExercise(initialText: string) {
             const res = calculateStats(
               prev.text,
               prev.totalErrors,
-              startTime,
+              startTimeRef.current,
               endTimeRef.current
             );
-            setExerciseResult({ ...res, characterErrors: prev.characterErrors });
+            setExerciseResult({ ...res, errorsByChar: prev.errorsByChar });
+            return {
+              ...prev,
+              currentIndex: newIndex,
+              status: 'completed',
+            };
           }
 
           return {
             ...prev,
             currentIndex: newIndex,
-            startTime,
-            isComplete,
           };
         } else {
           // Wrong key
           onWrong();
+          const char = prev.text[prev.currentIndex];
+          const newTotalErrors = prev.totalErrors + 1;
+          const newErrorsByChar = { ...prev.errorsByChar };
+          newErrorsByChar[char] = (newErrorsByChar[char] || 0) + 1;
+          
           const newErrors = new Set(prev.errors);
           newErrors.add(prev.currentIndex);
-
-          const newCharErrors = { ...prev.characterErrors };
-          newCharErrors[expectedChar] = (newCharErrors[expectedChar] || 0) + 1;
 
           // Flash wrong key on keyboard
           setWrongKeyFlash(key);
@@ -78,10 +84,9 @@ export function useExercise(initialText: string) {
 
           return {
             ...prev,
-            startTime,
+            totalErrors: newTotalErrors,
+            errorsByChar: { ...prev.errorsByChar, [char]: (prev.errorsByChar[char] || 0) + 1 },
             errors: newErrors,
-            totalErrors: prev.totalErrors + 1,
-            characterErrors: newCharErrors,
           };
         }
       });
@@ -89,11 +94,20 @@ export function useExercise(initialText: string) {
     []
   );
 
-  const resetExercise = useCallback((newText?: string) => {
-    setState(prev => createInitialState(newText ?? prev.text));
+  const resetExercise = useCallback((newText: string) => {
+    setState({
+      text: newText,
+      currentIndex: 0,
+      totalErrors: 0,
+      errorsByChar: {},
+      errors: new Set<number>(),
+      status: 'idle',
+    });
     setExerciseResult(null);
     setFlashCorrect(false);
     setWrongKeyFlash(null);
+    startTimeRef.current = 0;
+    endTimeRef.current = 0;
   }, []);
 
   return {

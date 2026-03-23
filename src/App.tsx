@@ -19,30 +19,9 @@ import Leaderboard from './components/Leaderboard';
 import FallingLettersMode from './components/FallingLettersMode';
 import type { ExerciseResult } from './types';
 
-const DIACRITIC_MAP: Record<string, Record<string, string>> = {
-  'ˇ': {
-    'C': 'Č', 'c': 'č',
-    'D': 'Ď', 'd': 'ď',
-    'E': 'Ě', 'e': 'ě',
-    'L': 'Ľ', 'l': 'ľ',
-    'N': 'Ň', 'n': 'ň',
-    'R': 'Ř', 'r': 'ř',
-    'S': 'Š', 's': 'š',
-    'T': 'Ť', 't': 'ť',
-    'Z': 'Ž', 'z': 'ž',
-  },
-  '´': {
-    'A': 'Á', 'a': 'á',
-    'E': 'É', 'e': 'é',
-    'I': 'Í', 'i': 'í',
-    'O': 'Ó', 'o': 'ó',
-    'U': 'Ú', 'u': 'ú',
-    'Y': 'Ý', 'y': 'ý',
-  },
-  '°': {
-    'U': 'Ů', 'u': 'ů',
-  },
-};
+// Dead key to display names for virtual keyboard highlighting
+// When e.key === 'Dead', we use e.shiftKey to determine which dead key was pressed
+const DEAD_KEY_SHIFT: Record<string, string> = { 'false': 'ˇ', 'true': '´' };
 
 type Screen = 'dashboard' | 'lesson-menu' | 'exercise' | 'falling' | 'results';
 
@@ -165,7 +144,6 @@ export default function App() {
   const [lastResult, setLastResult] = useState<ExerciseResult | null>(null);
   const [isErrorPractice, setIsErrorPractice] = useState(false);
   const [errorPracticeText, setErrorPracticeText] = useState('');
-  const [composition, setComposition] = useState<string | null>(null);
 
   const currentLesson = getLessonById(currentLessonId);
   const currentExerciseText = isErrorPractice ? errorPracticeText : (currentLesson?.exercises[currentExerciseIndex]?.text ?? '');
@@ -187,25 +165,27 @@ export default function App() {
       processedResultRef.current = exerciseResult;
       setLastResult(exerciseResult);
       if (!isErrorPractice) {
-        completeExercise(currentLessonId, currentExerciseId, exerciseResult.cpm, exerciseResult.accuracy, currentLesson?.exercises.length ?? 1, exerciseResult.errors, exerciseResult.timeSeconds, exerciseResult.characterErrors);
+        completeExercise(currentLessonId, currentExerciseId, exerciseResult.cpm, exerciseResult.accuracy, currentLesson?.exercises.length ?? 1, exerciseResult.errors, exerciseResult.timeSeconds, exerciseResult.errorsByChar);
       }
       setScreen('results');
     }
   }, [exerciseResult, screen, currentLessonId, currentExerciseId, completeExercise, isErrorPractice, currentLesson]);
 
-  const onKey = useCallback((key: string) => {
-    if (DIACRITIC_MAP[key]) {
-      setComposition(key);
-      return;
-    }
+  const [pendingDeadKey, setPendingDeadKey] = useState<string | null>(null);
 
-    let finalKey = key;
-    if (composition && DIACRITIC_MAP[composition]?.[key]) {
-      finalKey = DIACRITIC_MAP[composition][key];
-    }
-    setComposition(null);
-    handleKey(finalKey, playCorrect, playWrong);
-  }, [handleKey, playCorrect, playWrong, composition]);
+  // onDeadKey is called when the user presses a dead key (before composition).
+  // We use it only for keyboard highlighting — the browser handles native composition.
+  const onDeadKey = useCallback((isShift: boolean) => {
+    setPendingDeadKey(DEAD_KEY_SHIFT[String(isShift)] ?? 'ˇ');
+  }, []);
+
+  const onKey = useCallback((key: string) => {
+    // Browser already composed diacritics via native dead key handling,
+    // so we receive the final composed character (e.g. 'č', 'Č', 'á', 'Á').
+    // Clear any pending dead key display.
+    setPendingDeadKey(null);
+    handleKey(key, playCorrect, playWrong);
+  }, [handleKey, playCorrect, playWrong]);
 
   const handleSelectExercise = useCallback((exerciseIndex: number) => {
     const lesson = getLessonById(currentLessonId);
@@ -266,7 +246,7 @@ export default function App() {
     const lessonProg = progress.lessons[currentLessonId];
     if (!lessonProg) return;
 
-    const text = generateErrorExerciseText(lessonProg.characterErrors, currentLesson.allLetters);
+    const text = generateErrorExerciseText(lessonProg.errorsByChar, currentLesson.allLetters);
     setErrorPracticeText(text);
     setIsErrorPractice(true);
     processedResultRef.current = null;
@@ -358,10 +338,10 @@ export default function App() {
             accuracy: total > 0 ? Math.round((stats.correct / total) * 100) : 100,
             errors: stats.errors,
             timeSeconds: stats.timeSeconds,
-            characterErrors: {},
+            errorsByChar: {},
           };
           setLastResult(result);
-          completeExercise(currentLessonId, currentExerciseId, result.cpm, result.accuracy, currentLesson?.exercises.length ?? 1, result.errors, result.timeSeconds, result.characterErrors);
+          completeExercise(currentLessonId, currentExerciseId, result.cpm, result.accuracy, currentLesson?.exercises.length ?? 1, result.errors, result.timeSeconds, result.errorsByChar);
           setScreen('results');
         }}
       />
@@ -421,10 +401,12 @@ export default function App() {
       flashCorrect={flashCorrect}
       wrongKeyFlash={wrongKeyFlash}
       onKey={onKey}
+      onDeadKey={onDeadKey}
       onBack={() => setScreen('lesson-menu')}
       playCorrect={playCorrect}
       playWrong={playWrong}
       isErrorPractice={isErrorPractice}
+      pendingDeadKey={pendingDeadKey}
     />
   );
 }

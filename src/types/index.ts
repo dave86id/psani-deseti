@@ -3,17 +3,16 @@ export interface ExerciseResult {
   accuracy: number;
   errors: number;
   timeSeconds: number;
-  characterErrors: Record<string, number>;
+  errorsByChar: Record<string, number>;
 }
 
 export interface ExerciseState {
   text: string;
   currentIndex: number;
-  errors: Set<number>;
-  startTime: number | null;
-  isComplete: boolean;
   totalErrors: number;
-  characterErrors: Record<string, number>;
+  errorsByChar: Record<string, number>;
+  errors: Set<number>;
+  status: 'idle' | 'running' | 'completed';
 }
 
 export interface KeyDef {
@@ -49,16 +48,17 @@ export interface ExerciseScore {
   accuracy: number;
   errors: number;
   timeSeconds: number;
-  characterErrors: Record<string, number>;
+  errorsByChar: Record<string, number>;
 }
 
 export interface LessonProgress {
-  completed: boolean;
+  id: string;
   bestCpm: number;
   bestAccuracy: number;
   completedExercises: number[]; // exercise ids completed
+  completed: boolean;
   exerciseScores: Record<number, ExerciseScore>; // exerciseId -> last score
-  characterErrors: Record<string, number>; // cumulative errors for this lesson
+  errorsByChar: Record<string, number>; // cumulative errors for this lesson
 }
 
 export interface UserProgress {
