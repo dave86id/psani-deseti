@@ -8,8 +8,7 @@ import { filterWords, pickWords } from './wordFilter';
 export function generateExerciseText(
   newLetters: string[],
   allLetters: string[],
-  exerciseNum: number,
-  _totalExercises: number
+  exerciseNum: number
 ): string {
   const nl = newLetters.map(l => l.toLowerCase());
   const al = allLetters.map(l => l.toLowerCase());

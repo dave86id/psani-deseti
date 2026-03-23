@@ -55,7 +55,9 @@ export function useSound() {
       gain.connect(ctx.destination);
 
       source.start(ctx.currentTime, soundStartOffsetRef.current);
-    } catch (e) {}
+    } catch (error) {
+      console.warn('Failed to play sound', error);
+    }
   }, [getAudioCtx]);
 
   return { playCorrect: playKey, playWrong: playKey };

@@ -15,7 +15,7 @@ function makeLessons(
     const n = def.numExercises ?? 8;
     const exercises = Array.from({ length: n }, (_, i) => ({
       id: i + 1,
-      text: def.customTexts?.[i] ?? generateExerciseText(def.newLetters, def.allLetters, i + 1, n),
+      text: def.customTexts?.[i] ?? generateExerciseText(def.newLetters, def.allLetters, i + 1),
     }));
     return {
       id: def.id,
