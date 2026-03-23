@@ -199,11 +199,19 @@ export default function ExerciseScreen({
           className="flex items-center"
           style={{
             fontFamily: 'monospace',
-            paddingLeft: '0',
             fontSize: '1.4rem',
             transition: 'transform 0.15s ease-out',
-            transform: `translateX(calc(50% - ${(state.currentIndex * 1.4) + 0.7}rem))`,
+            transform: (() => {
+              // Each char is 1.4rem wide. Container is max-w-3xl (~48rem).
+              // Center is at ~24rem from left edge. Threshold: 24rem / 1.4rem ≈ 17 chars.
+              const charWidthRem = 1.4;
+              const centerOffsetRem = 22; // approx half of visible area
+              const currentOffsetRem = state.currentIndex * charWidthRem + charWidthRem / 2;
+              const shift = Math.max(0, currentOffsetRem - centerOffsetRem);
+              return `translateX(-${shift}rem)`;
+            })(),
             whiteSpace: 'nowrap',
+            paddingLeft: '1rem',
           }}
         >
           {chars.map((char, i) => (
