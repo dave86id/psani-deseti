@@ -45,6 +45,7 @@ export function calculateStats(
     accuracy: Math.max(0, accuracy),
     errors: totalErrors,
     timeSeconds: Math.round(timeSeconds),
+    characterErrors: {},
   };
 }
 
