@@ -5,24 +5,27 @@ import type { KeyDef } from '../types';
 interface VirtualKeyboardProps {
   activeKey: string;
   wrongKeyFlash: string | null;
+  pressedKeys?: Set<string>;
 }
 
 function getKeyStyle(
   keyDef: KeyDef,
   activeKey: string,
-  wrongKeyFlash: string | null
+  wrongKeyFlash: string | null,
+  pressedKeys?: Set<string>
 ): React.CSSProperties {
-  const isActive = keyDef.key === activeKey;
-  const isWrong = keyDef.key === wrongKeyFlash;
-
-  if (isActive) {
-    return {
-      backgroundColor: '#8b5cf6',
-      borderColor: '#a78bfa',
-      color: '#ffffff',
-      boxShadow: '0 0 12px rgba(139, 92, 246, 0.6)',
-    };
-  }
+  const isTarget = keyDef.key === activeKey || 
+                   (keyDef.shift && keyDef.shift === activeKey) ||
+                   (keyDef.altChar && keyDef.altChar === activeKey);
+                   
+  const isWrong = keyDef.key === wrongKeyFlash || 
+                  (keyDef.shift && keyDef.shift === wrongKeyFlash);
+  
+  // Real-time highlighting of pressed keys
+  const isPressed = pressedKeys?.has(keyDef.key) || 
+                    pressedKeys?.has(keyDef.shift || '') ||
+                    (keyDef.key === 'ShiftLeft' && pressedKeys?.has('Shift')) ||
+                    (keyDef.key === 'ShiftRight' && pressedKeys?.has('Shift'));
 
   if (isWrong) {
     return {
@@ -33,14 +36,31 @@ function getKeyStyle(
     };
   }
 
+  if (isPressed) {
+    return {
+      backgroundColor: '#4b5563',
+      borderColor: '#8b5cf6',
+      color: '#ffffff',
+      boxShadow: '0 0 8px rgba(139, 92, 246, 0.4)',
+    };
+  }
+
+  if (isTarget) {
+    return {
+      backgroundColor: '#8b5cf6',
+      borderColor: '#a78bfa',
+      color: '#ffffff',
+      boxShadow: '0 0 12px rgba(139, 92, 246, 0.6)',
+    };
+  }
+
   const finger = keyFingerMap[keyDef.key] ?? keyFingerMap[keyDef.label];
   const fingerColor = finger ? fingerColors[finger] : null;
 
   if (fingerColor) {
-    // Subtle tint of the finger color
     return {
-      backgroundColor: fingerColor + '22', // ~13% opacity
-      borderColor: fingerColor + '55',     // ~33% opacity
+      backgroundColor: fingerColor + '22',
+      borderColor: fingerColor + '55',
       color: '#d1d5db',
     };
   }
@@ -61,6 +81,7 @@ function getKeyWidth(keyDef: KeyDef): string {
 export default function VirtualKeyboard({
   activeKey,
   wrongKeyFlash,
+  pressedKeys,
 }: VirtualKeyboardProps) {
   return (
     <div
@@ -70,7 +91,7 @@ export default function VirtualKeyboard({
       {keyboardRows.map((row, rowIndex) => (
         <div key={rowIndex} className="flex justify-between gap-1">
           {row.map((keyDef, keyIndex) => {
-            const style = getKeyStyle(keyDef, activeKey, wrongKeyFlash);
+            const style = getKeyStyle(keyDef, activeKey, wrongKeyFlash, pressedKeys);
             const width = getKeyWidth(keyDef);
 
             return (

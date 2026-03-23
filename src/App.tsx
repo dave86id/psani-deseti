@@ -7,6 +7,7 @@ import { useFirestoreProgress } from './hooks/useFirestoreProgress';
 import { useLeaderboard } from './hooks/useLeaderboard';
 import { getLessonById, getNextLessonId, getAllLessons } from './data/lessons';
 import { getExerciseMode } from './utils/exerciseMode';
+import { generateErrorExerciseText } from './utils/errorExerciseGenerator';
 import Dashboard from './components/Dashboard';
 import LessonMenu from './components/LessonMenu';
 import ExerciseScreen from './components/ExerciseScreen';
@@ -16,6 +17,31 @@ import ProfileSetup from './components/ProfileSetup';
 import Leaderboard from './components/Leaderboard';
 import FallingLettersMode from './components/FallingLettersMode';
 import type { ExerciseResult } from './types';
+
+const DIACRITIC_MAP: Record<string, Record<string, string>> = {
+  'ˇ': {
+    'C': 'Č', 'c': 'č',
+    'D': 'Ď', 'd': 'ď',
+    'E': 'Ě', 'e': 'ě',
+    'L': 'Ľ', 'l': 'ľ',
+    'N': 'Ň', 'n': 'ň',
+    'R': 'Ř', 'r': 'ř',
+    'S': 'Š', 's': 'š',
+    'T': 'Ť', 't': 'ť',
+    'Z': 'Ž', 'z': 'ž',
+  },
+  '´': {
+    'A': 'Á', 'a': 'á',
+    'E': 'É', 'e': 'é',
+    'I': 'Í', 'i': 'í',
+    'O': 'Ó', 'o': 'ó',
+    'U': 'Ú', 'u': 'ú',
+    'Y': 'Ý', 'y': 'ý',
+  },
+  '°': {
+    'U': 'Ů', 'u': 'ů',
+  },
+};
 
 type Screen = 'dashboard' | 'lesson-menu' | 'exercise' | 'falling' | 'results';
 
@@ -135,9 +161,12 @@ export default function App() {
   const [currentLessonId, setCurrentLessonId] = useState<string>('1.1');
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState<number>(0);
   const [lastResult, setLastResult] = useState<ExerciseResult | null>(null);
+  const [isErrorPractice, setIsErrorPractice] = useState(false);
+  const [errorPracticeText, setErrorPracticeText] = useState('');
+  const [composition, setComposition] = useState<string | null>(null);
 
   const currentLesson = getLessonById(currentLessonId);
-  const currentExerciseText = currentLesson?.exercises[currentExerciseIndex]?.text ?? '';
+  const currentExerciseText = isErrorPractice ? errorPracticeText : (currentLesson?.exercises[currentExerciseIndex]?.text ?? '');
   const currentExerciseId = currentLesson?.exercises[currentExerciseIndex]?.id ?? 1;
 
   const {
@@ -155,19 +184,32 @@ export default function App() {
     if (exerciseResult && exerciseResult !== processedResultRef.current && screen === 'exercise') {
       processedResultRef.current = exerciseResult;
       setLastResult(exerciseResult);
-      completeExercise(currentLessonId, currentExerciseId, exerciseResult.cpm, exerciseResult.accuracy, currentLesson?.exercises.length ?? 1, exerciseResult.errors, exerciseResult.timeSeconds);
+      if (!isErrorPractice) {
+        completeExercise(currentLessonId, currentExerciseId, exerciseResult.cpm, exerciseResult.accuracy, currentLesson?.exercises.length ?? 1, exerciseResult.errors, exerciseResult.timeSeconds, exerciseResult.characterErrors);
+      }
       setScreen('results');
     }
-  }, [exerciseResult, screen, currentLessonId, currentExerciseId, completeExercise]);
+  }, [exerciseResult, screen, currentLessonId, currentExerciseId, completeExercise, isErrorPractice, currentLesson]);
 
   const onKey = useCallback((key: string) => {
-    handleKey(key, playCorrect, playWrong);
-  }, [handleKey, playCorrect, playWrong]);
+    if (DIACRITIC_MAP[key]) {
+      setComposition(key);
+      return;
+    }
+
+    let finalKey = key;
+    if (composition && DIACRITIC_MAP[composition]?.[key]) {
+      finalKey = DIACRITIC_MAP[composition][key];
+    }
+    setComposition(null);
+    handleKey(finalKey, playCorrect, playWrong);
+  }, [handleKey, playCorrect, playWrong, composition]);
 
   const handleSelectExercise = useCallback((exerciseIndex: number) => {
     const lesson = getLessonById(currentLessonId);
     const text = lesson?.exercises[exerciseIndex]?.text ?? '';
     setCurrentExerciseIndex(exerciseIndex);
+    setIsErrorPractice(false);
     processedResultRef.current = null;
     resetExercise(text);
     const mode = lesson ? getExerciseMode(lesson, exerciseIndex) : 'classic';
@@ -180,6 +222,7 @@ export default function App() {
     if (nextIdx < currentLesson.exercises.length) {
       const nextText = currentLesson.exercises[nextIdx].text;
       setCurrentExerciseIndex(nextIdx);
+      setIsErrorPractice(false);
       processedResultRef.current = null;
       resetExercise(nextText);
       const mode = getExerciseMode(currentLesson, nextIdx);
@@ -187,6 +230,7 @@ export default function App() {
     } else {
       const nextLessonId = getNextLessonId(currentLessonId);
       completeLesson(currentLessonId, nextLessonId);
+      setIsErrorPractice(false);
       setScreen('dashboard');
     }
   }, [currentLesson, currentExerciseIndex, currentLessonId, resetExercise, completeLesson]);
@@ -211,8 +255,22 @@ export default function App() {
   const handleSelectLesson = useCallback((lessonId: string) => {
     setCurrentLessonId(lessonId);
     setCurrentExerciseIndex(0);
+    setIsErrorPractice(false);
     setScreen('lesson-menu');
   }, []);
+
+  const handlePracticeErrors = useCallback(() => {
+    if (!currentLesson) return;
+    const lessonProg = progress.lessons[currentLessonId];
+    if (!lessonProg) return;
+
+    const text = generateErrorExerciseText(lessonProg.characterErrors, currentLesson.allLetters);
+    setErrorPracticeText(text);
+    setIsErrorPractice(true);
+    processedResultRef.current = null;
+    resetExercise(text);
+    setScreen('exercise');
+  }, [currentLesson, currentLessonId, progress, resetExercise]);
 
   const handleSkipLogin = useCallback(() => {
     localStorage.setItem('psani-guest', '1');
@@ -298,9 +356,10 @@ export default function App() {
             accuracy: total > 0 ? Math.round((stats.correct / total) * 100) : 100,
             errors: stats.errors,
             timeSeconds: stats.timeSeconds,
+            characterErrors: {},
           };
           setLastResult(result);
-          completeExercise(currentLessonId, currentExerciseId, result.cpm, result.accuracy, currentLesson?.exercises.length ?? 1, result.errors, result.timeSeconds);
+          completeExercise(currentLessonId, currentExerciseId, result.cpm, result.accuracy, currentLesson?.exercises.length ?? 1, result.errors, result.timeSeconds, result.characterErrors);
           setScreen('results');
         }}
       />
@@ -327,6 +386,7 @@ export default function App() {
         lesson={currentLesson}
         progress={progress}
         onSelectExercise={handleSelectExercise}
+        onPracticeErrors={handlePracticeErrors}
         onBack={() => setScreen('dashboard')}
       />
     );
@@ -340,7 +400,8 @@ export default function App() {
         totalExercises={currentLesson?.exercises.length ?? 1}
         lessonId={currentLessonId}
         lessonTitle={currentLesson?.title ?? ''}
-        onNext={handleNext}
+        isErrorPractice={isErrorPractice}
+        onNext={isErrorPractice ? handlePracticeErrors : handleNext}
         onRestart={handleRestart}
         onRestartAll={handleRestartAll}
         onBack={() => setScreen('lesson-menu')}
@@ -358,14 +419,10 @@ export default function App() {
       flashCorrect={flashCorrect}
       wrongKeyFlash={wrongKeyFlash}
       onKey={onKey}
-      onComplete={(result) => {
-        setLastResult(result);
-        completeExercise(currentLessonId, currentExerciseId, result.cpm, result.accuracy, currentLesson?.exercises.length ?? 1, result.errors, result.timeSeconds);
-        setScreen('results');
-      }}
       onBack={() => setScreen('lesson-menu')}
       playCorrect={playCorrect}
       playWrong={playWrong}
+      isErrorPractice={isErrorPractice}
     />
   );
 }

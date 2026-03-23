@@ -4,7 +4,7 @@ import type { UserProgress, LessonProgress } from '../types';
 const STORAGE_KEY = 'psani-deseti-progress';
 
 const emptyLesson = (): LessonProgress => ({
-  completed: false, bestCpm: 0, bestAccuracy: 0, completedExercises: [], exerciseScores: {},
+  completed: false, bestCpm: 0, bestAccuracy: 0, completedExercises: [], exerciseScores: {}, characterErrors: {},
 });
 
 const defaultProgress = (): UserProgress => ({
@@ -51,13 +51,19 @@ export function useProgress(onSave?: (p: UserProgress) => void) {
     });
   }, []);
 
-  const completeExercise = useCallback((lessonId: string, exerciseId: number, cpm: number, accuracy: number, totalExercises: number, errors: number, timeSeconds: number) => {
+  const completeExercise = useCallback((lessonId: string, exerciseId: number, cpm: number, accuracy: number, totalExercises: number, errors: number, timeSeconds: number, characterErrors: Record<string, number>) => {
     setProgress(prev => {
       const existing = prev.lessons[lessonId] ?? emptyLesson();
       const completedExercises = existing.completedExercises.includes(exerciseId)
         ? existing.completedExercises
         : [...existing.completedExercises, exerciseId];
       const allDone = completedExercises.length >= totalExercises;
+
+      const newCharacterErrors = { ...existing.characterErrors };
+      Object.entries(characterErrors).forEach(([char, count]) => {
+        newCharacterErrors[char] = (newCharacterErrors[char] || 0) + count;
+      });
+
       const updated: UserProgress = {
         ...prev,
         lessons: {
@@ -66,9 +72,10 @@ export function useProgress(onSave?: (p: UserProgress) => void) {
             ...existing,
             completed: existing.completed || allDone,
             completedExercises,
-            exerciseScores: { ...existing.exerciseScores, [exerciseId]: { cpm, accuracy, errors, timeSeconds } },
+            exerciseScores: { ...existing.exerciseScores, [exerciseId]: { cpm, accuracy, errors, timeSeconds, characterErrors } },
             bestCpm: Math.max(existing.bestCpm, cpm),
             bestAccuracy: Math.max(existing.bestAccuracy, accuracy),
+            characterErrors: newCharacterErrors,
           },
         },
       };

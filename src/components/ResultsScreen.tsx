@@ -8,6 +8,7 @@ interface ResultsScreenProps {
   totalExercises: number;
   lessonId: string;
   lessonTitle: string;
+  isErrorPractice?: boolean;
   onNext: () => void;
   onRestart: () => void;
   onRestartAll: () => void;
@@ -20,6 +21,7 @@ export default function ResultsScreen({
   totalExercises,
   lessonId,
   lessonTitle,
+  isErrorPractice,
   onNext,
   onRestart,
   onRestartAll,
@@ -74,7 +76,7 @@ export default function ResultsScreen({
             Cvičení dokončeno!
           </h2>
           <p style={{ color: '#6b7280', fontSize: '0.55rem' }}>
-            Lekce {lessonId} — {lessonTitle} — Cvičení {exerciseIndex + 1}/{totalExercises}
+            {isErrorPractice ? 'Speciální cvičení: Procvičování chyb' : `Lekce ${lessonId} — ${lessonTitle} — Cvičení ${exerciseIndex + 1}/${totalExercises}`}
           </p>
         </div>
 

@@ -5,10 +5,11 @@ interface LessonMenuProps {
   lesson: Lesson;
   progress: UserProgress;
   onSelectExercise: (exerciseIndex: number) => void;
+  onPracticeErrors: () => void;
   onBack: () => void;
 }
 
-export default function LessonMenu({ lesson, progress, onSelectExercise, onBack }: LessonMenuProps) {
+export default function LessonMenu({ lesson, progress, onSelectExercise, onPracticeErrors, onBack }: LessonMenuProps) {
   const lessonProg = progress.lessons[lesson.id];
   const completedExercises = lessonProg?.completedExercises ?? [];
 
@@ -33,8 +34,18 @@ export default function LessonMenu({ lesson, progress, onSelectExercise, onBack 
       </div>
 
       <div className="max-w-xl mx-auto px-4 py-6">
-        <div className="mb-3 text-sm" style={{ color: '#6b7280' }}>
-          Splněno: {completedExercises.length}/{lesson.exercises.length}
+        <div className="flex items-center justify-between mb-3 text-sm" style={{ color: '#6b7280' }}>
+          <span>Splněno: {completedExercises.length}/{lesson.exercises.length}</span>
+          {Object.keys(lessonProg?.characterErrors ?? {}).length > 0 && (
+            <button
+              onClick={onPracticeErrors}
+              className="text-xs px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 font-bold animate-pulse-slow"
+              style={{ backgroundColor: '#8b5cf622', color: '#a78bfa', border: '1px solid #8b5cf644' }}
+            >
+              <span>🎯</span>
+              Procvičovat, kde mám chyby
+            </button>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           {lesson.exercises.map((ex, idx) => {

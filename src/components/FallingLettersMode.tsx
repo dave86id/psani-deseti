@@ -16,7 +16,15 @@ const ROW_HEIGHT = 72; // px
 interface KeyMetrics { x: number; width: number; }
 
 export default function FallingLettersMode({ text, lessonTitle, playCorrect, playWrong, onComplete, onBack }: FallingLettersModeProps) {
-  const chars = useMemo(() => text.split(''), [text]);
+  const chars = useMemo(() => {
+    const trimmed = text.trim();
+    if (!trimmed) return [];
+    let result = trimmed;
+    while (result.replace(/ /g, '').length < 50) {
+      result = result + ' ' + trimmed;
+    }
+    return result.split('');
+  }, [text]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [errors, setErrors] = useState(0);
   const [startTime] = useState(() => Date.now());

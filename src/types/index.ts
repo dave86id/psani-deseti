@@ -3,6 +3,7 @@ export interface ExerciseResult {
   accuracy: number;
   errors: number;
   timeSeconds: number;
+  characterErrors: Record<string, number>;
 }
 
 export interface ExerciseState {
@@ -12,6 +13,7 @@ export interface ExerciseState {
   startTime: number | null;
   isComplete: boolean;
   totalErrors: number;
+  characterErrors: Record<string, number>;
 }
 
 export interface KeyDef {
@@ -47,6 +49,7 @@ export interface ExerciseScore {
   accuracy: number;
   errors: number;
   timeSeconds: number;
+  characterErrors: Record<string, number>;
 }
 
 export interface LessonProgress {
@@ -55,6 +58,7 @@ export interface LessonProgress {
   bestAccuracy: number;
   completedExercises: number[]; // exercise ids completed
   exerciseScores: Record<number, ExerciseScore>; // exerciseId -> last score
+  characterErrors: Record<string, number>; // cumulative errors for this lesson
 }
 
 export interface UserProgress {

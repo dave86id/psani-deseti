@@ -10,6 +10,7 @@ function createInitialState(text: string): ExerciseState {
     startTime: null,
     isComplete: false,
     totalErrors: 0,
+    characterErrors: {},
   };
 }
 
@@ -53,7 +54,7 @@ export function useExercise(initialText: string) {
               startTime,
               endTimeRef.current
             );
-            setExerciseResult(res);
+            setExerciseResult({ ...res, characterErrors: prev.characterErrors });
           }
 
           return {
@@ -68,6 +69,9 @@ export function useExercise(initialText: string) {
           const newErrors = new Set(prev.errors);
           newErrors.add(prev.currentIndex);
 
+          const newCharErrors = { ...prev.characterErrors };
+          newCharErrors[expectedChar] = (newCharErrors[expectedChar] || 0) + 1;
+
           // Flash wrong key on keyboard
           setWrongKeyFlash(key);
           setTimeout(() => setWrongKeyFlash(null), 200);
@@ -77,6 +81,7 @@ export function useExercise(initialText: string) {
             startTime,
             errors: newErrors,
             totalErrors: prev.totalErrors + 1,
+            characterErrors: newCharErrors,
           };
         }
       });

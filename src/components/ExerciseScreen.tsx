@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import type { ExerciseState, ExerciseResult } from '../types';
+import { useEffect, useRef, useState } from 'react';
+import type { ExerciseState } from '../types';
 import VirtualKeyboard from './VirtualKeyboard';
 import ProgressBar from './ProgressBar';
 
@@ -12,10 +12,10 @@ interface ExerciseScreenProps {
   flashCorrect: boolean;
   wrongKeyFlash: string | null;
   onKey: (key: string) => void;
-  onComplete: (result: ExerciseResult) => void; // called by App via useEffect
   onBack: () => void;
-  playCorrect: () => void; // passed for potential future use
-  playWrong: () => void;   // passed for potential future use
+  playCorrect: () => void;
+  playWrong: () => void;
+  isErrorPractice?: boolean;
 }
 
 function CharDisplay({
@@ -36,23 +36,22 @@ function CharDisplay({
   const hasError = errors.has(index);
 
   let bgColor = 'transparent';
-  let textColor = '#9ca3af'; // not yet typed - dimmer white
+  let textColor = '#9ca3af';
 
   if (isCurrent) {
-    bgColor = '#7c3aed'; // violet for current position
+    bgColor = '#7c3aed';
     textColor = '#ffffff';
   } else if (isTyped) {
     if (hasError) {
-      textColor = '#ef4444'; // red for errors
+      textColor = '#ef4444';
     } else if (flashCorrect) {
-      // Green flash for the just-typed correct char
       bgColor = '#16a34a';
       textColor = '#ffffff';
     } else {
-      textColor = '#6b7280'; // dim gray for correctly typed
+      textColor = '#6b7280';
     }
   } else {
-    textColor = '#e5e7eb'; // white for upcoming
+    textColor = '#e5e7eb';
   }
 
   if (char === ' ') {
@@ -100,26 +99,22 @@ export default function ExerciseScreen({
   flashCorrect,
   wrongKeyFlash,
   onKey,
-  onComplete: _onComplete,
   onBack,
-  playCorrect: _playCorrect,
-  playWrong: _playWrong,
+  isErrorPractice,
 }: ExerciseScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
 
-  // Focus trap - capture keyboard events
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore modifier-only keys and dead keys (dead keys must not get preventDefault
-      // so the browser can compose them into ď, ť, ň etc.)
+      setPressedKeys(prev => {
+        const next = new Set(prev);
+        next.add(e.key);
+        return next;
+      });
+
       if (
-        e.key === 'Shift' ||
-        e.key === 'Control' ||
-        e.key === 'Alt' ||
-        e.key === 'Meta' ||
-        e.key === 'CapsLock' ||
-        e.key === 'Tab' ||
-        e.key === 'Dead'
+        ['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Tab', 'Dead'].includes(e.key)
       ) {
         return;
       }
@@ -128,8 +123,20 @@ export default function ExerciseScreen({
       onKey(e.key);
     };
 
+    const handleKeyUp = (e: KeyboardEvent) => {
+      setPressedKeys(prev => {
+        const next = new Set(prev);
+        next.delete(e.key);
+        return next;
+      });
+    };
+
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
   }, [onKey]);
 
   const activeKey = state.text[state.currentIndex] ?? '';
@@ -141,7 +148,6 @@ export default function ExerciseScreen({
       style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}
       ref={containerRef}
     >
-      {/* Header */}
       <div className="w-full max-w-3xl mb-6">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
@@ -152,32 +158,35 @@ export default function ExerciseScreen({
             >
               ← Zpět
             </button>
-            <h1
-              className="text-xl font-bold tracking-wide"
-              style={{ color: '#8b5cf6' }}
-            >
+            <h1 className="text-xl font-bold tracking-wide" style={{ color: '#8b5cf6' }}>
               psaní deseti
             </h1>
           </div>
           <span className="text-sm text-gray-400">
-            Lekce {lessonId} — {lessonTitle} — Cvičení {exerciseIndex + 1}/{totalExercises}
+            {isErrorPractice 
+              ? <span style={{ color: '#a78bfa', fontWeight: 700 }}>Procvičování chyb</span>
+              : `Lekce ${lessonId} — ${lessonTitle} — Cvičení ${exerciseIndex + 1}/${totalExercises}`
+            }
           </span>
         </div>
         <ProgressBar current={state.currentIndex} total={state.text.length} />
       </div>
 
-      {/* Exercise text */}
       <div
         className="w-full max-w-3xl rounded-xl mb-6"
         style={{
           backgroundColor: '#2a2a2a',
           border: '1px solid #3a3a3a',
-          padding: '0.5rem 1rem',
-          minHeight: '3rem',
+          padding: '0.75rem 1.5rem',
+          height: '6rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
         }}
       >
         <div
-          className="leading-relaxed break-all flex flex-wrap justify-center items-center"
+          className="leading-relaxed flex flex-wrap justify-center items-center gap-y-1"
           style={{ fontFamily: 'monospace', letterSpacing: '0.05em', fontSize: '1.4rem' }}
         >
           {chars.map((char, i) => (
@@ -193,29 +202,24 @@ export default function ExerciseScreen({
         </div>
       </div>
 
-      {/* Instructions */}
       {!state.startTime && (
         <div className="mb-4 text-sm text-gray-400 animate-pulse">
           Začni psát pro spuštění cvičení...
         </div>
       )}
 
-      {/* Virtual keyboard */}
       <div className="w-full max-w-3xl flex justify-center">
-        <VirtualKeyboard activeKey={activeKey} wrongKeyFlash={wrongKeyFlash} />
+        <VirtualKeyboard 
+          activeKey={activeKey} 
+          wrongKeyFlash={wrongKeyFlash} 
+          pressedKeys={pressedKeys}
+        />
       </div>
 
-      {/* Legend */}
       <div className="mt-4 flex gap-4 text-xs text-gray-500">
-        <span>
-          <span style={{ color: '#8b5cf6' }}>■</span> Aktuální znak
-        </span>
-        <span>
-          <span style={{ color: '#22c55e' }}>■</span> Správně
-        </span>
-        <span>
-          <span style={{ color: '#ef4444' }}>■</span> Chyba
-        </span>
+        <span><span style={{ color: '#8b5cf6' }}>■</span> Aktuální znak</span>
+        <span><span style={{ color: '#22c55e' }}>■</span> Správně</span>
+        <span><span style={{ color: '#ef4444' }}>■</span> Chyba</span>
       </div>
     </div>
   );
