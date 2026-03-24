@@ -3,6 +3,30 @@ import type { ExerciseState } from '../types';
 import VirtualKeyboard from './VirtualKeyboard';
 import ProgressBar from './ProgressBar';
 
+// On macOS, pressing Shift+dead_key, Shift+letter does NOT produce a composed
+// character in keydown events — the browser sends the raw letter (e.g. 'C' not 'Č').
+// This function manually composes letter + diacritic using Unicode NFC normalization.
+// Czech QWERTZ Mac: both dead keys use the same Equal key, distinguished by shiftKey:
+//   Equal + shiftKey:true  → háček (caron ˇ)  → combining caron  U+030C
+//   Equal + shiftKey:false → čárka (acute ´) → combining acute  U+0301
+function composeDeadKey(deadCode: string, deadShift: boolean, letter: string): string | null {
+  // Determine the primary combining diacritic from the dead key
+  let primary: string | null = null;
+  if (deadCode === 'Equal') {
+    primary = deadShift ? '\u030C' : '\u0301'; // caron (háček) or acute (čárka)
+  }
+  // Try primary first, then the other one as fallback for unknown dead keys
+  const order = primary
+    ? [primary, primary === '\u030C' ? '\u0301' : '\u030C']
+    : ['\u0301', '\u030C'];
+
+  for (const combining of order) {
+    const composed = (letter + combining).normalize('NFC');
+    if (composed.length === 1 && composed !== letter) return composed;
+  }
+  return null;
+}
+
 interface ExerciseScreenProps {
   state: ExerciseState;
   exerciseIndex: number;
@@ -108,6 +132,10 @@ export default function ExerciseScreen({
 }: ExerciseScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
+  // Track pending dead key code for manual composition of uppercase diacritics.
+  // macOS does not compose uppercase diacritics when Shift is held throughout the
+  // dead key sequence — browser sends raw 'C' instead of composed 'Č'.
+  const pendingDeadRef = useRef<{ code: string; shiftKey: boolean } | null>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -117,20 +145,28 @@ export default function ExerciseScreen({
         return next;
       });
 
-      if (['Control', 'Alt', 'Meta', 'CapsLock', 'Tab'].includes(e.key)) {
+      if (['Control', 'Alt', 'Meta', 'CapsLock', 'Tab', 'Shift'].includes(e.key)) {
         return;
       }
 
       if (e.key === 'Dead') {
-        // Don't preventDefault — let the browser compose the diacritic natively.
-        // Just notify the parent so the keyboard can show the pending dead key.
+        // Store dead key info so we can manually compose uppercase diacritics.
+        pendingDeadRef.current = { code: e.code, shiftKey: e.shiftKey };
         onDeadKey(e.shiftKey);
         return;
       }
 
       if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') {
         e.preventDefault();
-        onKey(e.key);
+        let actualKey = e.key;
+        // macOS doesn't compose uppercase diacritics when Shift is held: browsers
+        // send plain 'C' instead of 'Č'. Manually compose using Unicode NFC.
+        if (pendingDeadRef.current && e.key.length === 1) {
+          const composed = composeDeadKey(pendingDeadRef.current.code, pendingDeadRef.current.shiftKey, e.key);
+          if (composed) actualKey = composed;
+        }
+        pendingDeadRef.current = null;
+        onKey(actualKey);
       }
     };
 
