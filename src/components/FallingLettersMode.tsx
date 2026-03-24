@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import VirtualKeyboard from './VirtualKeyboard';
-import { playKeyAudio } from '../hooks/useSound';
+import { playKeyAudio, prewarmAudio } from '../hooks/useSound';
 
 interface FallingLettersModeProps {
   text: string;
@@ -32,6 +32,10 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
 
   const kbRef = useRef<HTMLDivElement>(null);
   const lettersAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    prewarmAudio();
+  }, []);
 
   // Measure key center X + width, relative to the letters area container
   useEffect(() => {

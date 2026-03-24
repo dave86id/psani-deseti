@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ExerciseState } from '../types';
 import VirtualKeyboard from './VirtualKeyboard';
 import ProgressBar from './ProgressBar';
-import { playKeyAudio } from '../hooks/useSound';
+import { playKeyAudio, prewarmAudio } from '../hooks/useSound';
 
 // On macOS, pressing Shift+dead_key, Shift+letter does NOT produce a composed
 // character in keydown events — the browser sends the raw letter (e.g. 'C' not 'Č').
@@ -135,6 +135,10 @@ export default function ExerciseScreen({
   // macOS does not compose uppercase diacritics when Shift is held throughout the
   // dead key sequence — browser sends raw 'C' instead of composed 'Č'.
   const pendingDeadRef = useRef<{ code: string; shiftKey: boolean } | null>(null);
+
+  useEffect(() => {
+    prewarmAudio();
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

@@ -1,21 +1,19 @@
-import { useEffect } from 'react';
+// Create AudioContext eagerly at module load with minimum latency hint.
+// Browsers allow creation before user gesture — context starts 'suspended'
+// and is resumed on first interaction below.
+const audioCtx: AudioContext | null = typeof AudioContext !== 'undefined'
+  ? new AudioContext({ latencyHint: 'interactive' })
+  : null;
 
-// Singletons for the entire app to ensure zero latency
-let audioCtx: AudioContext | null = null;
 let keyBuffer: AudioBuffer | null = null;
 let keyStartOffset = 0;
 
-/**
- * Initialize audio on the first user interaction to avoid 'suspended' state.
- */
-function initAudio() {
-  if (audioCtx) return;
-  audioCtx = new AudioContext();
-  
-  // Pre-load the key sound
+// Start fetching and decoding the audio file immediately so the buffer
+// is ready long before the user reaches the exercise screen.
+if (audioCtx) {
   fetch('/key.mp3')
     .then(r => r.arrayBuffer())
-    .then(ab => audioCtx!.decodeAudioData(ab))
+    .then(ab => audioCtx.decodeAudioData(ab))
     .then(decoded => {
       // Find first sample above silence threshold to skip leading silence
       const data = decoded.getChannelData(0);
@@ -33,10 +31,9 @@ function initAudio() {
     .catch(err => console.error('Failed to load sound', err));
 }
 
-// Global listeners to initialize and unlock AudioContext on first user interaction
+// Resume AudioContext on first user interaction (browser autoplay policy).
 if (typeof window !== 'undefined') {
   const unlock = () => {
-    initAudio(); // Create AudioContext + start loading buffer on first interaction
     if (audioCtx?.state === 'suspended') {
       audioCtx.resume();
     }
@@ -50,34 +47,43 @@ if (typeof window !== 'undefined') {
 }
 
 /**
- * Play the keyboard click sound immediately. 
- * Can be called from anywhere, ideally directly in keydown handlers.
+ * Play a silent buffer to warm up the audio pipeline.
+ * Call once when the exercise screen mounts so the first real keystroke
+ * doesn't pay the pipeline-startup cost.
+ */
+export function prewarmAudio() {
+  if (!audioCtx || !keyBuffer) return;
+  if (audioCtx.state === 'suspended') return;
+  try {
+    const silence = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+    const src = audioCtx.createBufferSource();
+    src.buffer = silence;
+    src.connect(audioCtx.destination);
+    src.start(0);
+  } catch (_) { /* ignore */ }
+}
+
+/**
+ * Play the keyboard click sound immediately.
+ * Call directly in keydown handlers — before any React state updates.
  */
 export function playKeyAudio() {
   if (!audioCtx || !keyBuffer) return;
-  
   try {
     if (audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
-    
     const source = audioCtx.createBufferSource();
     source.buffer = keyBuffer;
     source.playbackRate.value = 0.97 + Math.random() * 0.06;
     source.connect(audioCtx.destination);
-    source.start(audioCtx.currentTime, keyStartOffset);
-  } catch (e) {
-    // Silently fail if overlapping sounds or context issues
-  }
+    source.start(0, keyStartOffset); // 0 = "as soon as possible"
+  } catch (_) { /* ignore */ }
 }
 
 export function useSound() {
-  useEffect(() => {
-    initAudio();
-  }, []);
-
-  return { 
-    playCorrect: playKeyAudio, 
-    playWrong: playKeyAudio 
+  return {
+    playCorrect: playKeyAudio,
+    playWrong: playKeyAudio,
   };
 }
