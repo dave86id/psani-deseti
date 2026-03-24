@@ -315,7 +315,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
       <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '0.5rem' }}>
         <img src="/footer-characters.png" alt="" style={{ width: '75%', maxWidth: '36rem', height: 'auto', opacity: 0.6 }} />
       </div>
-      <div style={{ textAlign: 'center', paddingBottom: '1.5rem', fontSize: '11px', color: '#555', letterSpacing: '0.02em' }}>
+      <div style={{ textAlign: 'center', paddingBottom: '1.5rem', fontSize: '14px', color: 'rgb(138 138 138)', letterSpacing: '0.02em' }}>
         v{__APP_VERSION__} · Sestaveno: {__BUILD_TIME__}
       </div>
     </div>
