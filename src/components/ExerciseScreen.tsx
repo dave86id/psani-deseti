@@ -265,20 +265,6 @@ export default function ExerciseScreen({
             />
           ))}
         </div>
-        {/* Cursor indicator */}
-        <div 
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '0.75rem',
-            bottom: '0.75rem',
-            width: '2px',
-            backgroundColor: '#8b5cf6',
-            opacity: 0.3,
-            pointerEvents: 'none',
-            transform: 'translateX(-50%)'
-          }}
-        />
       </div>
 
       {state.status === 'idle' && (
