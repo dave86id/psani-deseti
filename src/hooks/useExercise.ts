@@ -22,7 +22,7 @@ export function useExercise(initialText: string) {
   const endTimeRef = useRef<number>(0);
 
   const handleKey = useCallback(
-    (key: string, onCorrect: () => void, onWrong: () => void) => {
+    (key: string) => {
       setState((prev) => {
         if (prev.status === 'completed') return prev;
 
@@ -36,7 +36,6 @@ export function useExercise(initialText: string) {
 
         if (key === expectedChar) {
           // Correct key
-          onCorrect();
           const newIndex = prev.currentIndex + 1;
           const isComplete = newIndex >= prev.text.length;
 
@@ -69,7 +68,6 @@ export function useExercise(initialText: string) {
           };
         } else {
           // Wrong key
-          onWrong();
           const char = prev.text[prev.currentIndex];
           const newTotalErrors = prev.totalErrors + 1;
           const newErrorsByChar = { ...prev.errorsByChar };

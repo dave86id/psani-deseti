@@ -1,6 +1,5 @@
 /* eslint-disable */
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useSound } from './hooks/useSound';
 import { useProgress } from './hooks/useProgress';
 import { useExercise } from './hooks/useExercise';
 import { useAuth } from './hooks/useAuth';
@@ -79,7 +78,6 @@ function TransferDialog({ onYes, onNo }: { onYes: () => void; onNo: () => void }
 export default function App() {
   if (isMobileDevice()) return <MobileBlock />;
 
-  const { playCorrect, playWrong } = useSound();
   const { user, profile, loading: authLoading, needsProfile, signInWithGoogle, signOutUser, saveProfile } = useAuth();
   const { entries: leaderboardEntries, loading: leaderboardLoading, updateLeaderboard, refresh: refreshLeaderboard } = useLeaderboard();
 
@@ -184,8 +182,8 @@ export default function App() {
     // so we receive the final composed character (e.g. 'č', 'Č', 'á', 'Á').
     // Clear any pending dead key display.
     setPendingDeadKey(null);
-    handleKey(key, playCorrect, playWrong);
-  }, [handleKey, playCorrect, playWrong]);
+    handleKey(key);
+  }, [handleKey]);
 
   const handleSelectExercise = useCallback((exerciseIndex: number) => {
     const lesson = getLessonById(currentLessonId);
@@ -328,8 +326,6 @@ export default function App() {
       <FallingLettersMode
         text={currentExerciseText}
         lessonTitle={currentLesson?.title ?? ''}
-        playCorrect={playCorrect}
-        playWrong={playWrong}
         onBack={() => setScreen('lesson-menu')}
         onComplete={(stats) => {
           const total = stats.correct + stats.errors;
@@ -403,8 +399,6 @@ export default function App() {
       onKey={onKey}
       onDeadKey={onDeadKey}
       onBack={() => setScreen('lesson-menu')}
-      playCorrect={playCorrect}
-      playWrong={playWrong}
       isErrorPractice={isErrorPractice}
       pendingDeadKey={pendingDeadKey}
     />

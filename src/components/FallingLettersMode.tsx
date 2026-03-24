@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import VirtualKeyboard from './VirtualKeyboard';
+import { playKeyAudio } from '../hooks/useSound';
 
 interface FallingLettersModeProps {
   text: string;
   lessonTitle: string;
-  playCorrect: () => void;
-  playWrong: () => void;
   onComplete: (stats: { correct: number; errors: number; timeSeconds: number }) => void;
   onBack: () => void;
 }
@@ -15,7 +14,7 @@ const ROW_HEIGHT = 72; // px
 
 interface KeyMetrics { x: number; width: number; }
 
-export default function FallingLettersMode({ text, lessonTitle, playCorrect, playWrong, onComplete, onBack }: FallingLettersModeProps) {
+export default function FallingLettersMode({ text, lessonTitle, onComplete, onBack }: FallingLettersModeProps) {
   const chars = useMemo(() => {
     const trimmed = text.trim();
     if (!trimmed) return [];
@@ -74,10 +73,10 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
       if (e.key === 'Escape') { onBack(); return; }
       if (['Shift', 'Control', 'Alt', 'Dead', 'Meta', 'Tab', 'CapsLock'].includes(e.key)) return;
       e.preventDefault();
+      playKeyAudio(); // Instant acoustic feedback
 
       const expected = chars[currentIndex];
       if (e.key === expected) {
-        playCorrect();
         const next = currentIndex + 1;
         setCurrentIndex(next);
 
@@ -86,7 +85,6 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
           setTimeout(() => onComplete({ correct: chars.length, errors, timeSeconds: elapsed }), 300);
         }
       } else {
-        playWrong();
         setErrors(prev => prev + 1);
         setWrongFlash(e.key);
         setTimeout(() => setWrongFlash(null), 300);
@@ -94,7 +92,7 @@ export default function FallingLettersMode({ text, lessonTitle, playCorrect, pla
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [currentIndex, isFinished, chars, errors, startTime, onBack, onComplete, keyMetrics, playCorrect, playWrong]);
+  }, [currentIndex, isFinished, chars, errors, startTime, onBack, onComplete, keyMetrics]);
 
   const activeMetrics = activeChar ? (keyMetrics[activeChar === ' ' ? 'j' : activeChar] ?? null) : null;
 

@@ -1,64 +1,83 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
+
+// Singletons for the entire app to ensure zero latency
+let audioCtx: AudioContext | null = null;
+let keyBuffer: AudioBuffer | null = null;
+let keyStartOffset = 0;
+
+/**
+ * Initialize audio on the first user interaction to avoid 'suspended' state.
+ */
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new AudioContext();
+  
+  // Pre-load the key sound
+  fetch('/key.mp3')
+    .then(r => r.arrayBuffer())
+    .then(ab => audioCtx!.decodeAudioData(ab))
+    .then(decoded => {
+      // Find first sample above silence threshold to skip leading silence
+      const data = decoded.getChannelData(0);
+      const threshold = 0.01;
+      let startSample = 0;
+      for (let i = 0; i < data.length; i++) {
+        if (Math.abs(data[i]) > threshold) {
+          startSample = Math.max(0, i - Math.floor(decoded.sampleRate * 0.002));
+          break;
+        }
+      }
+      keyStartOffset = startSample / decoded.sampleRate;
+      keyBuffer = decoded;
+    })
+    .catch(err => console.error('Failed to load sound', err));
+}
+
+// Global listeners to unlock AudioContext on macOS/iOS/Chrome
+if (typeof window !== 'undefined') {
+  const unlock = () => {
+    if (audioCtx?.state === 'suspended') {
+      audioCtx.resume();
+    }
+    // Only need to do this once
+    window.removeEventListener('keydown', unlock);
+    window.removeEventListener('mousedown', unlock);
+    window.removeEventListener('touchstart', unlock);
+  };
+  window.addEventListener('keydown', unlock);
+  window.addEventListener('mousedown', unlock);
+  window.addEventListener('touchstart', unlock);
+}
+
+/**
+ * Play the keyboard click sound immediately. 
+ * Can be called from anywhere, ideally directly in keydown handlers.
+ */
+export function playKeyAudio() {
+  if (!audioCtx || !keyBuffer) return;
+  
+  try {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    
+    const source = audioCtx.createBufferSource();
+    source.buffer = keyBuffer;
+    source.playbackRate.value = 0.97 + Math.random() * 0.06;
+    source.connect(audioCtx.destination);
+    source.start(audioCtx.currentTime, keyStartOffset);
+  } catch (e) {
+    // Silently fail if overlapping sounds or context issues
+  }
+}
 
 export function useSound() {
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const sampleBufferRef = useRef<AudioBuffer | null>(null);
-  const soundStartOffsetRef = useRef<number>(0);
-
-  const getAudioCtx = useCallback((): AudioContext => {
-    if (!audioCtxRef.current) {
-      audioCtxRef.current = new AudioContext();
-    }
-    return audioCtxRef.current;
+  useEffect(() => {
+    initAudio();
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-    fetch('/key.mp3')
-      .then(r => r.arrayBuffer())
-      .then(ab => getAudioCtx().decodeAudioData(ab))
-      .then(decoded => {
-        if (cancelled) return;
-
-        // Find first sample above silence threshold to skip leading silence
-        const data = decoded.getChannelData(0);
-        const threshold = 0.01;
-        let startSample = 0;
-        for (let i = 0; i < data.length; i++) {
-          if (Math.abs(data[i]) > threshold) {
-            // Step back a tiny bit to catch the attack
-            startSample = Math.max(0, i - Math.floor(decoded.sampleRate * 0.002));
-            break;
-          }
-        }
-        soundStartOffsetRef.current = startSample / decoded.sampleRate;
-        sampleBufferRef.current = decoded;
-      })
-      .catch(() => {});
-    return () => { cancelled = true; };
-  }, [getAudioCtx]);
-
-  const playKey = useCallback(() => {
-    try {
-      const ctx = getAudioCtx();
-      const buf = sampleBufferRef.current;
-      if (!buf) return;
-
-      const source = ctx.createBufferSource();
-      source.buffer = buf;
-      source.playbackRate.value = 0.97 + Math.random() * 0.06; // slight pitch variation
-
-      const gain = ctx.createGain();
-      gain.gain.value = 0.9;
-
-      source.connect(gain);
-      gain.connect(ctx.destination);
-
-      source.start(ctx.currentTime, soundStartOffsetRef.current);
-    } catch (error) {
-      console.warn('Failed to play sound', error);
-    }
-  }, [getAudioCtx]);
-
-  return { playCorrect: playKey, playWrong: playKey };
+  return { 
+    playCorrect: playKeyAudio, 
+    playWrong: playKeyAudio 
+  };
 }
