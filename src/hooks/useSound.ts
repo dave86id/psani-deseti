@@ -33,13 +33,13 @@ function initAudio() {
     .catch(err => console.error('Failed to load sound', err));
 }
 
-// Global listeners to unlock AudioContext on macOS/iOS/Chrome
+// Global listeners to initialize and unlock AudioContext on first user interaction
 if (typeof window !== 'undefined') {
   const unlock = () => {
+    initAudio(); // Create AudioContext + start loading buffer on first interaction
     if (audioCtx?.state === 'suspended') {
       audioCtx.resume();
     }
-    // Only need to do this once
     window.removeEventListener('keydown', unlock);
     window.removeEventListener('mousedown', unlock);
     window.removeEventListener('touchstart', unlock);
