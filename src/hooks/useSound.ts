@@ -6,7 +6,7 @@ let buf: AudioBuffer | null = null;
 let offset = 0;
 
 if (ctx) {
-  fetch('/key.mp3')
+  fetch('/key.wav')
     .then(r => r.arrayBuffer())
     .then(ab => ctx.decodeAudioData(ab))
     .then(decoded => {
