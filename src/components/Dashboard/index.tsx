@@ -22,7 +22,7 @@ const TIPS = [
   'Dávej si pauzy.',
 ];
 
-const HEADING = 'Nauč se psát všemi deseti.';
+const HEADING = 'Nauč se psát všemi deseti';
 
 export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection, isGuest }: DashboardProps) {
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIPS.length));
