@@ -12,9 +12,7 @@ const DIACRITIC_MAP: Record<string, Record<string, string>> = {
     'A': 'Á', 'a': 'á', 'E': 'É', 'e': 'é', 'I': 'Í', 'i': 'í',
     'O': 'Ó', 'o': 'ó', 'U': 'Ú', 'u': 'ú', 'Y': 'Ý', 'y': 'ý',
   },
-  '°': {
-    'U': 'Ů', 'u': 'ů',
-  },
+  '°': {},
 };
 
 const REVERSE_MAP: Record<string, { dead: string; base: string }> = {};
