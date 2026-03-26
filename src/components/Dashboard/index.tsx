@@ -318,9 +318,6 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
       <div style={{ textAlign: 'center', paddingBottom: '1rem', fontSize: '14px', color: 'rgb(138 138 138)', letterSpacing: '0.02em' }}>
         v{__APP_VERSION__} · Sestaveno: {__BUILD_TIME__}
       </div>
-      <div style={{ textAlign: 'center', paddingBottom: '1.5rem', fontSize: '13px', color: 'rgb(138 138 138)', letterSpacing: '0.02em' }}>
-        Zvuk kláves: key3.wav (public/key.wav)
-      </div>
     </div>
   );
 }
