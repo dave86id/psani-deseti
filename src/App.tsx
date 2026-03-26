@@ -96,16 +96,21 @@ export default function App() {
     prevUidRef2.current = currentUid;
 
     if (!currentUid) {
-      // Logout — wipe local progress so the next user starts clean
+      // Logout — clear uid tag and wipe progress so the next user starts clean
+      localStorage.removeItem('psani-deseti-uid');
       resetProgress();
       return;
     }
 
-    // Login — skip Firestore load for guest transfers (guest data stays for TransferDialog)
+    // If localStorage is already tagged with this uid, data is current — keep it
+    if (localStorage.getItem('psani-deseti-uid') === currentUid) return;
+
+    // Guest transfer — keep guest data for TransferDialog
     if (wasGuestRef.current) return;
 
-    // Load this user's progress from Firestore and replace local cache
+    // Different/new user — load from Firestore, fall back to fresh start
     loadFromFirestore().then((data) => {
+      localStorage.setItem('psani-deseti-uid', currentUid);
       if (data?.lessons) {
         resetProgress({ lessons: data.lessons, settings: { soundEnabled: true } });
       } else {
@@ -155,9 +160,11 @@ export default function App() {
       totalTime,
       score,
     });
-    
-    // We don't use syncToFirestore(p) here to avoid potential race, it is already called in completeExercise
-  }, [profile, updateLeaderboard]);
+
+    // Sync progress to Firestore and tag localStorage with uid so refresh keeps data
+    syncToFirestore(p);
+    localStorage.setItem('psani-deseti-uid', profile.uid);
+  }, [profile, updateLeaderboard, syncToFirestore]);
 
   const { progress, completeExercise, completeLesson, resetProgress } = useProgress(
     profile ? handleProgressSave : undefined
