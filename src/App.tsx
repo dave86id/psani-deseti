@@ -81,12 +81,39 @@ export default function App() {
   const { user, profile, loading: authLoading, needsProfile, signInWithGoogle, signOutUser, saveProfile } = useAuth();
   const { entries: leaderboardEntries, loading: leaderboardLoading, updateLeaderboard, refresh: refreshLeaderboard } = useLeaderboard();
 
-  const { syncToFirestore } = useFirestoreProgress(user?.uid ?? null);
+  const { syncToFirestore, loadFromFirestore } = useFirestoreProgress(user?.uid ?? null);
 
   // Guest mode — persisted in localStorage
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem('psani-guest') === '1');
   const [showTransferDialog, setShowTransferDialog] = useState(false);
   const wasGuestRef = useRef(isGuest);
+
+  // On uid change: clear local progress on logout, load from Firestore on login
+  const prevUidRef2 = useRef<string | null>(null);
+  useEffect(() => {
+    const currentUid = user?.uid ?? null;
+    if (currentUid === prevUidRef2.current) return;
+    prevUidRef2.current = currentUid;
+
+    if (!currentUid) {
+      // Logout — wipe local progress so the next user starts clean
+      resetProgress();
+      return;
+    }
+
+    // Login — skip Firestore load for guest transfers (guest data stays for TransferDialog)
+    if (wasGuestRef.current) return;
+
+    // Load this user's progress from Firestore and replace local cache
+    loadFromFirestore().then((data) => {
+      if (data?.lessons) {
+        resetProgress({ lessons: data.lessons, settings: { soundEnabled: true } });
+      } else {
+        resetProgress();
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.uid]);
 
   // When user signs in, check if they were a guest with progress
   useEffect(() => {
@@ -132,7 +159,7 @@ export default function App() {
     // We don't use syncToFirestore(p) here to avoid potential race, it is already called in completeExercise
   }, [profile, updateLeaderboard]);
 
-  const { progress, completeExercise, completeLesson } = useProgress(
+  const { progress, completeExercise, completeLesson, resetProgress } = useProgress(
     profile ? handleProgressSave : undefined
   );
 

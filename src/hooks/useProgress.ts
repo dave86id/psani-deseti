@@ -129,5 +129,11 @@ export function useProgress(onSave?: (p: UserProgress) => void) {
     return progress.lessons[lessonId]?.completed ?? false;
   }, [progress]);
 
-  return { progress, updateLesson, completeExercise, completeLesson, isLessonUnlocked, isLessonCompleted };
+  const resetProgress = useCallback((p?: UserProgress) => {
+    const fresh = p ?? defaultProgress();
+    saveProgress(fresh);
+    setProgress(fresh);
+  }, []);
+
+  return { progress, updateLesson, completeExercise, completeLesson, isLessonUnlocked, isLessonCompleted, resetProgress };
 }
