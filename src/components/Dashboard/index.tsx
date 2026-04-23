@@ -99,7 +99,7 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
     return done < l.exercises.length;
   }) ?? allLessons[0];
   const nextLessonHint = nextLesson
-    ? `Lekce ${nextLesson.id} — ${nextLesson.newLetters.length > 0 ? nextLesson.newLetters.map(c => c.toUpperCase()).join(', ') : nextLesson.title}`
+    ? `Lekce ${nextLesson.id} — ${nextLesson.newLetters.length > 0 ? nextLesson.newLetters.join(', ') : nextLesson.title}`
     : '';
   const totalCount = allLessons.length;
   const completedPct = Math.round((completedCount / totalCount) * 100);
