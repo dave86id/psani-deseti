@@ -16,6 +16,8 @@ import LoginScreen from './components/LoginScreen';
 import ProfileSetup from './components/ProfileSetup';
 import Leaderboard from './components/Leaderboard';
 import FallingLettersMode from './components/FallingLettersMode';
+import DailyGoalTimer from './components/DailyGoalTimer';
+import { useDailyGoal } from './hooks/useDailyGoal';
 import type { ExerciseResult } from './types';
 
 // Dead key to display names for virtual keyboard highlighting
@@ -190,6 +192,9 @@ export default function App() {
     resetExercise,
   } = useExercise(currentExerciseText);
 
+  const isTimerActive = screen === 'exercise' || screen === 'falling';
+  const { elapsedSeconds, isComplete } = useDailyGoal(isTimerActive);
+
   const processedResultRef = useRef<ExerciseResult | null>(null);
 
   useEffect(() => {
@@ -355,86 +360,95 @@ export default function App() {
     }
   }
 
-  if (screen === 'falling') {
-    return (
-      <FallingLettersMode
-        text={currentExerciseText}
-        lessonTitle={currentLesson?.title ?? ''}
-        onBack={() => setScreen('lesson-menu')}
-        onComplete={(stats) => {
-          const total = stats.correct + stats.errors;
-          const result: ExerciseResult = {
-            cpm: stats.timeSeconds > 0 ? Math.round((stats.correct / stats.timeSeconds) * 60) : 0,
-            accuracy: total > 0 ? Math.round((stats.correct / total) * 100) : 100,
-            errors: stats.errors,
-            timeSeconds: stats.timeSeconds,
-            errorsByChar: {},
-          };
-          setLastResult(result);
-          completeExercise(currentLessonId, currentExerciseId, result.cpm, result.accuracy, currentLesson?.exercises.length ?? 1, result.errors, result.timeSeconds, result.errorsByChar);
-          setScreen('results');
-        }}
-      />
-    );
-  }
+  const screenContent = (() => {
+    if (screen === 'falling') {
+      return (
+        <FallingLettersMode
+          text={currentExerciseText}
+          lessonTitle={currentLesson?.title ?? ''}
+          onBack={() => setScreen('lesson-menu')}
+          onComplete={(stats) => {
+            const total = stats.correct + stats.errors;
+            const result: ExerciseResult = {
+              cpm: stats.timeSeconds > 0 ? Math.round((stats.correct / stats.timeSeconds) * 60) : 0,
+              accuracy: total > 0 ? Math.round((stats.correct / total) * 100) : 100,
+              errors: stats.errors,
+              timeSeconds: stats.timeSeconds,
+              errorsByChar: {},
+            };
+            setLastResult(result);
+            completeExercise(currentLessonId, currentExerciseId, result.cpm, result.accuracy, currentLesson?.exercises.length ?? 1, result.errors, result.timeSeconds, result.errorsByChar);
+            setScreen('results');
+          }}
+        />
+      );
+    }
 
-  if (screen === 'dashboard') {
-    return (
-      <Dashboard
-        progress={progress}
-        onSelectLesson={handleSelectLesson}
-        profile={profile}
-        onSignIn={isGuest ? handleGuestSignIn : undefined}
-        onSignOut={user ? signOutUser : undefined}
-        leaderboardSection={leaderboardNode}
-        isGuest={isGuest}
-      />
-    );
-  }
+    if (screen === 'dashboard') {
+      return (
+        <Dashboard
+          progress={progress}
+          onSelectLesson={handleSelectLesson}
+          profile={profile}
+          onSignIn={isGuest ? handleGuestSignIn : undefined}
+          onSignOut={user ? signOutUser : undefined}
+          leaderboardSection={leaderboardNode}
+          isGuest={isGuest}
+        />
+      );
+    }
 
-  if (screen === 'lesson-menu' && currentLesson) {
-    return (
-      <LessonMenu
-        lesson={currentLesson}
-        progress={progress}
-        onSelectExercise={handleSelectExercise}
-        onPracticeErrors={handlePracticeErrors}
-        onBack={() => setScreen('dashboard')}
-      />
-    );
-  }
+    if (screen === 'lesson-menu' && currentLesson) {
+      return (
+        <LessonMenu
+          lesson={currentLesson}
+          progress={progress}
+          onSelectExercise={handleSelectExercise}
+          onPracticeErrors={handlePracticeErrors}
+          onBack={() => setScreen('dashboard')}
+        />
+      );
+    }
 
-  if (screen === 'results' && lastResult) {
+    if (screen === 'results' && lastResult) {
+      return (
+        <ResultsScreen
+          result={lastResult}
+          exerciseIndex={currentExerciseIndex}
+          totalExercises={currentLesson?.exercises.length ?? 1}
+          lessonId={currentLessonId}
+          lessonTitle={currentLesson?.title ?? ''}
+          isErrorPractice={isErrorPractice}
+          onNext={isErrorPractice ? handlePracticeErrors : handleNext}
+          onRestart={handleRestart}
+          onRestartAll={handleRestartAll}
+          onBack={() => setScreen('lesson-menu')}
+        />
+      );
+    }
+
     return (
-      <ResultsScreen
-        result={lastResult}
+      <ExerciseScreen
+        state={state}
         exerciseIndex={currentExerciseIndex}
-        totalExercises={currentLesson?.exercises.length ?? 1}
+        totalExercises={currentLesson?.exercises.length ?? 8}
         lessonId={currentLessonId}
         lessonTitle={currentLesson?.title ?? ''}
-        isErrorPractice={isErrorPractice}
-        onNext={isErrorPractice ? handlePracticeErrors : handleNext}
-        onRestart={handleRestart}
-        onRestartAll={handleRestartAll}
+        flashCorrect={flashCorrect}
+        wrongKeyFlash={wrongKeyFlash}
+        onKey={onKey}
+        onDeadKey={onDeadKey}
         onBack={() => setScreen('lesson-menu')}
+        isErrorPractice={isErrorPractice}
+        pendingDeadKey={pendingDeadKey}
       />
     );
-  }
+  })();
 
   return (
-    <ExerciseScreen
-      state={state}
-      exerciseIndex={currentExerciseIndex}
-      totalExercises={currentLesson?.exercises.length ?? 8}
-      lessonId={currentLessonId}
-      lessonTitle={currentLesson?.title ?? ''}
-      flashCorrect={flashCorrect}
-      wrongKeyFlash={wrongKeyFlash}
-      onKey={onKey}
-      onDeadKey={onDeadKey}
-      onBack={() => setScreen('lesson-menu')}
-      isErrorPractice={isErrorPractice}
-      pendingDeadKey={pendingDeadKey}
-    />
+    <>
+      {screenContent}
+      <DailyGoalTimer elapsedSeconds={elapsedSeconds} isComplete={isComplete} />
+    </>
   );
 }
