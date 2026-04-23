@@ -3,6 +3,7 @@ import { sections, getAllLessons } from '../../data/lessons';
 import type { UserProgress } from '../../types';
 import { getLessonMedal } from '../../utils/stats';
 import type { UserProfile } from '../../hooks/useAuth';
+import { loadDailyGoalHistory } from '../../hooks/useDailyGoal';
 
 interface DashboardProps {
   progress: UserProgress;
@@ -107,6 +108,11 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
   const avgCpm = allCpms.length > 0 ? Math.round(allCpms.reduce((a, b) => a + b, 0) / allCpms.length) : 0;
   const allAccs = allLessons.map(l => progress.lessons[l.id]?.bestAccuracy ?? 0).filter(a => a > 0);
   const avgAcc = allAccs.length > 0 ? Math.round(allAccs.reduce((a, b) => a + b, 0) / allAccs.length) : 0;
+
+  const { completedDays, lastCompletedDate } = loadDailyGoalHistory();
+  const lastCompletedLabel = lastCompletedDate
+    ? new Date(lastCompletedDate).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric' })
+    : null;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}>
@@ -247,6 +253,16 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
                 <div className="font-bold text-lg" style={{ color: '#06b6d4' }}>{avgAcc > 0 ? `${avgAcc}%` : '—'}</div>
                 <div className="text-xs" style={{ color: '#6b7280' }}>Průměr přesnost</div>
               </div>
+            </div>
+            <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid #333', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f59e0b' }}>
+                🔥 {completedDays}× splněný denní cíl
+              </div>
+              {lastCompletedLabel && (
+                <div style={{ fontSize: '0.6rem', color: '#6b7280', marginTop: '0.2rem' }}>
+                  Naposledy: {lastCompletedLabel}
+                </div>
+              )}
             </div>
           </div>
 
