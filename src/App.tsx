@@ -197,6 +197,17 @@ export default function App() {
 
   const processedResultRef = useRef<ExerciseResult | null>(null);
 
+  // Keep browser back button inside the app — always return to dashboard
+  useEffect(() => {
+    history.pushState(null, '');
+    const handlePopState = () => {
+      setScreen('dashboard');
+      history.pushState(null, '');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   useEffect(() => {
     if (exerciseResult && exerciseResult !== processedResultRef.current && screen === 'exercise') {
       processedResultRef.current = exerciseResult;
