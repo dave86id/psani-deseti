@@ -15,31 +15,31 @@ export function generateExerciseText(
 
   if (exerciseNum <= 2) {
     // Phase 1: only new letters, repeated and alternated
-    return generateLetterSequence(nl, 40);
+    return generateLetterSequence(nl, 52);
   } else if (exerciseNum <= 4) {
     // Phase 2: mix new + all known, groups of 3-4
-    return generateLetterSequence(al, 50);
+    return generateLetterSequence(al, 65);
   } else if (exerciseNum <= 6) {
     // Phase 3: try words, fallback to sequences
     const words = filterWords(al, 2, 6);
     if (words.length >= 3) {
-      return pickWords(words, 12).join(' ');
+      return pickWords(words, 16).join(' ');
     }
-    return generateLetterSequence(al, 50);
+    return generateLetterSequence(al, 65);
   } else if (exerciseNum <= 9) {
     // Phase 4: words, up to 8 chars
     const words = filterWords(al, 2, 8);
     if (words.length >= 3) {
-      return pickWords(words, 10).join(' ');
+      return pickWords(words, 13).join(' ');
     }
-    return generateLetterSequence(al, 50);
+    return generateLetterSequence(al, 65);
   } else {
     // Phase 5: longer words and phrases
     const words = filterWords(al, 3, 12);
     if (words.length >= 3) {
-      return pickWords(words, 8).join(' ');
+      return pickWords(words, 10).join(' ');
     }
-    return generateLetterSequence(al, 60);
+    return generateLetterSequence(al, 78);
   }
 }
 
