@@ -16,11 +16,11 @@ interface DashboardProps {
 }
 
 const TIPS = [
-  'Takhle patří prsty na klávesnici.',
-  'Napřed přesně, rychlost přijde sama.',
-  'Dva měsíce a máš to.',
-  'Stačí 10 minut denně.',
-  'Dávej si pauzy.',
+  { icon: '🖐️', text: 'Takhle patří prsty na klávesnici.' },
+  { icon: '🎯', text: 'Napřed přesně, rychlost přijde sama.' },
+  { icon: '📅', text: 'Dva měsíce a máš to.' },
+  { icon: '⏱️', text: 'Stačí 10 minut denně.' },
+  { icon: '☕', text: 'Dávej si pauzy.' },
 ];
 
 const HEADING = 'Nauč se psát všemi deseti';
@@ -212,18 +212,33 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
           )}
         </div>
 
-        {/* Hero image */}
-        <div className="rounded-xl overflow-hidden" style={{ marginBottom: '0.5rem' }}>
+        {/* Hero image with tip overlay */}
+        <div className="rounded-xl overflow-hidden mb-6" style={{ position: 'relative' }}>
           <img
             src="/hero-keyboard.jpg"
             alt="Klávesnice s barevnými prsty"
             style={{ width: '100%', height: 'auto', display: 'block' }}
           />
-        </div>
-        <div className="mb-6 text-center">
-          <span style={{ fontSize: '0.65rem', color: '#6b7280', backgroundColor: '#242424', border: '1px solid #333', borderRadius: '0.4rem', padding: '0.25rem 0.75rem', display: 'inline-block', transition: 'opacity 400ms ease', opacity: tipVisible ? 1 : 0 }}>
-            💡 {TIPS[tipIndex]}
-          </span>
+          <div style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            pointerEvents: 'none',
+          }}>
+            <span style={{
+              fontSize: '0.78rem',
+              color: '#f3f4f6',
+              backgroundColor: 'rgba(0,0,0,0.55)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              borderRadius: '0.5rem',
+              padding: '0.35rem 1rem',
+              backdropFilter: 'blur(4px)',
+              transition: 'opacity 400ms ease',
+              opacity: tipVisible ? 1 : 0,
+              whiteSpace: 'nowrap',
+            }}>
+              {TIPS[tipIndex].icon} {TIPS[tipIndex].text}
+            </span>
+          </div>
         </div>
 
         {/* Top row: progress + leaderboard side by side */}
