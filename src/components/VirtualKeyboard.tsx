@@ -22,6 +22,11 @@ Object.entries(DIACRITIC_MAP).forEach(([dead, baseMap]) => {
   });
 });
 
+// Lowercase diacritics directly on number row (Shift+key): bypass dead key logic
+const DIRECT_DIACRITIC_KEY: Record<string, string> = {
+  'ě': '2', 'š': '3', 'č': '4', 'ř': '5', 'ž': '6', 'ý': '7', 'á': '8', 'í': '9', 'é': '0',
+};
+
 interface VirtualKeyboardProps {
   activeKey: string;
   wrongKeyFlash: string | null;
@@ -36,13 +41,18 @@ function getKeyStyle(
   pressedKeys?: Set<string>,
   pendingDeadKey?: string | null
 ): React.CSSProperties {
-  const needsDiacritic = REVERSE_MAP[activeKey];
+  const directNumKey = DIRECT_DIACRITIC_KEY[activeKey];
+  const needsDiacritic = !directNumKey ? REVERSE_MAP[activeKey] : undefined;
   const isUppercaseDiacritic = needsDiacritic && needsDiacritic.base === needsDiacritic.base.toUpperCase() && /[A-ZČĎĚĽŇŘŠŤŽÁÉÍÓÚÝ]/.test(needsDiacritic.base);
-  
+
   let isTarget = false;
   let isShiftTarget = false;
 
-  if (needsDiacritic) {
+  if (directNumKey) {
+    // Lowercase diacritic directly on number row: highlight number key + Shift
+    isTarget = keyDef.key === directNumKey;
+    isShiftTarget = keyDef.key === 'ShiftLeft' || keyDef.key === 'ShiftRight';
+  } else if (needsDiacritic) {
     if (pendingDeadKey) {
       // Second stage: highlight base letter (case-insensitively) and Shift if uppercase
       const baseKey = needsDiacritic.base.toLowerCase();
@@ -51,11 +61,11 @@ function getKeyStyle(
       isShiftTarget = !!(isUppercaseDiacritic && (keyDef.key === 'ShiftLeft' || keyDef.key === 'ShiftRight'));
     } else {
       // First stage: highlight dead key
-      isTarget = keyDef.key === needsDiacritic.dead || 
+      isTarget = keyDef.key === needsDiacritic.dead ||
                  !!(keyDef.shift && keyDef.shift === needsDiacritic.dead);
     }
   } else {
-    isTarget = keyDef.key === activeKey || 
+    isTarget = keyDef.key === activeKey ||
                !!(keyDef.shift && keyDef.shift === activeKey) ||
                !!(keyDef.altChar && keyDef.altChar === activeKey);
     // Highlight Shift when the active key is an uppercase letter
