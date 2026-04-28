@@ -176,8 +176,8 @@ export default function VirtualKeyboard({
                       left: '50%',
                       transform: 'translateX(-50%)',
                       width: '40%',
-                      height: '2px',
-                      borderRadius: '1px',
+                      height: '4px',
+                      borderRadius: '2px',
                       backgroundColor: homingBumpColor,
                     }}
                   />
