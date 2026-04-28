@@ -113,8 +113,8 @@ function getKeyStyle(
 
   if (fingerColor) {
     return {
-      backgroundColor: fingerColor + '22',
-      borderColor: fingerColor + '55',
+      backgroundColor: fingerColor + '33',
+      borderColor: fingerColor + '77',
       color: '#d1d5db',
     };
   }
@@ -149,11 +149,15 @@ export default function VirtualKeyboard({
             const style = getKeyStyle(keyDef, activeKey, wrongKeyFlash, pressedKeys, pendingDeadKey);
             const width = getKeyWidth(keyDef);
 
+            const homingBumpColor = keyDef.key === 'f' ? fingerColors['left-index']
+              : keyDef.key === 'j' ? fingerColors['right-index']
+              : null;
+
             return (
               <div
                 key={keyIndex}
                 data-key={keyDef.key}
-                className="flex items-center justify-center rounded border text-xs font-mono transition-all duration-100 cursor-default"
+                className="flex items-center justify-center rounded border text-xs font-mono transition-all duration-100 cursor-default relative"
                 style={{
                   width,
                   flex: keyDef.extraWide ? '4 1 0' : keyDef.wide ? '2 1 0' : '1 1 0',
@@ -163,6 +167,21 @@ export default function VirtualKeyboard({
                   ...style,
                 }}
               >
+                {homingBumpColor && (
+                  <span
+                    aria-hidden
+                    style={{
+                      position: 'absolute',
+                      bottom: '4px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: '40%',
+                      height: '2px',
+                      borderRadius: '1px',
+                      backgroundColor: homingBumpColor,
+                    }}
+                  />
+                )}
                 {keyDef.label === ' ' ? (
                   <span className="text-gray-500" style={{ fontSize: '0.45rem' }}>MEZERNÍK</span>
                 ) : keyDef.altChar ? (
