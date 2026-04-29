@@ -11,7 +11,6 @@ interface ResultsScreenProps {
   isErrorPractice?: boolean;
   onNext: () => void;
   onRestart: () => void;
-  onRestartAll: () => void;
   onBack: () => void;
 }
 
@@ -24,7 +23,6 @@ export default function ResultsScreen({
   isErrorPractice,
   onNext,
   onRestart,
-  onRestartAll,
   onBack,
 }: ResultsScreenProps) {
   const isLastExercise = exerciseIndex >= totalExercises - 1;
@@ -65,7 +63,7 @@ export default function ResultsScreen({
     >
       <div
         className="rounded-xl w-full text-center"
-        style={{ backgroundColor: '#242424', border: '1px solid #3a3a3a', maxWidth: '22rem', padding: '1.25rem' }}
+        style={{ backgroundColor: '#242424', border: '1px solid #3a3a3a', maxWidth: '32rem', padding: '1.25rem' }}
       >
         {/* Header */}
         <div style={{ marginBottom: '0.75rem' }}>
@@ -81,7 +79,7 @@ export default function ResultsScreen({
         </div>
 
         {/* Stats grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem', marginBottom: '0.75rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.75rem' }}>
           <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
             <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: '#8b5cf6' }}>
               {result.cpm}
@@ -139,13 +137,6 @@ export default function ResultsScreen({
             style={{ width: '100%', padding: '0.5rem', borderRadius: '0.6rem', fontWeight: 600, fontSize: '0.7rem', backgroundColor: 'transparent', border: '1px solid #4b5563', color: '#d1d5db' }}
           >
             Zopakovat cvičení
-          </button>
-
-          <button
-            onClick={onRestartAll}
-            style={{ width: '100%', padding: '0.35rem', borderRadius: '0.6rem', fontSize: '0.6rem', color: '#6b7280', backgroundColor: 'transparent', border: 'none' }}
-          >
-            Začít lekci od začátku
           </button>
 
           <button

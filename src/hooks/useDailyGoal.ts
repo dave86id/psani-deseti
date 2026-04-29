@@ -28,6 +28,19 @@ function loadDailyGoal(): number {
   return 0;
 }
 
+function getStoredDate(): string | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const data: DailyGoalData = JSON.parse(raw);
+      return data.date;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
 function saveDailyGoal(seconds: number) {
   try {
     const data: DailyGoalData = { date: getTodayString(), seconds };
@@ -74,6 +87,29 @@ export function useDailyGoal(isActive: boolean): { elapsedSeconds: number; isCom
       recordCompletedDay(getTodayString());
     }
   }, [isComplete]);
+
+  useEffect(() => {
+    function checkDateRollover() {
+      const today = getTodayString();
+      const stored = getStoredDate();
+      if (stored !== null && stored !== today) {
+        completedRecorded.current = false;
+        setElapsedSeconds(0);
+        saveDailyGoal(0);
+      }
+    }
+
+    function onVisibility() {
+      if (document.visibilityState === 'visible') checkDateRollover();
+    }
+
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('focus', checkDateRollover);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('focus', checkDateRollover);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isActive || isComplete) {

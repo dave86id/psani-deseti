@@ -272,16 +272,6 @@ export default function App() {
     setScreen(mode === 'falling' ? 'falling' : 'exercise');
   }, [currentExerciseText, resetExercise, currentLesson, currentExerciseIndex]);
 
-  const handleRestartAll = useCallback(() => {
-    if (!currentLesson) return;
-    const firstText = currentLesson.exercises[0]?.text ?? '';
-    setCurrentExerciseIndex(0);
-    processedResultRef.current = null;
-    resetExercise(firstText);
-    const mode = getExerciseMode(currentLesson, 0);
-    setScreen(mode === 'falling' ? 'falling' : 'exercise');
-  }, [currentLesson, resetExercise]);
-
   const handleSelectLesson = useCallback((lessonId: string) => {
     setCurrentLessonId(lessonId);
     setCurrentExerciseIndex(0);
@@ -432,7 +422,6 @@ export default function App() {
           isErrorPractice={isErrorPractice}
           onNext={isErrorPractice ? handlePracticeErrors : handleNext}
           onRestart={handleRestart}
-          onRestartAll={handleRestartAll}
           onBack={() => setScreen('lesson-menu')}
         />
       );
