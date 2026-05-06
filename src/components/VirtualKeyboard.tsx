@@ -2,6 +2,14 @@ import { keyboardRows } from '../data/keyboardLayout';
 import { keyFingerMap, fingerColors } from '../data/fingerMapping';
 import type { KeyDef } from '../types';
 
+// Set of all chars directly typable on the layout (key or shift), used to
+// skip the dead-key path when a dedicated key exists (e.g. ú, Ú, ů, Ů).
+const DIRECT_KEYS = new Set<string>();
+keyboardRows.forEach(row => row.forEach(k => {
+  if (k.key) DIRECT_KEYS.add(k.key);
+  if (k.shift) DIRECT_KEYS.add(k.shift);
+}));
+
 const DIACRITIC_MAP: Record<string, Record<string, string>> = {
   'ˇ': {
     'C': 'Č', 'c': 'č', 'D': 'Ď', 'd': 'ď', 'E': 'Ě', 'e': 'ě',
@@ -42,7 +50,8 @@ function getKeyStyle(
   pendingDeadKey?: string | null
 ): React.CSSProperties {
   const directNumKey = DIRECT_DIACRITIC_KEY[activeKey];
-  const needsDiacritic = !directNumKey ? REVERSE_MAP[activeKey] : undefined;
+  const hasDirectKey = DIRECT_KEYS.has(activeKey);
+  const needsDiacritic = (!directNumKey && !hasDirectKey) ? REVERSE_MAP[activeKey] : undefined;
   const isUppercaseDiacritic = needsDiacritic && needsDiacritic.base === needsDiacritic.base.toUpperCase() && /[A-ZČĎĚĽŇŘŠŤŽÁÉÍÓÚÝ]/.test(needsDiacritic.base);
 
   let isTarget = false;
