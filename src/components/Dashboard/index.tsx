@@ -4,6 +4,7 @@ import type { UserProgress } from '../../types';
 import { getLessonMedal } from '../../utils/stats';
 import type { UserProfile } from '../../hooks/useAuth';
 import { loadDailyGoalHistory } from '../../hooks/useDailyGoal';
+import ErrorsModal from '../ErrorsModal';
 
 interface DashboardProps {
   progress: UserProgress;
@@ -28,6 +29,7 @@ const HEADING = 'Nauč se psát všemi deseti';
 export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection, isGuest }: DashboardProps) {
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIPS.length));
   const [tipVisible, setTipVisible] = useState(true);
+  const [showErrorsModal, setShowErrorsModal] = useState(false);
 
   // Typewriter
   const [typedLen, setTypedLen] = useState(0);
@@ -279,6 +281,23 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
                 </div>
               )}
             </div>
+            <div style={{ marginTop: '0.6rem', textAlign: 'center' }}>
+              <button
+                type="button"
+                onClick={() => setShowErrorsModal(true)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  fontSize: '0.6rem',
+                  color: '#8b5cf6',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                }}
+              >
+                Nejčastější chyby →
+              </button>
+            </div>
           </div>
 
           {/* Leaderboard */}
@@ -349,6 +368,8 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
       <div style={{ textAlign: 'center', paddingBottom: '1rem', fontSize: '14px', color: 'rgb(138 138 138)', letterSpacing: '0.02em' }}>
         v{__APP_VERSION__} · Sestaveno: {__BUILD_TIME__}
       </div>
+
+      {showErrorsModal && <ErrorsModal onClose={() => setShowErrorsModal(false)} />}
     </div>
   );
 }

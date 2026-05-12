@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { UserProgress, LessonProgress } from '../types';
+import { recordExerciseErrors } from '../utils/recentErrors';
 
 const STORAGE_KEY = 'psani-deseti-progress';
 
@@ -60,6 +61,7 @@ export function useProgress(onSave?: (p: UserProgress) => void) {
   }, []);
 
   const completeExercise = useCallback((lessonId: string, exerciseId: number, cpm: number, accuracy: number, totalExercises: number, errors: number, timeSeconds: number, errorsByChar?: Record<string, number>) => {
+    recordExerciseErrors(errorsByChar);
     setProgress(prev => {
       const lesson = prev.lessons[lessonId] || emptyLesson(lessonId);
       
