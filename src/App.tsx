@@ -422,7 +422,7 @@ export default function App() {
           isErrorPractice={isErrorPractice}
           onNext={isErrorPractice ? handlePracticeErrors : handleNext}
           onRestart={handleRestart}
-          onBack={() => setScreen('lesson-menu')}
+          onBack={() => setScreen('dashboard')}
         />
       );
     }

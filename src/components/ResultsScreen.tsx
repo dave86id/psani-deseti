@@ -143,7 +143,7 @@ export default function ResultsScreen({
             onClick={onBack}
             style={{ width: '100%', padding: '0.35rem', borderRadius: '0.6rem', fontSize: '0.6rem', color: '#6b7280', backgroundColor: 'transparent', border: 'none' }}
           >
-            ← Zpět na seznam cvičení
+            ← Zpět na seznam lekcí
           </button>
         </div>
       </div>
