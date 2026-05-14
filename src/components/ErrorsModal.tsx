@@ -1,9 +1,12 @@
-import { useEffect } from 'react';
-import { loadRecentErrors } from '../utils/recentErrors';
+import { useEffect, useState } from 'react';
+import { loadRecentErrors, clearRecentErrors } from '../utils/recentErrors';
 
 interface ErrorsModalProps {
   onClose: () => void;
+  onPracticeErrors: () => void;
 }
+
+const TOP_N = 10;
 
 function displayChar(ch: string): string {
   if (ch === ' ') return '␣ mezera';
@@ -12,12 +15,15 @@ function displayChar(ch: string): string {
   return ch;
 }
 
-export default function ErrorsModal({ onClose }: ErrorsModalProps) {
+export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalProps) {
+  const [version, setVersion] = useState(0);
   const { count, aggregated } = loadRecentErrors();
-  const rows = Object.entries(aggregated)
+  const allRows = Object.entries(aggregated)
     .filter(([, n]) => n > 0)
     .sort((a, b) => b[1] - a[1]);
-  const totalErrors = rows.reduce((sum, [, n]) => sum + n, 0);
+  const rows = allRows.slice(0, TOP_N);
+  const totalErrors = allRows.reduce((sum, [, n]) => sum + n, 0);
+  const hasErrors = allRows.length > 0;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -30,6 +36,16 @@ export default function ErrorsModal({ onClose }: ErrorsModalProps) {
       document.body.style.overflow = '';
     };
   }, [onClose]);
+
+  const handleReset = () => {
+    if (!hasErrors) return;
+    if (!window.confirm('Opravdu vynulovat počítadlo chyb?')) return;
+    clearRecentErrors();
+    setVersion(v => v + 1);
+  };
+
+  // version is in the dependency so re-render reads fresh storage
+  void version;
 
   return (
     <div
@@ -55,7 +71,7 @@ export default function ErrorsModal({ onClose }: ErrorsModalProps) {
           padding: '1.25rem',
           maxWidth: '28rem',
           width: '100%',
-          maxHeight: '80vh',
+          maxHeight: '85vh',
           display: 'flex',
           flexDirection: 'column',
         }}
@@ -68,7 +84,7 @@ export default function ErrorsModal({ onClose }: ErrorsModalProps) {
             <p style={{ fontSize: '0.65rem', color: '#9ca3af' }}>
               {count === 0
                 ? 'Zatím žádná dokončená cvičení'
-                : `Z posledních ${count} cvičení (max. 15)`}
+                : `Z posledních ${count} cvičení (max. 15) · top ${Math.min(TOP_N, allRows.length)}`}
             </p>
           </div>
           <button
@@ -128,6 +144,46 @@ export default function ErrorsModal({ onClose }: ErrorsModalProps) {
             </table>
           )}
         </div>
+
+        {hasErrors && (
+          <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onPracticeErrors();
+              }}
+              style={{
+                backgroundColor: '#8b5cf6',
+                color: '#fff',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                padding: '0.55rem 1.4rem',
+                borderRadius: '0.6rem',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 0 18px #8b5cf655',
+              }}
+            >
+              Procvičovat moje chyby →
+            </button>
+            <button
+              type="button"
+              onClick={handleReset}
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: '0.2rem 0.4rem',
+                fontSize: '0.6rem',
+                color: '#6b7280',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+              }}
+            >
+              Resetovat chyby
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

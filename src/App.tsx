@@ -8,6 +8,7 @@ import { useLeaderboard } from './hooks/useLeaderboard';
 import { getLessonById, getNextLessonId, getAllLessons } from './data/lessons';
 import { getExerciseMode } from './utils/exerciseMode';
 import { generateErrorExerciseText } from './utils/errorExerciseGenerator';
+import { loadRecentErrors } from './utils/recentErrors';
 import Dashboard from './components/Dashboard';
 import LessonMenu from './components/LessonMenu';
 import ExerciseScreen from './components/ExerciseScreen';
@@ -178,6 +179,7 @@ export default function App() {
   const [lastResult, setLastResult] = useState<ExerciseResult | null>(null);
   const [isErrorPractice, setIsErrorPractice] = useState(false);
   const [errorPracticeText, setErrorPracticeText] = useState('');
+  const [errorPracticeScope, setErrorPracticeScope] = useState<'lesson' | 'global'>('lesson');
 
   const currentLesson = getLessonById(currentLessonId);
   const currentExerciseText = isErrorPractice ? errorPracticeText : (currentLesson?.exercises[currentExerciseIndex]?.text ?? '');
@@ -287,10 +289,43 @@ export default function App() {
     const text = generateErrorExerciseText(lessonProg.errorsByChar, currentLesson.allLetters);
     setErrorPracticeText(text);
     setIsErrorPractice(true);
+    setErrorPracticeScope('lesson');
     processedResultRef.current = null;
     resetExercise(text);
     setScreen('exercise');
   }, [currentLesson, currentLessonId, progress, resetExercise]);
+
+  const handlePracticeGlobalErrors = useCallback(() => {
+    const { aggregated } = loadRecentErrors();
+    // Union of letters from lessons the user has touched; fallback = home row
+    const learned = new Set<string>();
+    for (const l of getAllLessons()) {
+      const p = progress.lessons[l.id];
+      if (p && ((p.completedExercises?.length ?? 0) > 0 || p.completed)) {
+        l.allLetters.forEach(ch => learned.add(ch.toLowerCase()));
+      }
+    }
+    if (learned.size === 0) {
+      ['f','j','d','k','s','l','a','ů','g','h'].forEach(c => learned.add(c));
+    }
+    const allLetters = [...learned];
+    // ~4x normal exercise length (normal ~60-90 chars / 10-12 words)
+    const text = generateErrorExerciseText(aggregated, allLetters, 280, 48);
+    setErrorPracticeText(text);
+    setIsErrorPractice(true);
+    setErrorPracticeScope('global');
+    processedResultRef.current = null;
+    resetExercise(text);
+    setScreen('exercise');
+  }, [progress, resetExercise]);
+
+  const handleErrorPracticeNext = useCallback(() => {
+    if (errorPracticeScope === 'global') {
+      handlePracticeGlobalErrors();
+    } else {
+      handlePracticeErrors();
+    }
+  }, [errorPracticeScope, handlePracticeGlobalErrors, handlePracticeErrors]);
 
   const handleSkipLogin = useCallback(() => {
     localStorage.setItem('psani-guest', '1');
@@ -390,6 +425,7 @@ export default function App() {
         <Dashboard
           progress={progress}
           onSelectLesson={handleSelectLesson}
+          onPracticeGlobalErrors={handlePracticeGlobalErrors}
           profile={profile}
           onSignIn={isGuest ? handleGuestSignIn : undefined}
           onSignOut={user ? signOutUser : undefined}
@@ -420,7 +456,7 @@ export default function App() {
           lessonId={currentLessonId}
           lessonTitle={currentLesson?.title ?? ''}
           isErrorPractice={isErrorPractice}
-          onNext={isErrorPractice ? handlePracticeErrors : handleNext}
+          onNext={isErrorPractice ? handleErrorPracticeNext : handleNext}
           onRestart={handleRestart}
           onBack={() => setScreen('dashboard')}
         />

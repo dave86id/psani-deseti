@@ -9,6 +9,7 @@ import ErrorsModal from '../ErrorsModal';
 interface DashboardProps {
   progress: UserProgress;
   onSelectLesson: (lessonId: string) => void;
+  onPracticeGlobalErrors: () => void;
   profile?: UserProfile | null;
   onSignIn?: () => void;
   onSignOut?: () => void;
@@ -26,7 +27,7 @@ const TIPS = [
 
 const HEADING = 'Nauč se psát všemi deseti';
 
-export default function Dashboard({ progress, onSelectLesson, profile, onSignIn, onSignOut, leaderboardSection, isGuest }: DashboardProps) {
+export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalErrors, profile, onSignIn, onSignOut, leaderboardSection, isGuest }: DashboardProps) {
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIPS.length));
   const [tipVisible, setTipVisible] = useState(true);
   const [showErrorsModal, setShowErrorsModal] = useState(false);
@@ -369,7 +370,12 @@ export default function Dashboard({ progress, onSelectLesson, profile, onSignIn,
         v{__APP_VERSION__} · Sestaveno: {__BUILD_TIME__}
       </div>
 
-      {showErrorsModal && <ErrorsModal onClose={() => setShowErrorsModal(false)} />}
+      {showErrorsModal && (
+        <ErrorsModal
+          onClose={() => setShowErrorsModal(false)}
+          onPracticeErrors={onPracticeGlobalErrors}
+        />
+      )}
     </div>
   );
 }

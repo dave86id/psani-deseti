@@ -8,7 +8,8 @@ import { filterWords, pickWords } from './wordFilter';
 export function generateErrorExerciseText(
   errorsByChar: Record<string, number>,
   allLetters: string[],
-  length = 60
+  length = 60,
+  wordCount = 10
 ): string {
   // Sort characters by error count descending
   const sortedErrors = Object.entries(errorsByChar)
@@ -22,15 +23,15 @@ export function generateErrorExerciseText(
 
   // Take top 4 most problematic characters
   const problematicChars = sortedErrors.slice(0, 4).map(([char]) => char.toLowerCase());
-  
+
   // Try to find words containing these characters
-  const wordsWithErrors = filterWords(allLetters, 2, 8).filter(word => 
+  const wordsWithErrors = filterWords(allLetters, 2, 8).filter(word =>
     problematicChars.some(char => word.toLowerCase().includes(char))
   );
 
   if (wordsWithErrors.length >= 5) {
     // Generate a mix of words and sequences
-    const pickedWords = pickWords(wordsWithErrors, 10);
+    const pickedWords = pickWords(wordsWithErrors, wordCount);
     return pickedWords.join(' ');
   }
 

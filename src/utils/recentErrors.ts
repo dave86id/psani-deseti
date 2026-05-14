@@ -39,3 +39,11 @@ export function loadRecentErrors(): RecentErrorsSummary {
   }
   return { count: entries.length, aggregated };
 }
+
+export function clearRecentErrors(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // ignore
+  }
+}
