@@ -104,6 +104,33 @@ function allowedLettersUpToTier(tier: number): Set<string> {
   return out;
 }
 
+const MIN_POOL_SIZE = 3;
+
+function buildWordPool(ch: string, tier: number): string[] {
+  const allowed = allowedLettersUpToTier(tier);
+  return czechWords.filter(w => {
+    if (w.length < 2 || w.length > 8) return false;
+    const lower = w.toLowerCase();
+    if (!lower.includes(ch)) return false;
+    for (const c of lower) if (!allowed.has(c)) return false;
+    return true;
+  });
+}
+
+// Find smallest tier that yields a usable word pool for `ch`. Starts at the
+// letter's own row tier, expands upward only if too few words exist there.
+function findUsablePool(ch: string): string[] {
+  const startTier = tierOf(ch);
+  if (startTier < 0) return [];
+  let bestPool: string[] = [];
+  for (let t = startTier; t < ROW_TIERS.length; t++) {
+    const pool = buildWordPool(ch, t);
+    if (pool.length >= MIN_POOL_SIZE) return pool;
+    if (pool.length > bestPool.length) bestPool = pool;
+  }
+  return bestPool;
+}
+
 export function generateGlobalErrorExerciseText(
   errorsByChar: Record<string, number>,
   wordCount = 48
@@ -118,29 +145,23 @@ export function generateGlobalErrorExerciseText(
     return generateSimpleSequence(['f','j','d','k'], 280);
   }
 
-  const totalWeight = sortedErrors.reduce((s, [, n]) => s + n, 0);
-
-  const picks: string[] = [];
+  // Build pools per letter; drop letters with no available words at all.
+  const entries: { ch: string; weight: number; pool: string[] }[] = [];
   for (const [ch, n] of sortedErrors) {
-    const tier = tierOf(ch);
-    const allowed = allowedLettersUpToTier(tier);
-    const pool = czechWords.filter(w => {
-      if (w.length < 2 || w.length > 8) return false;
-      const lower = w.toLowerCase();
-      if (!lower.includes(ch)) return false;
-      for (const c of lower) if (!allowed.has(c)) return false;
-      return true;
-    });
+    const pool = findUsablePool(ch);
+    if (pool.length > 0) entries.push({ ch, weight: n, pool });
+  }
 
-    const slots = Math.max(1, Math.round((n / totalWeight) * wordCount));
+  if (entries.length === 0) {
+    return generateSimpleSequence(['f','j','d','k'], 280);
+  }
 
-    if (pool.length === 0) {
-      // No valid words → repetitive char drill respecting tier
-      picks.push(generateLetterDrill(ch, slots));
-    } else {
-      for (let i = 0; i < slots; i++) {
-        picks.push(pool[Math.floor(Math.random() * pool.length)]);
-      }
+  const totalWeight = entries.reduce((s, e) => s + e.weight, 0);
+  const picks: string[] = [];
+  for (const e of entries) {
+    const slots = Math.max(1, Math.round((e.weight / totalWeight) * wordCount));
+    for (let i = 0; i < slots; i++) {
+      picks.push(e.pool[Math.floor(Math.random() * e.pool.length)]);
     }
   }
 
@@ -151,13 +172,4 @@ export function generateGlobalErrorExerciseText(
   }
 
   return picks.join(' ');
-}
-
-function generateLetterDrill(ch: string, groups: number): string {
-  const out: string[] = [];
-  for (let i = 0; i < groups; i++) {
-    const groupLen = 2 + Math.floor(Math.random() * 3);
-    out.push(ch.repeat(groupLen));
-  }
-  return out.join(' ');
 }
