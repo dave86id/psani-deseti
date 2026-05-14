@@ -13,6 +13,17 @@ export function generateExerciseText(
   const nl = newLetters.map(l => l.toLowerCase());
   const al = allLetters.map(l => l.toLowerCase());
 
+  // Every generated word must contain at least one of the lesson's new letters
+  // (for review lessons with no new letters, use the full allowed pool).
+  const wordsForLesson = (min: number, max: number) => {
+    const pool = filterWords(al, min, max);
+    if (nl.length === 0) return pool;
+    return pool.filter(w => {
+      const lower = w.toLowerCase();
+      return nl.some(letter => lower.includes(letter));
+    });
+  };
+
   if (exerciseNum <= 2) {
     // Phase 1: only new letters, repeated and alternated
     return generateLetterSequence(nl, 62);
@@ -21,21 +32,21 @@ export function generateExerciseText(
     return generateLetterSequence(al, 78);
   } else if (exerciseNum <= 6) {
     // Phase 3: try words, fallback to sequences
-    const words = filterWords(al, 2, 6);
+    const words = wordsForLesson(2, 6);
     if (words.length >= 3) {
       return pickWords(words, 19).join(' ');
     }
     return generateLetterSequence(al, 78);
   } else if (exerciseNum <= 9) {
     // Phase 4: words, up to 8 chars
-    const words = filterWords(al, 2, 8);
+    const words = wordsForLesson(2, 8);
     if (words.length >= 3) {
       return pickWords(words, 16).join(' ');
     }
     return generateLetterSequence(al, 78);
   } else {
     // Phase 5: longer words and phrases
-    const words = filterWords(al, 3, 12);
+    const words = wordsForLesson(3, 12);
     if (words.length >= 3) {
       return pickWords(words, 12).join(' ');
     }
