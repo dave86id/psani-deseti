@@ -7,7 +7,7 @@ import { useFirestoreProgress } from './hooks/useFirestoreProgress';
 import { useLeaderboard } from './hooks/useLeaderboard';
 import { getLessonById, getNextLessonId, getAllLessons } from './data/lessons';
 import { getExerciseMode } from './utils/exerciseMode';
-import { generateErrorExerciseText } from './utils/errorExerciseGenerator';
+import { generateErrorExerciseText, generateGlobalErrorExerciseText } from './utils/errorExerciseGenerator';
 import { loadRecentErrors } from './utils/recentErrors';
 import Dashboard from './components/Dashboard';
 import LessonMenu from './components/LessonMenu';
@@ -297,27 +297,16 @@ export default function App() {
 
   const handlePracticeGlobalErrors = useCallback(() => {
     const { aggregated } = loadRecentErrors();
-    // Union of letters from lessons the user has touched; fallback = home row
-    const learned = new Set<string>();
-    for (const l of getAllLessons()) {
-      const p = progress.lessons[l.id];
-      if (p && ((p.completedExercises?.length ?? 0) > 0 || p.completed)) {
-        l.allLetters.forEach(ch => learned.add(ch.toLowerCase()));
-      }
-    }
-    if (learned.size === 0) {
-      ['f','j','d','k','s','l','a','ů','g','h'].forEach(c => learned.add(c));
-    }
-    const allLetters = [...learned];
-    // ~4x normal exercise length (normal ~60-90 chars / 10-12 words)
-    const text = generateErrorExerciseText(aggregated, allLetters, 280, 48);
+    // ~4x normal exercise length (normal ~10-12 words). Per-letter row tier
+    // constraint is applied inside generateGlobalErrorExerciseText.
+    const text = generateGlobalErrorExerciseText(aggregated, 48);
     setErrorPracticeText(text);
     setIsErrorPractice(true);
     setErrorPracticeScope('global');
     processedResultRef.current = null;
     resetExercise(text);
     setScreen('exercise');
-  }, [progress, resetExercise]);
+  }, [resetExercise]);
 
   const handleErrorPracticeNext = useCallback(() => {
     if (errorPracticeScope === 'global') {
