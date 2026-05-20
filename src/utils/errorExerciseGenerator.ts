@@ -112,7 +112,7 @@ function buildWordPool(ch: string, tier: number): string[] {
     if (w.length < 2 || w.length > 8) return false;
     const lower = w.toLowerCase();
     if (!lower.includes(ch)) return false;
-    for (const c of lower) if (!allowed.has(c)) return false;
+    for (const c of w) if (!allowed.has(c)) return false;
     return true;
   });
 }

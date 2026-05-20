@@ -9,10 +9,10 @@ export function filterWords(
   minLength = 2,
   maxLength = 12
 ): string[] {
-  const allowed = new Set(allowedLetters.map(l => l.toLowerCase()));
+  const allowed = new Set(allowedLetters);
   return czechWords.filter(word => {
     if (word.length < minLength || word.length > maxLength) return false;
-    return [...word.toLowerCase()].every(ch => allowed.has(ch));
+    return [...word].every(ch => allowed.has(ch));
   });
 }
 
