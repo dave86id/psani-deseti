@@ -181,16 +181,34 @@ export const sections: Section[] = [
   },
   {
     id: 4,
+    title: 'Věty s interpunkcí',
+    lessons: makeLessons([
+      {
+        id: '4.1', title: 'Čárky, tečky a spojovník', newLetters: [], allLetters: allRows,
+        numExercises: 6,
+        customTexts: [
+          'auto, vlak, motor, ryba, pes, kocour.',
+          'vlak jel. pes spal. kocour leze. byl den.',
+          'pes bere kost, kocour bere maso. byly doma.',
+          'auto-bus, den-noc, ano-ne, vlak-bus, pan-syn.',
+          'moje auto jede, tvoje auto stalo u domu.',
+          'vlak jede do brna, auto-bus jede do prahy.',
+        ],
+      },
+    ]),
+  },
+  {
+    id: 5,
     title: 'Diakritika',
     lessons: makeLessons([
-      { id: '4.1', title: 'ř, ě, š', newLetters: ['ř','ě','š'], allLetters: [...allRows,'ř','ě','š'] },
-      { id: '4.2', title: 'č a á', newLetters: ['č','á'], allLetters: [...allRows,'ř','ě','š','č','á'] },
-      { id: '4.3', title: 'í', newLetters: ['í'], allLetters: [...allRows,'ř','ě','š','č','á','í'] },
-      { id: '4.4', title: 'ž a ó', newLetters: ['ž','ó'], allLetters: [...allRows,'ř','ě','š','č','á','í','ž','ó'] },
-      { id: '4.5', title: 'ú', newLetters: ['ú'], allLetters: [...allRows,'ř','ě','š','č','á','í','ž','ó','ú'] },
-      { id: '4.6', title: 'ď, ť, ň', newLetters: ['ď','ť','ň'], allLetters: withDiacritics },
+      { id: '5.1', title: 'ř, ě, š', newLetters: ['ř','ě','š'], allLetters: [...allRows,'ř','ě','š'] },
+      { id: '5.2', title: 'č a á', newLetters: ['č','á'], allLetters: [...allRows,'ř','ě','š','č','á'] },
+      { id: '5.3', title: 'í', newLetters: ['í'], allLetters: [...allRows,'ř','ě','š','č','á','í'] },
+      { id: '5.4', title: 'ž a ó', newLetters: ['ž','ó'], allLetters: [...allRows,'ř','ě','š','č','á','í','ž','ó'] },
+      { id: '5.5', title: 'ú', newLetters: ['ú'], allLetters: [...allRows,'ř','ě','š','č','á','í','ž','ó','ú'] },
+      { id: '5.6', title: 'ď, ť, ň', newLetters: ['ď','ť','ň'], allLetters: withDiacritics },
       {
-        id: '4.7', title: 'Závěrečná — diakritika', newLetters: [], allLetters: withDiacritics,
+        id: '5.7', title: 'Závěrečná — diakritika', newLetters: [], allLetters: withDiacritics,
         numExercises: 10,
         customTexts: [
           'příběh střední říjen školák příroda část žák dnes',
@@ -208,11 +226,11 @@ export const sections: Section[] = [
     ]),
   },
   {
-    id: 5,
+    id: 6,
     title: 'Velká písmena',
     lessons: makeLessons([
       {
-        id: '5.1', title: 'Pravý Shift', newLetters: ['A','S','D','F','G'], allLetters: [...withDiacritics,'A','S','D','F','G'],
+        id: '6.1', title: 'Pravý Shift', newLetters: ['A','S','D','F','G'], allLetters: [...withDiacritics,'A','S','D','F','G'],
         customTexts: [
           'A S D F G a s d f g A S D F G',
           'As Sa Dál Fuj Glad',
@@ -225,7 +243,7 @@ export const sections: Section[] = [
         ],
       },
       {
-        id: '5.2', title: 'Levý Shift', newLetters: ['H','J','K','L','Ů'], allLetters: [...withDiacritics,'A','S','D','F','G','H','J','K','L','Ů'],
+        id: '6.2', title: 'Levý Shift', newLetters: ['H','J','K','L','Ů'], allLetters: [...withDiacritics,'A','S','D','F','G','H','J','K','L','Ů'],
         customTexts: [
           'H J K L Ů h j k l ů',
           'Ho Jak Kal Lak Ůhor',
@@ -238,7 +256,7 @@ export const sections: Section[] = [
         ],
       },
       {
-        id: '5.3', title: 'Velká písmena s diakritikou', newLetters: ['Č','Š','Ř','Ž','Á','É','Í','Ó','Ú'], allLetters: withDiacritics,
+        id: '6.3', title: 'Velká písmena s diakritikou', newLetters: ['Č','Š','Ř','Ž','Á','É','Í','Ó','Ú'], allLetters: withDiacritics,
         numExercises: 8,
         customTexts: [
           'Česká republika Šumava Říčany',
@@ -254,11 +272,11 @@ export const sections: Section[] = [
     ]),
   },
   {
-    id: 6,
+    id: 7,
     title: 'Speciální znaky',
     lessons: makeLessons([
       {
-        id: '6.1', title: 'Otazník', newLetters: ['?'], allLetters: [...withDiacritics,'?'],
+        id: '7.1', title: 'Otazník', newLetters: ['?'], allLetters: [...withDiacritics,'?'],
         customTexts: [
           'co? jak? kde? kdo? kdy? proč?',
           'Jak se máš? Kde jsi? Co děláš?',
@@ -271,7 +289,7 @@ export const sections: Section[] = [
         ],
       },
       {
-        id: '6.2', title: 'Vykřičník', newLetters: ['!'], allLetters: withSpecial,
+        id: '7.2', title: 'Vykřičník', newLetters: ['!'], allLetters: withSpecial,
         customTexts: [
           'Ahoj! Čau! Hej! Nazdar! Zdravím!',
           'Pozor! Stop! Pomoc! Stůj!',
@@ -286,11 +304,11 @@ export const sections: Section[] = [
     ]),
   },
   {
-    id: 7,
+    id: 8,
     title: 'Čísla',
     lessons: makeLessons([
       {
-        id: '7.1', title: 'Čísla 1–6', newLetters: ['1','2','3','4','5','6'], allLetters: [...withSpecial,'1','2','3','4','5','6'],
+        id: '8.1', title: 'Čísla 1–6', newLetters: ['1','2','3','4','5','6'], allLetters: [...withSpecial,'1','2','3','4','5','6'],
         customTexts: [
           '1 2 3 4 5 6 1 2 3 4 5 6',
           '11 22 33 44 55 66 12 21 34 43',
@@ -303,7 +321,7 @@ export const sections: Section[] = [
         ],
       },
       {
-        id: '7.2', title: 'Čísla 7–0', newLetters: ['7','8','9','0'], allLetters: withNumbers,
+        id: '8.2', title: 'Čísla 7–0', newLetters: ['7','8','9','0'], allLetters: withNumbers,
         customTexts: [
           '7 8 9 0 7 8 9 0 7 8 9 0',
           '77 88 99 00 78 87 90 09',
@@ -318,11 +336,11 @@ export const sections: Section[] = [
     ]),
   },
   {
-    id: 8,
+    id: 9,
     title: 'Závěr kurzu',
     lessons: makeLessons([
       {
-        id: '8.1', title: 'Jednou řečí', newLetters: [], allLetters: withNumbers,
+        id: '9.1', title: 'Jednou řečí', newLetters: [], allLetters: withNumbers,
         numExercises: 10,
         customTexts: [
           'Česká republika leží ve středu Evropy. Je to krásná země s bohatou historií.',
@@ -338,7 +356,7 @@ export const sections: Section[] = [
         ],
       },
       {
-        id: '8.2', title: 'Zpátky do školy', newLetters: [], allLetters: withNumbers,
+        id: '9.2', title: 'Zpátky do školy', newLetters: [], allLetters: withNumbers,
         numExercises: 12,
         customTexts: [
           'Rychlé hnědé liška přeskočila přes líného psa. Pak utekla do lesa.',
