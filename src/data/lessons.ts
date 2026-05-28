@@ -31,7 +31,7 @@ function makeLessons(
 const homeRow = ['f','j','d','k','s','l','a','ů','g','h'];
 const topRow = [...homeRow, 'r','u','t','z','e','i','w','o','p','q','ú'];
 const allRows = [...topRow, 'v','m','b','n','c','x','y',',',' ','.', '-'];
-const withDiacritics = [...allRows, 'ř','ě','š','č','á','í','ž','ó','ď','ť','ň'];
+const withDiacritics = [...allRows, 'í','á','é','ě','ý','š','č','ř','ž','ó','ď','ť','ň'];
 const withSpecial = [...withDiacritics, '?', '!'];
 const withNumbers = [...withSpecial, '1','2','3','4','5','6','7','8','9','0'];
 
@@ -201,26 +201,26 @@ export const sections: Section[] = [
     id: 5,
     title: 'Diakritika',
     lessons: makeLessons([
-      { id: '5.1', title: 'ř, ě, š', newLetters: ['ř','ě','š'], allLetters: [...allRows,'ř','ě','š'] },
-      { id: '5.2', title: 'č a á', newLetters: ['č','á'], allLetters: [...allRows,'ř','ě','š','č','á'] },
-      { id: '5.3', title: 'í', newLetters: ['í'], allLetters: [...allRows,'ř','ě','š','č','á','í'] },
-      { id: '5.4', title: 'ž a ó', newLetters: ['ž','ó'], allLetters: [...allRows,'ř','ě','š','č','á','í','ž','ó'] },
-      { id: '5.5', title: 'ú', newLetters: ['ú'], allLetters: [...allRows,'ř','ě','š','č','á','í','ž','ó','ú'] },
+      { id: '5.1', title: 'í a á', newLetters: ['í','á'], allLetters: [...allRows,'í','á'] },
+      { id: '5.2', title: 'é a ě', newLetters: ['é','ě'], allLetters: [...allRows,'í','á','é','ě'] },
+      { id: '5.3', title: 'ý a š', newLetters: ['ý','š'], allLetters: [...allRows,'í','á','é','ě','ý','š'] },
+      { id: '5.4', title: 'č a ř', newLetters: ['č','ř'], allLetters: [...allRows,'í','á','é','ě','ý','š','č','ř'] },
+      { id: '5.5', title: 'ž a ó', newLetters: ['ž','ó'], allLetters: [...allRows,'í','á','é','ě','ý','š','č','ř','ž','ó'] },
       { id: '5.6', title: 'ď, ť, ň', newLetters: ['ď','ť','ň'], allLetters: withDiacritics },
       {
         id: '5.7', title: 'Závěrečná — diakritika', newLetters: [], allLetters: withDiacritics,
         numExercises: 10,
         customTexts: [
-          'příběh střední říjen školák příroda část žák dnes',
-          'většina částečně příležitost přát přes příčina žák',
-          'životopis průzkumník společnost začátek zákon příroda',
-          'příroda čeština řízení množství šance žena život žák',
-          'člověk část čas článek šaty šest špatný říct žít',
-          'šance šaty šest špatný štěstí říct žít žák začátek',
-          'začátek zahrada zákon zámek příroda říjen školák část',
-          'žena život žít žák říct říkat dělat děti dnes přes',
-          'radost řada dělat děti dnes přát přece přes příčina',
-          'přát přece přes příčina začátek zákon žena život část',
+          'krásný den dělá rozdíl, příběh žije přes celý čas',
+          'velký výlet, šťastný kluk, čeká přátele, čte knížku',
+          'životopis čeština příroda množství šance žena žít žák',
+          'každý ráno přijde, věří, že dnes bude dobrý úsměv',
+          'krásný čas přátelé příroda výlet sluníčko šance žít',
+          'říjen školák žena řekl říká věří dělá přijde brzy',
+          'začátek konec přátelství rodina důvěra zítra ráno žít',
+          'krásný den úsměv srdce příběh počasí výlet šance žák',
+          'rád říká přijde dnes přes most přírodu kvůli práci',
+          'každý den dělá rozdíl přes čas životopis šance žít',
         ],
       },
     ]),

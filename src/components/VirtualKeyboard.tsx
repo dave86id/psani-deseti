@@ -35,6 +35,31 @@ const DIRECT_DIACRITIC_KEY: Record<string, string> = {
   'ě': '2', 'š': '3', 'č': '4', 'ř': '5', 'ž': '6', 'ý': '7', 'á': '8', 'í': '9', 'é': '0',
 };
 
+// Which Shift should be used for each key. Standard ten-finger typing uses
+// the opposite-hand Shift (left half of keyboard → right Shift, right half → left Shift).
+const SHIFT_SIDE_FOR_KEY: Record<string, 'ShiftLeft' | 'ShiftRight'> = {
+  // Left half keys → right Shift
+  '1': 'ShiftRight', '2': 'ShiftRight', '3': 'ShiftRight', '4': 'ShiftRight', '5': 'ShiftRight',
+  'q': 'ShiftRight', 'w': 'ShiftRight', 'e': 'ShiftRight', 'r': 'ShiftRight', 't': 'ShiftRight',
+  'a': 'ShiftRight', 's': 'ShiftRight', 'd': 'ShiftRight', 'f': 'ShiftRight', 'g': 'ShiftRight',
+  'y': 'ShiftRight', 'x': 'ShiftRight', 'c': 'ShiftRight', 'v': 'ShiftRight', 'b': 'ShiftRight',
+  // Right half keys → left Shift
+  '6': 'ShiftLeft', '7': 'ShiftLeft', '8': 'ShiftLeft', '9': 'ShiftLeft', '0': 'ShiftLeft',
+  'z': 'ShiftLeft', 'u': 'ShiftLeft', 'i': 'ShiftLeft', 'o': 'ShiftLeft', 'p': 'ShiftLeft', 'ú': 'ShiftLeft',
+  'h': 'ShiftLeft', 'j': 'ShiftLeft', 'k': 'ShiftLeft', 'l': 'ShiftLeft', 'ů': 'ShiftLeft',
+  'n': 'ShiftLeft', 'm': 'ShiftLeft', 'ˇ': 'ShiftLeft',
+};
+
+// Detect which physical key carries a given char (returns the unshifted key label).
+function findKeyHostingChar(ch: string): string | null {
+  for (const row of keyboardRows) {
+    for (const k of row) {
+      if (k.key === ch || k.shift === ch || k.altChar === ch) return k.key;
+    }
+  }
+  return null;
+}
+
 interface VirtualKeyboardProps {
   activeKey: string;
   wrongKeyFlash: string | null;
@@ -58,28 +83,41 @@ function getKeyStyle(
   let isShiftTarget = false;
 
   if (directNumKey) {
-    // Lowercase diacritic directly on number row: highlight number key + Shift
+    // Lowercase diacritic directly on number row: highlight number key + opposite-hand Shift
     isTarget = keyDef.key === directNumKey;
-    isShiftTarget = keyDef.key === 'ShiftLeft' || keyDef.key === 'ShiftRight';
+    const shiftSide = SHIFT_SIDE_FOR_KEY[directNumKey];
+    isShiftTarget = !!shiftSide && keyDef.key === shiftSide;
   } else if (needsDiacritic) {
     if (pendingDeadKey) {
       // Second stage: highlight base letter (case-insensitively) and Shift if uppercase
       const baseKey = needsDiacritic.base.toLowerCase();
       isTarget = keyDef.key.toLowerCase() === baseKey;
       // Also highlight Shift when the target is an uppercase diacritic
-      isShiftTarget = !!(isUppercaseDiacritic && (keyDef.key === 'ShiftLeft' || keyDef.key === 'ShiftRight'));
+      const shiftSide = SHIFT_SIDE_FOR_KEY[baseKey];
+      isShiftTarget = !!(isUppercaseDiacritic && shiftSide && keyDef.key === shiftSide);
     } else {
-      // First stage: highlight dead key
+      // First stage: highlight dead key (and Shift if dead key needs it)
+      const deadHostKey = findKeyHostingChar(needsDiacritic.dead);
       isTarget = keyDef.key === needsDiacritic.dead ||
                  !!(keyDef.shift && keyDef.shift === needsDiacritic.dead);
+      // If the dead key is reached via Shift on its host, highlight Shift too
+      const deadIsShifted = !!deadHostKey &&
+        keyboardRows.some(r => r.some(k => k.key === deadHostKey && k.shift === needsDiacritic.dead));
+      if (deadIsShifted && deadHostKey) {
+        const shiftSide = SHIFT_SIDE_FOR_KEY[deadHostKey];
+        isShiftTarget = !!shiftSide && keyDef.key === shiftSide;
+      }
     }
   } else {
     isTarget = keyDef.key === activeKey ||
                !!(keyDef.shift && keyDef.shift === activeKey) ||
                !!(keyDef.altChar && keyDef.altChar === activeKey);
     // Highlight Shift when the active key is an uppercase letter
-    isShiftTarget = !!(activeKey.length === 1 && activeKey === activeKey.toUpperCase() && activeKey !== activeKey.toLowerCase() &&
-      (keyDef.key === 'ShiftLeft' || keyDef.key === 'ShiftRight'));
+    const isUpperLetter = activeKey.length === 1 && activeKey === activeKey.toUpperCase() && activeKey !== activeKey.toLowerCase();
+    if (isUpperLetter) {
+      const shiftSide = SHIFT_SIDE_FOR_KEY[activeKey.toLowerCase()];
+      isShiftTarget = !!shiftSide && keyDef.key === shiftSide;
+    }
   }
                     
   const isWrong = keyDef.key === wrongKeyFlash || 
@@ -110,7 +148,7 @@ function getKeyStyle(
 
   if (isTarget || isShiftTarget) {
     return {
-      backgroundColor: isShiftTarget && !isTarget ? '#6d28d9' : '#8b5cf6',
+      backgroundColor: '#8b5cf6',
       borderColor: '#a78bfa',
       color: '#ffffff',
       boxShadow: '0 0 12px rgba(139, 92, 246, 0.6)',
