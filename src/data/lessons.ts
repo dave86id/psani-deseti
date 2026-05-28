@@ -41,7 +41,7 @@ export const sections: Section[] = [
     title: 'Střední řada',
     lessons: makeLessons([
       {
-        id: '1.1', title: 'f a j', newLetters: ['f','j'], allLetters: ['f','j'],
+        id: '1.1', title: 'f, j', newLetters: ['f','j'], allLetters: ['f','j'],
         customTexts: [
           'f j f j f j f j f j f j f j f j f j f j f j f j f j',
           'ff jj ff jj fj jf ff jj fj jf ff jj fj jf fj jf ff',
@@ -54,7 +54,7 @@ export const sections: Section[] = [
         ],
       },
       {
-        id: '1.2', title: 'd a k', newLetters: ['d','k'], allLetters: ['f','j','d','k'],
+        id: '1.2', title: 'd, k', newLetters: ['d','k'], allLetters: ['f','j','d','k'],
         customTexts: [
           'd k d k d k d k d k d k d k d k d k d k',
           'dd kk dd kk dk kd dd kk dk kd dd kk dk kd dk kd',
@@ -67,7 +67,7 @@ export const sections: Section[] = [
         ],
       },
       {
-        id: '1.3', title: 's a l', newLetters: ['s','l'], allLetters: ['f','j','d','k','s','l'],
+        id: '1.3', title: 's, l', newLetters: ['s','l'], allLetters: ['f','j','d','k','s','l'],
         customTexts: [
           's l s l s l s l s l s l s l s l s l s l',
           'ss ll ss ll sl ls ss ll sl ls ss ll sl ls sl ls',
@@ -80,7 +80,7 @@ export const sections: Section[] = [
         ],
       },
       {
-        id: '1.4', title: 'a a ů', newLetters: ['a','ů'], allLetters: ['f','j','d','k','s','l','a','ů'],
+        id: '1.4', title: 'a, ů', newLetters: ['a','ů'], allLetters: ['f','j','d','k','s','l','a','ů'],
         customTexts: [
           'a ů a ů a ů a ů a ů a ů a ů a ů a ů a ů',
           'aa ůů aa ůů aů ůa aa ůů aů ůa aa ůů aů ůa aa',
@@ -93,7 +93,7 @@ export const sections: Section[] = [
         ],
       },
       {
-        id: '1.5', title: 'g a h', newLetters: ['g','h'], allLetters: homeRow,
+        id: '1.5', title: 'g, h', newLetters: ['g','h'], allLetters: homeRow,
         customTexts: [
           'g h g h g h g h g h g h g h g h g h g h',
           'gg hh gg hh gh hg gg hh gh hg gg hh gh hg gg hh',
@@ -127,11 +127,11 @@ export const sections: Section[] = [
     id: 2,
     title: 'Horní řada',
     lessons: makeLessons([
-      { id: '2.1', title: 'r a u', newLetters: ['r','u'], allLetters: [...homeRow,'r','u'] },
-      { id: '2.2', title: 't a z', newLetters: ['t','z'], allLetters: [...homeRow,'r','u','t','z'] },
-      { id: '2.3', title: 'e a i', newLetters: ['e','i'], allLetters: [...homeRow,'r','u','t','z','e','i'] },
+      { id: '2.1', title: 'r, u', newLetters: ['r','u'], allLetters: [...homeRow,'r','u'] },
+      { id: '2.2', title: 't, z', newLetters: ['t','z'], allLetters: [...homeRow,'r','u','t','z'] },
+      { id: '2.3', title: 'e, i', newLetters: ['e','i'], allLetters: [...homeRow,'r','u','t','z','e','i'] },
       { id: '2.4', title: 'w, o, p', newLetters: ['w','o','p'], allLetters: [...homeRow,'r','u','t','z','e','i','w','o','p'] },
-      { id: '2.5', title: 'q a ú', newLetters: ['q','ú'], allLetters: topRow },
+      { id: '2.5', title: 'q, ú', newLetters: ['q','ú'], allLetters: topRow },
       {
         id: '2.6', title: 'Závěrečná — horní řada', newLetters: [], allLetters: topRow,
         numExercises: 10,
@@ -154,11 +154,11 @@ export const sections: Section[] = [
     id: 3,
     title: 'Spodní řada',
     lessons: makeLessons([
-      { id: '3.1', title: 'v a m', newLetters: ['v','m'], allLetters: [...topRow,'v','m'] },
-      { id: '3.2', title: 'b a n', newLetters: ['b','n'], allLetters: [...topRow,'v','m','b','n'] },
-      { id: '3.3', title: 'c a čárka', newLetters: ['c',','], allLetters: [...topRow,'v','m','b','n','c',','] },
-      { id: '3.4', title: 'x a tečka', newLetters: ['x','.'], allLetters: [...topRow,'v','m','b','n','c',',','x','.'] },
-      { id: '3.5', title: 'y a spojovník', newLetters: ['y','-'], allLetters: allRows },
+      { id: '3.1', title: 'v, m', newLetters: ['v','m'], allLetters: [...topRow,'v','m'] },
+      { id: '3.2', title: 'b, n', newLetters: ['b','n'], allLetters: [...topRow,'v','m','b','n'] },
+      { id: '3.3', title: 'c, čárka', newLetters: ['c',','], allLetters: [...topRow,'v','m','b','n','c',','] },
+      { id: '3.4', title: 'x, tečka', newLetters: ['x','.'], allLetters: [...topRow,'v','m','b','n','c',',','x','.'] },
+      { id: '3.5', title: 'y, spojovník', newLetters: ['y','-'], allLetters: allRows },
       {
         id: '3.6', title: 'Závěrečná — všechny řady', newLetters: [], allLetters: allRows,
         numExercises: 12,
@@ -184,7 +184,7 @@ export const sections: Section[] = [
     title: 'Věty s interpunkcí',
     lessons: makeLessons([
       {
-        id: '4.1', title: 'Čárky, tečky a spojovník', newLetters: [], allLetters: allRows,
+        id: '4.1', title: 'Čárky, tečky, spojovník', newLetters: [], allLetters: allRows,
         numExercises: 6,
         customTexts: [
           'auto, vlak, motor, ryba, pes, kocour.',
@@ -201,11 +201,11 @@ export const sections: Section[] = [
     id: 5,
     title: 'Diakritika',
     lessons: makeLessons([
-      { id: '5.1', title: 'í a á', newLetters: ['í','á'], allLetters: [...allRows,'í','á'] },
-      { id: '5.2', title: 'é a ě', newLetters: ['é','ě'], allLetters: [...allRows,'í','á','é','ě'] },
-      { id: '5.3', title: 'ý a š', newLetters: ['ý','š'], allLetters: [...allRows,'í','á','é','ě','ý','š'] },
-      { id: '5.4', title: 'č a ř', newLetters: ['č','ř'], allLetters: [...allRows,'í','á','é','ě','ý','š','č','ř'] },
-      { id: '5.5', title: 'ž a ó', newLetters: ['ž','ó'], allLetters: [...allRows,'í','á','é','ě','ý','š','č','ř','ž','ó'] },
+      { id: '5.1', title: 'í, á', newLetters: ['í','á'], allLetters: [...allRows,'í','á'] },
+      { id: '5.2', title: 'é, ě', newLetters: ['é','ě'], allLetters: [...allRows,'í','á','é','ě'] },
+      { id: '5.3', title: 'ý, š', newLetters: ['ý','š'], allLetters: [...allRows,'í','á','é','ě','ý','š'] },
+      { id: '5.4', title: 'č, ř', newLetters: ['č','ř'], allLetters: [...allRows,'í','á','é','ě','ý','š','č','ř'] },
+      { id: '5.5', title: 'ž, ó', newLetters: ['ž','ó'], allLetters: [...allRows,'í','á','é','ě','ý','š','č','ř','ž','ó'] },
       { id: '5.6', title: 'ď, ť, ň', newLetters: ['ď','ť','ň'], allLetters: withDiacritics },
       {
         id: '5.7', title: 'Závěrečná — diakritika', newLetters: [], allLetters: withDiacritics,
