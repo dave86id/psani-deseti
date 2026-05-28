@@ -50,16 +50,6 @@ const SHIFT_SIDE_FOR_KEY: Record<string, 'ShiftLeft' | 'ShiftRight'> = {
   'n': 'ShiftLeft', 'm': 'ShiftLeft', 'ˇ': 'ShiftLeft',
 };
 
-// Detect which physical key carries a given char (returns the unshifted key label).
-function findKeyHostingChar(ch: string): string | null {
-  for (const row of keyboardRows) {
-    for (const k of row) {
-      if (k.key === ch || k.shift === ch || k.altChar === ch) return k.key;
-    }
-  }
-  return null;
-}
-
 interface VirtualKeyboardProps {
   activeKey: string;
   wrongKeyFlash: string | null;
@@ -83,30 +73,20 @@ function getKeyStyle(
   let isShiftTarget = false;
 
   if (directNumKey) {
-    // Lowercase diacritic directly on number row: highlight number key + opposite-hand Shift
+    // Lowercase diacritic directly on number row: highlight only the number key
     isTarget = keyDef.key === directNumKey;
-    const shiftSide = SHIFT_SIDE_FOR_KEY[directNumKey];
-    isShiftTarget = !!shiftSide && keyDef.key === shiftSide;
   } else if (needsDiacritic) {
     if (pendingDeadKey) {
-      // Second stage: highlight base letter (case-insensitively) and Shift if uppercase
+      // Second stage: highlight base letter (case-insensitively)
       const baseKey = needsDiacritic.base.toLowerCase();
       isTarget = keyDef.key.toLowerCase() === baseKey;
-      // Also highlight Shift when the target is an uppercase diacritic
+      // Shift only for uppercase diacritics (e.g. Č needs Shift+c after dead key)
       const shiftSide = SHIFT_SIDE_FOR_KEY[baseKey];
       isShiftTarget = !!(isUppercaseDiacritic && shiftSide && keyDef.key === shiftSide);
     } else {
-      // First stage: highlight dead key (and Shift if dead key needs it)
-      const deadHostKey = findKeyHostingChar(needsDiacritic.dead);
+      // First stage: highlight only the dead key
       isTarget = keyDef.key === needsDiacritic.dead ||
                  !!(keyDef.shift && keyDef.shift === needsDiacritic.dead);
-      // If the dead key is reached via Shift on its host, highlight Shift too
-      const deadIsShifted = !!deadHostKey &&
-        keyboardRows.some(r => r.some(k => k.key === deadHostKey && k.shift === needsDiacritic.dead));
-      if (deadIsShifted && deadHostKey) {
-        const shiftSide = SHIFT_SIDE_FOR_KEY[deadHostKey];
-        isShiftTarget = !!shiftSide && keyDef.key === shiftSide;
-      }
     }
   } else {
     isTarget = keyDef.key === activeKey ||
