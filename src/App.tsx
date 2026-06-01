@@ -203,6 +203,7 @@ export default function App() {
   useEffect(() => {
     history.pushState(null, '');
     const handlePopState = () => {
+      setIsErrorPractice(false);
       setScreen('dashboard');
       history.pushState(null, '');
     };
@@ -391,7 +392,7 @@ export default function App() {
         <FallingLettersMode
           text={currentExerciseText}
           lessonTitle={currentLesson?.title ?? ''}
-          onBack={() => setScreen('lesson-menu')}
+          onBack={() => { setIsErrorPractice(false); setScreen('lesson-menu'); }}
           onComplete={(stats) => {
             const total = stats.correct + stats.errors;
             const result: ExerciseResult = {
@@ -447,7 +448,7 @@ export default function App() {
           isErrorPractice={isErrorPractice}
           onNext={isErrorPractice ? handleErrorPracticeNext : handleNext}
           onRestart={handleRestart}
-          onBack={() => setScreen('dashboard')}
+          onBack={() => { setIsErrorPractice(false); setScreen('dashboard'); }}
         />
       );
     }
@@ -463,7 +464,7 @@ export default function App() {
         wrongKeyFlash={wrongKeyFlash}
         onKey={onKey}
         onDeadKey={onDeadKey}
-        onBack={() => setScreen('lesson-menu')}
+        onBack={() => { setIsErrorPractice(false); setScreen('lesson-menu'); }}
         isErrorPractice={isErrorPractice}
         pendingDeadKey={pendingDeadKey}
       />

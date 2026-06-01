@@ -124,6 +124,9 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
         <div className="flex items-center justify-between max-w-3xl mx-auto">
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="logo" style={{ height: '1.6rem', width: 'auto' }} />
+            <span style={{ fontSize: '0.6rem', color: 'rgb(138 138 138)', letterSpacing: '0.02em' }}>
+              v{__APP_VERSION__} · Sestaveno: {__BUILD_TIME__}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             {isGuest ? (
@@ -366,10 +369,6 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
       <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '0.5rem' }}>
         <img src="/footer-characters.png" alt="" style={{ width: '75%', maxWidth: '36rem', height: 'auto', opacity: 0.6 }} />
       </div>
-      <div style={{ textAlign: 'center', paddingBottom: '1rem', fontSize: '14px', color: 'rgb(138 138 138)', letterSpacing: '0.02em' }}>
-        v{__APP_VERSION__} · Sestaveno: {__BUILD_TIME__}
-      </div>
-
       {showErrorsModal && (
         <ErrorsModal
           onClose={() => setShowErrorsModal(false)}
