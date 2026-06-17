@@ -86,7 +86,7 @@ export default function ErrorHeatmapModal({ onClose }: ErrorHeatmapModalProps) {
                 width: '12rem',
                 height: '8px',
                 borderRadius: '4px',
-                background: `linear-gradient(to right, ${heatColor(1, 4)}, ${heatColor(2, 4)}, ${heatColor(3, 4)}, ${heatColor(4, 4)})`,
+                background: `linear-gradient(to right, ${[0, 1, 2, 3, 4, 5, 6].map(i => heatColor(i, 6)).join(', ')})`,
               }}
             />
             <span style={{ fontSize: '0.6rem', color: '#9ca3af' }}>nejvíc chyb ({max})</span>

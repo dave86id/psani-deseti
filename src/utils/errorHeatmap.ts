@@ -47,12 +47,30 @@ export function buildKeyErrorCounts(aggregated: Record<string, number>): Record<
   return counts;
 }
 
-// Map a key's error count to a heatmap color (amber -> red), given the max count.
+// Heatmap scale, low -> high errors.
+// dark blue, light blue, light green, yellow, orange, red, dark red.
+const HEAT_STOPS: [number, number, number][] = [
+  [30, 64, 175],    // tmavě modrá
+  [96, 165, 250],   // světle modrá
+  [134, 239, 172],  // světle zelená
+  [250, 204, 21],   // žlutá
+  [249, 115, 22],   // oranžová
+  [239, 68, 68],    // červená
+  [127, 29, 29],    // tmavě červená
+];
+
+// Map a key's error count to a heatmap color, given the max count.
 export function heatColor(count: number, max: number): string {
-  const ratio = max > 0 ? count / max : 0;
-  const hue = 48 - 48 * ratio;        // amber (48) -> red (0)
-  const light = 56 - 12 * ratio;      // slightly darker as it gets hotter
-  return `hsl(${hue}, 90%, ${light}%)`;
+  const ratio = max > 0 ? Math.min(count / max, 1) : 0;
+  const pos = ratio * (HEAT_STOPS.length - 1);
+  const i = Math.min(Math.floor(pos), HEAT_STOPS.length - 2);
+  const t = pos - i;
+  const [r1, g1, b1] = HEAT_STOPS[i];
+  const [r2, g2, b2] = HEAT_STOPS[i + 1];
+  const r = Math.round(r1 + (r2 - r1) * t);
+  const g = Math.round(g1 + (g2 - g1) * t);
+  const b = Math.round(b1 + (b2 - b1) * t);
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
 // Build a key -> color map for the heatmap-enabled VirtualKeyboard.

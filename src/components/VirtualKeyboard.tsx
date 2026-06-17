@@ -71,7 +71,10 @@ function getKeyStyle(
   if (heatmap) {
     const color = heatmap[keyDef.key];
     if (color) {
-      return { backgroundColor: color, borderColor: color, color: '#1a1a1a' };
+      const m = color.match(/\d+/g);
+      const [r, g, b] = m ? m.map(Number) : [0, 0, 0];
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return { backgroundColor: color, borderColor: color, color: luminance > 0.6 ? '#1a1a1a' : '#ffffff' };
     }
     return { backgroundColor: '#2e2e2e', borderColor: '#3a3a3a', color: '#6b7280' };
   }
