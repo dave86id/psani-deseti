@@ -51,10 +51,13 @@ const SHIFT_SIDE_FOR_KEY: Record<string, 'ShiftLeft' | 'ShiftRight'> = {
 };
 
 interface VirtualKeyboardProps {
-  activeKey: string;
-  wrongKeyFlash: string | null;
+  activeKey?: string;
+  wrongKeyFlash?: string | null;
   pressedKeys?: Set<string>;
-  pendingDeadKey: string | null;
+  pendingDeadKey?: string | null;
+  // When provided, render a static heatmap: every key gray, overridden by the
+  // given key -> background color. Typing-related props are ignored.
+  heatmap?: Record<string, string>;
 }
 
 function getKeyStyle(
@@ -62,8 +65,17 @@ function getKeyStyle(
   activeKey: string,
   wrongKeyFlash: string | null,
   pressedKeys?: Set<string>,
-  pendingDeadKey?: string | null
+  pendingDeadKey?: string | null,
+  heatmap?: Record<string, string>
 ): React.CSSProperties {
+  if (heatmap) {
+    const color = heatmap[keyDef.key];
+    if (color) {
+      return { backgroundColor: color, borderColor: color, color: '#1a1a1a' };
+    }
+    return { backgroundColor: '#2e2e2e', borderColor: '#3a3a3a', color: '#6b7280' };
+  }
+
   const directNumKey = DIRECT_DIACRITIC_KEY[activeKey];
   const hasDirectKey = DIRECT_KEYS.has(activeKey);
   const needsDiacritic = (!directNumKey && !hasDirectKey) ? REVERSE_MAP[activeKey] : undefined;
@@ -160,10 +172,11 @@ function getKeyWidth(keyDef: KeyDef): string {
 }
 
 export default function VirtualKeyboard({
-  activeKey,
-  wrongKeyFlash,
+  activeKey = '',
+  wrongKeyFlash = null,
   pressedKeys,
-  pendingDeadKey,
+  pendingDeadKey = null,
+  heatmap,
 }: VirtualKeyboardProps) {
   return (
     <div
@@ -173,7 +186,7 @@ export default function VirtualKeyboard({
       {keyboardRows.map((row, rowIndex) => (
         <div key={rowIndex} className="flex justify-between gap-1">
           {row.map((keyDef, keyIndex) => {
-            const style = getKeyStyle(keyDef, activeKey, wrongKeyFlash, pressedKeys, pendingDeadKey);
+            const style = getKeyStyle(keyDef, activeKey, wrongKeyFlash, pressedKeys, pendingDeadKey, heatmap);
             const width = getKeyWidth(keyDef);
 
             const homingBumpColor = keyDef.key === 'f' ? fingerColors['left-index']

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { loadRecentErrors, clearRecentErrors } from '../utils/recentErrors';
+import ErrorHeatmapModal from './ErrorHeatmapModal';
 
 interface ErrorsModalProps {
   onClose: () => void;
@@ -17,6 +18,7 @@ function displayChar(ch: string): string {
 
 export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalProps) {
   const [version, setVersion] = useState(0);
+  const [showHeatmap, setShowHeatmap] = useState(false);
   const { count, aggregated } = loadRecentErrors();
   const allRows = Object.entries(aggregated)
     .filter(([, n]) => n > 0)
@@ -104,6 +106,26 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
           </button>
         </div>
 
+        {hasErrors && (
+          <div style={{ marginBottom: '0.6rem' }}>
+            <button
+              type="button"
+              onClick={() => setShowHeatmap(true)}
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                fontSize: '0.7rem',
+                color: '#8b5cf6',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+              }}
+            >
+              🔥 Heat mapa chyb →
+            </button>
+          </div>
+        )}
+
         <div style={{ overflowY: 'auto', flex: 1 }}>
           {rows.length === 0 ? (
             <div style={{ padding: '1.5rem 0', textAlign: 'center', color: '#6b7280', fontSize: '0.75rem' }}>
@@ -185,6 +207,8 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
           </div>
         )}
       </div>
+
+      {showHeatmap && <ErrorHeatmapModal onClose={() => setShowHeatmap(false)} />}
     </div>
   );
 }
