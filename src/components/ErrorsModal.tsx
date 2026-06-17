@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { loadRecentErrors, clearRecentErrors } from '../utils/recentErrors';
-import ErrorHeatmapModal from './ErrorHeatmapModal';
+import { buildHeatmap, heatColor } from '../utils/errorHeatmap';
+import VirtualKeyboard from './VirtualKeyboard';
 
 interface ErrorsModalProps {
   onClose: () => void;
@@ -18,7 +19,6 @@ function displayChar(ch: string): string {
 
 export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalProps) {
   const [version, setVersion] = useState(0);
-  const [showHeatmap, setShowHeatmap] = useState(false);
   const { count, aggregated } = loadRecentErrors();
   const allRows = Object.entries(aggregated)
     .filter(([, n]) => n > 0)
@@ -26,6 +26,7 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
   const rows = allRows.slice(0, TOP_N);
   const totalErrors = allRows.reduce((sum, [, n]) => sum + n, 0);
   const hasErrors = allRows.length > 0;
+  const { colors: heatColors, max: heatMax } = buildHeatmap(aggregated);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -71,7 +72,7 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
           border: '1px solid #3a3a3a',
           borderRadius: '0.75rem',
           padding: '1.25rem',
-          maxWidth: '28rem',
+          maxWidth: '46rem',
           width: '100%',
           maxHeight: '85vh',
           display: 'flex',
@@ -107,22 +108,20 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
         </div>
 
         {hasErrors && (
-          <div style={{ marginBottom: '0.6rem' }}>
-            <button
-              type="button"
-              onClick={() => setShowHeatmap(true)}
-              style={{
-                background: 'none',
-                border: 'none',
-                padding: 0,
-                fontSize: '0.7rem',
-                color: '#8b5cf6',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-              }}
-            >
-              🔥 Heat mapa chyb →
-            </button>
+          <div style={{ marginBottom: '0.9rem' }}>
+            <VirtualKeyboard heatmap={heatColors} />
+            <div style={{ marginTop: '0.6rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem' }}>
+              <span style={{ fontSize: '0.6rem', color: '#9ca3af' }}>nejméně chyb</span>
+              <div
+                style={{
+                  width: '12rem',
+                  height: '8px',
+                  borderRadius: '4px',
+                  background: `linear-gradient(to right, ${[0, 1, 2, 3, 4, 5, 6].map(i => heatColor(i, 6)).join(', ')})`,
+                }}
+              />
+              <span style={{ fontSize: '0.6rem', color: '#9ca3af' }}>nejvíc chyb ({heatMax})</span>
+            </div>
           </div>
         )}
 
@@ -207,8 +206,6 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
           </div>
         )}
       </div>
-
-      {showHeatmap && <ErrorHeatmapModal onClose={() => setShowHeatmap(false)} />}
     </div>
   );
 }
