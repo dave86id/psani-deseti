@@ -185,10 +185,12 @@ export const sections: Section[] = [
     lessons: makeLessons([
       {
         id: '4.1', title: 'Čárky, tečky, spojovník', newLetters: [], allLetters: allRows,
-        numExercises: 6,
+        numExercises: 8,
         customTexts: [
-          'auto, vlak, motor, ryba, pes, kocour.',
-          'vlak jel. pes spal. kocour leze. byl den.',
+          'a, b, c. d, e, f. g, h, i. j, k, l.',
+          'a-b, c-d. e-f, g-h. i-j, k-l. m-n, o-p.',
+          't.k.l, s.d.m, p.n.b, v.c.j. r-t, k-l, s-d.',
+          'k, l. m, n. o-p, r-s. a.b.c, d.e.f, g.h.',
           'pes bere kost, kocour bere maso. byly doma.',
           'auto-bus, den-noc, ano-ne, vlak-bus, pan-syn.',
           'moje auto jede, tvoje auto stalo u domu.',
