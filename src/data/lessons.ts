@@ -206,48 +206,54 @@ export const sections: Section[] = [
       {
         id: '5.1', title: 'í, á', newLetters: ['í','á'], allLetters: [...allRows,'í','á'],
         customTexts: [
-          undefined, undefined,
-          'íí áá íá áí ííá ááí lí sí dí mí pí rí lá sá dá má pá rá íl ás',
+          undefined,
+          'mí pí lí sí dí ví rí ní bí tí zí ký hí jí',
+          'má pá lá sá dá vá rá ná bá tá zá ká há já',
           'lík sál dál mák pár pán rád sám bál víla pásl málo ráno láká',
         ],
       },
       {
         id: '5.2', title: 'é, ě', newLetters: ['é','ě'], allLetters: [...allRows,'í','á','é','ě'],
         customTexts: [
-          undefined, undefined,
-          'éé ěě éě ěé ééě ěěé lé sé dé pé mě pě tě lě bě vě dě né',
+          undefined,
+          'lé sé dé mé pé vé né té ré bé zé ké hé jé',
+          'bě pě vě mě tě dě ně sě zě lě rě fě',
           'lépe děti pět věc měl těs běh není dvě svět věda tělo děl mé',
         ],
       },
       {
         id: '5.3', title: 'ý, š', newLetters: ['ý','š'], allLetters: [...allRows,'í','á','é','ě','ý','š'],
         customTexts: [
-          undefined, undefined,
-          'ýý šš ýš šý ýýš ššý lý sý dý mý pý aš oš eš iš uš ša še ši',
+          undefined,
+          'lý sý dý mý pý vý rý ný tý bý zý ký hý',
+          'ša še ši šo šu aš eš iš oš uš šá šé',
           'být mýt sýr nový starý malý dobrý myš naše vaše šel šest koš',
         ],
       },
       {
         id: '5.4', title: 'č, ř', newLetters: ['č','ř'], allLetters: [...allRows,'í','á','é','ě','ý','š','č','ř'],
         customTexts: [
-          undefined, undefined,
-          'čč řř čř řč ččř řřč lč sč dč pč mř př tř vř dř kř bř hř',
+          undefined,
+          'ča če či čo ču ač eč ič oč uč čá čí',
+          'řa ře ři řo řu ař eř iř oř uř řá ří',
           'čas čaj čte číp peč meč keř moře pře tře dře přes řeka věc',
         ],
       },
       {
         id: '5.5', title: 'ž, ó', newLetters: ['ž','ó'], allLetters: [...allRows,'í','á','é','ě','ý','š','č','ř','ž','ó'],
         customTexts: [
-          undefined, undefined,
-          'žž óó žó óž žžó óóž lž sž dž mž pó tó vó dó kó bó hó ža že ži',
+          undefined,
+          'ža že ži žo žu až ež iž ož už žá ží',
+          'ló só dó mó pó vó tó kó bó nó ró hó',
           'žal žár žít muž nůž lože kůže móda tón gól óda róba bóje',
         ],
       },
       {
         id: '5.6', title: 'ď, ť, ň', newLetters: ['ď','ť','ň'], allLetters: withDiacritics,
         customTexts: [
-          undefined, undefined,
-          'ďď ťť ňň ďť ťň ňď ďťň ňťď laď leť seň daň pať koň huť síň dlaň',
+          undefined,
+          'ďa ďe ďi ďo ťa ťe ťi ťo aď eť iď oť',
+          'ňa ňe ňi ňo ňu aň eň iň oň uň daň koň',
           'loď zeď leť seď laď daň kůň síň dlaň báseň píseň huť kať',
         ],
       },
