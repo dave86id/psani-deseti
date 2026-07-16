@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const GOAL_SECONDS = 600;
+const GOAL_SECONDS = 900;
 const RADIUS = 22;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
@@ -19,7 +19,7 @@ export default function DailyGoalTimer({ elapsedSeconds, isComplete }: Props) {
   const seconds = elapsedSeconds % 60;
   const timeLabel = `${minutes}:${String(seconds).padStart(2, '0')}`;
   const tooltipText = isComplete
-    ? 'Dnes jste splnili cíl 10 min.'
+    ? 'Dnes jste splnili cíl 15 min.'
     : `Váš denní cíl cvičení: ${timeLabel}`;
 
   useEffect(() => {

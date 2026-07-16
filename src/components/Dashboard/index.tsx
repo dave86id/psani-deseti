@@ -21,7 +21,7 @@ const TIPS = [
   { icon: '🖐️', text: 'Takhle patří prsty na klávesnici.' },
   { icon: '🎯', text: 'Napřed přesně, rychlost přijde sama.' },
   { icon: '📅', text: 'Dva měsíce a máš to.' },
-  { icon: '⏱️', text: 'Stačí 10 minut denně.' },
+  { icon: '⏱️', text: 'Stačí 15 minut denně.' },
   { icon: '☕', text: 'Dávej si pauzy.' },
 ];
 

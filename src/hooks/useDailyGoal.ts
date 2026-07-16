@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 
 const STORAGE_KEY = 'psani-deseti-daily';
 const HISTORY_KEY = 'psani-deseti-daily-history';
-const GOAL_SECONDS = 600; // 10 minutes
+const GOAL_SECONDS = 900; // 15 minutes
 
 interface DailyGoalData {
   date: string;
