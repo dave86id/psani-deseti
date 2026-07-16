@@ -231,12 +231,12 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
             pointerEvents: 'none',
           }}>
             <span style={{
-              fontSize: '0.78rem',
+              fontSize: '1.01rem',
               color: '#f3f4f6',
               backgroundColor: 'rgba(0,0,0,0.55)',
               border: '1px solid rgba(255,255,255,0.15)',
               borderRadius: '0.5rem',
-              padding: '0.35rem 1rem',
+              padding: '0.45rem 1.3rem',
               backdropFilter: 'blur(4px)',
               transition: 'opacity 400ms ease',
               opacity: tipVisible ? 1 : 0,
