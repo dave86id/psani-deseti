@@ -1,10 +1,12 @@
 import type { Lesson } from '../types';
 
 /**
- * Returns true if all space-separated tokens in the text are ≤ 3 chars.
- * These are candidates for falling-letters mode.
+ * Returns true if all space-separated tokens in the text are ≤ 3 chars
+ * and the text contains no diacritics (dead-key typing doesn't fit the
+ * falling-letters flow). These are candidates for falling-letters mode.
  */
 function isFallingCandidate(text: string): boolean {
+  if (/[áčďéěíňóřšťúůýž]/i.test(text)) return false;
   const words = text.trim().split(/\s+/);
   return words.every(w => w.length <= 3);
 }

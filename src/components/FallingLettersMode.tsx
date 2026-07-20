@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import VirtualKeyboard from './VirtualKeyboard';
 import { playKeyAudio, prewarmAudio } from '../hooks/useSound';
+import { composeDeadKey } from '../utils/composeDeadKey';
 
 interface FallingLettersModeProps {
   text: string;
@@ -29,6 +30,10 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
   const [startTime] = useState(() => Date.now());
   const [wrongFlash, setWrongFlash] = useState<string | null>(null);
   const [keyMetrics, setKeyMetrics] = useState<Record<string, KeyMetrics>>({});
+  // Dead key handling — same macOS quirk as ExerciseScreen: uppercase diacritics
+  // (and sometimes lowercase) arrive as raw letters, compose manually.
+  const pendingDeadRef = useRef<{ code: string; shiftKey: boolean } | null>(null);
+  const [pendingDeadKey, setPendingDeadKey] = useState<string | null>(null);
 
   const kbRef = useRef<HTMLDivElement>(null);
   const lettersAreaRef = useRef<HTMLDivElement>(null);
@@ -75,12 +80,27 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
     if (isFinished) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') { onBack(); return; }
-      if (['Shift', 'Control', 'Alt', 'Dead', 'Meta', 'Tab', 'CapsLock'].includes(e.key)) return;
+      if (e.key === 'Dead') {
+        pendingDeadRef.current = { code: e.code, shiftKey: e.shiftKey };
+        setPendingDeadKey(e.shiftKey ? '´' : 'ˇ');
+        return;
+      }
+      if (['Shift', 'Control', 'Alt', 'Meta', 'Tab', 'CapsLock'].includes(e.key)) return;
       e.preventDefault();
       playKeyAudio(); // Instant acoustic feedback
 
+      let actualKey = e.key;
+      if (pendingDeadRef.current && e.key.length === 1) {
+        const composed = composeDeadKey(pendingDeadRef.current.code, pendingDeadRef.current.shiftKey, e.key);
+        if (composed) actualKey = composed;
+      }
+      pendingDeadRef.current = null;
+      setPendingDeadKey(null);
+
       const expected = chars[currentIndex];
-      if (e.key === expected) {
+      // Case-insensitive: tokens are displayed uppercase (keycap style), so accept
+      // e.g. 'Ó' for expected 'ó'.
+      if (actualKey.toLowerCase() === expected.toLowerCase()) {
         const next = currentIndex + 1;
         setCurrentIndex(next);
 
@@ -90,7 +110,7 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
         }
       } else {
         setErrors(prev => prev + 1);
-        setWrongFlash(e.key);
+        setWrongFlash(actualKey);
         setTimeout(() => setWrongFlash(null), 300);
       }
     };
@@ -203,7 +223,7 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
 
         {/* Virtual keyboard */}
         <div ref={kbRef} style={{ width: '100%' }}>
-          <VirtualKeyboard activeKey={activeChar ?? ''} wrongKeyFlash={wrongFlash} pendingDeadKey={null} />
+          <VirtualKeyboard activeKey={activeChar ?? ''} wrongKeyFlash={wrongFlash} pendingDeadKey={pendingDeadKey} />
         </div>
       </div>
     </div>
