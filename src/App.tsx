@@ -187,7 +187,6 @@ export default function App() {
 
   const {
     state,
-    flashCorrect,
     wrongKeyFlash,
     exerciseResult,
     handleKey,
@@ -460,7 +459,6 @@ export default function App() {
         totalExercises={currentLesson?.exercises.length ?? 8}
         lessonId={currentLessonId}
         lessonTitle={currentLesson?.title ?? ''}
-        flashCorrect={flashCorrect}
         wrongKeyFlash={wrongKeyFlash}
         onKey={onKey}
         onDeadKey={onDeadKey}

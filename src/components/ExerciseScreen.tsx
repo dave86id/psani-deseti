@@ -11,7 +11,6 @@ interface ExerciseScreenProps {
   totalExercises: number;
   lessonId: string;
   lessonTitle: string;
-  flashCorrect: boolean;
   wrongKeyFlash: string | null;
   onKey: (key: string) => void;
   onDeadKey: (isShift: boolean) => void;
@@ -25,13 +24,11 @@ function CharDisplay({
   index,
   currentIndex,
   errors,
-  flashCorrect,
 }: {
   char: string;
   index: number;
   currentIndex: number;
   errors: Set<number>;
-  flashCorrect: boolean;
 }) {
   const isCurrent = index === currentIndex;
   const isTyped = index < currentIndex;
@@ -46,9 +43,6 @@ function CharDisplay({
   } else if (isTyped) {
     if (hasError) {
       textColor = '#ef4444';
-    } else if (flashCorrect) {
-      bgColor = '#16a34a';
-      textColor = '#ffffff';
     } else {
       textColor = '#6b7280';
     }
@@ -98,7 +92,6 @@ export default function ExerciseScreen({
   totalExercises,
   lessonId,
   lessonTitle,
-  flashCorrect,
   wrongKeyFlash,
   onKey,
   onDeadKey,
@@ -238,7 +231,6 @@ export default function ExerciseScreen({
               index={i}
               currentIndex={state.currentIndex}
               errors={state.errors}
-              flashCorrect={flashCorrect && i === state.currentIndex - 1}
             />
           ))}
         </div>

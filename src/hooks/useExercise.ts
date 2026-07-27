@@ -15,7 +15,6 @@ function createInitialState(text: string): ExerciseState {
 
 export function useExercise(initialText: string) {
   const [state, setState] = useState<ExerciseState>(() => createInitialState(initialText));
-  const [flashCorrect, setFlashCorrect] = useState(false);
   const [wrongKeyFlash, setWrongKeyFlash] = useState<string | null>(null);
   const [exerciseResult, setExerciseResult] = useState<ExerciseResult | null>(null);
   const startTimeRef = useRef<number>(0);
@@ -42,10 +41,6 @@ export function useExercise(initialText: string) {
           if (isComplete) {
             endTimeRef.current = Date.now();
           }
-
-          // Flash correct
-          setFlashCorrect(true);
-          setTimeout(() => setFlashCorrect(false), 150);
 
           if (isComplete) {
             const res = calculateStats(
@@ -102,7 +97,6 @@ export function useExercise(initialText: string) {
       status: 'idle',
     });
     setExerciseResult(null);
-    setFlashCorrect(false);
     setWrongKeyFlash(null);
     startTimeRef.current = 0;
     endTimeRef.current = 0;
@@ -111,7 +105,6 @@ export function useExercise(initialText: string) {
   return {
     state,
     exerciseResult,
-    flashCorrect,
     wrongKeyFlash,
     handleKey,
     resetExercise,
