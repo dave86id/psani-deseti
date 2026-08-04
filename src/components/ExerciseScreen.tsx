@@ -236,12 +236,6 @@ export default function ExerciseScreen({
         </div>
       </div>
 
-      {state.status === 'idle' && (
-        <div className="mb-4 text-sm text-gray-400 animate-pulse">
-          Začni psát pro spuštění cvičení...
-        </div>
-      )}
-
       <div className="w-full max-w-3xl flex justify-center">
         <VirtualKeyboard 
           activeKey={activeKey} 
