@@ -5,6 +5,7 @@ import { getLessonMedal } from '../../utils/stats';
 import type { UserProfile } from '../../hooks/useAuth';
 import { loadDailyGoalHistory } from '../../hooks/useDailyGoal';
 import ErrorsModal from '../ErrorsModal';
+import { loadRecentErrors } from '../../utils/recentErrors';
 
 interface DashboardProps {
   progress: UserProgress;
@@ -112,6 +113,8 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
   const allAccs = allLessons.map(l => progress.lessons[l.id]?.bestAccuracy ?? 0).filter(a => a > 0);
   const avgAcc = allAccs.length > 0 ? Math.round(allAccs.reduce((a, b) => a + b, 0) / allAccs.length) : 0;
 
+  const hasRecentErrors = Object.values(loadRecentErrors().aggregated).some(n => n > 0);
+
   const { completedDays, lastCompletedDate } = loadDailyGoalHistory();
   const lastCompletedLabel = lastCompletedDate
     ? new Date(lastCompletedDate).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric' })
@@ -210,6 +213,23 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
             >
               Lekce ↓
             </button>
+            {hasRecentErrors && (
+              <button
+                onClick={onPracticeGlobalErrors}
+                style={{
+                  backgroundColor: 'transparent',
+                  color: '#ef4444',
+                  fontSize: '0.95rem',
+                  fontWeight: 600,
+                  padding: '0.65rem 1.5rem',
+                  borderRadius: '0.75rem',
+                  border: '1px solid #ef4444',
+                  cursor: 'pointer',
+                }}
+              >
+                Procvičovat moje chyby →
+              </button>
+            )}
           </div>
           {nextLessonHint && (
             <div style={{ marginTop: '0.6rem', fontSize: '0.65rem', color: '#6b7280' }}>
