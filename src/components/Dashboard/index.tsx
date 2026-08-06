@@ -227,7 +227,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
                   cursor: 'pointer',
                 }}
               >
-                Procvičovat moje chyby →
+                Procvičit chyby →
               </button>
             )}
           </div>
