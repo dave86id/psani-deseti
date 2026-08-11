@@ -47,7 +47,7 @@ export const keyboardRows: KeyDef[][] = [
     { label: 'j', key: 'j' },
     { label: 'k', key: 'k' },
     { label: 'l', key: 'l' },
-    { label: 'ů', key: 'ů', shift: 'Ů' },
+    { label: 'ů', key: 'ů' },
     { label: '§', key: '§' },
     { label: '⏎', key: 'Enter', wide: true },
   ],

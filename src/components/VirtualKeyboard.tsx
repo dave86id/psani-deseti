@@ -15,6 +15,9 @@ const DIACRITIC_MAP: Record<string, Record<string, string>> = {
     'C': 'Č', 'c': 'č', 'D': 'Ď', 'd': 'ď', 'E': 'Ě', 'e': 'ě',
     'L': 'Ľ', 'l': 'ľ', 'N': 'Ň', 'n': 'ň', 'R': 'Ř', 'r': 'ř',
     'S': 'Š', 's': 'š', 'T': 'Ť', 't': 'ť', 'Z': 'Ž', 'z': 'ž',
+    // Czech layout quirk: háček over u yields a ring (Ů), not a caron.
+    // Only uppercase — lowercase ů has its own key.
+    'U': 'Ů',
   },
   '´': {
     'A': 'Á', 'a': 'á', 'E': 'É', 'e': 'é', 'I': 'Í', 'i': 'í',

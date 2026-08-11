@@ -16,7 +16,11 @@ export function composeDeadKey(deadCode: string, deadShift: boolean, letter: str
     : ['\u0301', '\u030C'];
 
   for (const combining of order) {
-    const composed = (letter + combining).normalize('NFC');
+    // Czech layout quirk: háček over u yields ů/Ů (ring), not ǔ/Ǔ.
+    const mark = combining === '\u030C' && (letter === 'u' || letter === 'U')
+      ? '\u030A' // combining ring above
+      : combining;
+    const composed = (letter + mark).normalize('NFC');
     if (composed.length === 1 && composed !== letter) return composed;
   }
   return null;
