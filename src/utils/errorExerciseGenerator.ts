@@ -86,9 +86,12 @@ const ROW_TIERS: string[][] = [
   ['f','j','d','k','s','l','a','ů','g','h'],                        // 0: home
   ['r','u','t','z','e','i','w','o','p','q','ú'],                    // 1: top
   ['v','m','b','n','c','x','y',',','.','-'],                        // 2: bottom
-  ['ř','ě','š','č','á','í','ž','ó','ď','ť','ň'],                    // 3: diacritics
+  ['ř','ě','š','č','á','é','í','ý','ž','ó','ď','ť','ň'],            // 3: diacritics
   ['?','!','1','2','3','4','5','6','7','8','9','0'],                // 4: special/numbers
 ];
+
+const DIGITS = '0123456789';
+const PUNCT = ',.-?!';
 
 function tierOf(ch: string): number {
   const c = ch.toLowerCase();
@@ -106,38 +109,75 @@ function allowedLettersUpToTier(tier: number): Set<string> {
 
 const MIN_POOL_SIZE = 3;
 
-function buildWordPool(ch: string, tier: number): string[] {
+type WordMatch = (lowerWord: string) => boolean;
+
+const ANY_WORD: WordMatch = () => true;
+const containing = (ch: string): WordMatch => w => w.includes(ch);
+const startingWith = (ch: string): WordMatch => w => w.startsWith(ch);
+
+function buildWordPool(match: WordMatch, tier: number): string[] {
   const allowed = allowedLettersUpToTier(tier);
   return czechWords.filter(w => {
     if (w.length < 2 || w.length > 8) return false;
-    const lower = w.toLowerCase();
-    if (!lower.includes(ch)) return false;
+    if (!match(w.toLowerCase())) return false;
     for (const c of w) if (!allowed.has(c)) return false;
     return true;
   });
 }
 
-// Find smallest tier that yields a usable word pool for `ch`. Starts at the
-// letter's own row tier, expands upward only if too few words exist there.
-function findUsablePool(ch: string): string[] {
-  const startTier = tierOf(ch);
+// Find smallest tier that yields a usable word pool. Starts at `startTier`,
+// expands upward only if too few matching words exist there.
+function findUsablePool(match: WordMatch, startTier: number): string[] {
   if (startTier < 0) return [];
   let bestPool: string[] = [];
   for (let t = startTier; t < ROW_TIERS.length; t++) {
-    const pool = buildWordPool(ch, t);
+    const pool = buildWordPool(match, t);
     if (pool.length >= MIN_POOL_SIZE) return pool;
     if (pool.length > bestPool.length) bestPool = pool;
   }
   return bestPool;
 }
 
+// Practice tokens for one problem character, preserving its case and kind:
+// capital → capitalized words, punctuation → attached to a word, digit →
+// short number groups, lowercase letter → plain words containing it.
+function buildTokenPool(ch: string): string[] {
+  const lower = ch.toLowerCase();
+  const tier = tierOf(lower);
+  if (tier < 0) return [];
+
+  if (lower !== ch) {
+    // Capital letter: words beginning with it, first letter uppercased.
+    const starting = findUsablePool(startingWith(lower), tier).map(w => ch + w.slice(1));
+    // Rare initial (Ň, Ů, Ó…): add a Xx drill so the key still gets practiced.
+    if (starting.length >= MIN_POOL_SIZE) return starting;
+    return [...starting, ch + lower, ch + lower + ch + lower];
+  }
+
+  if (DIGITS.includes(ch)) {
+    const other = () => DIGITS[Math.floor(Math.random() * DIGITS.length)];
+    return [ch + ch, ch + other(), other() + ch, ch + other() + ch, other() + ch + other()];
+  }
+
+  if (PUNCT.includes(ch)) {
+    const words = findUsablePool(ANY_WORD, tier);
+    if (words.length === 0) return [];
+    const pick = () => words[Math.floor(Math.random() * words.length)];
+    if (ch === '-') return words.map(() => `${pick()}-${pick()}`);
+    return words.map(w => w + ch);
+  }
+
+  return findUsablePool(containing(ch), tier);
+}
+
 export function generateGlobalErrorExerciseText(
   errorsByChar: Record<string, number>,
   wordCount = 48
 ): string {
+  // Case is preserved — a capital is a different practice target than its
+  // lowercase form (Shift + key vs. key alone).
   const sortedErrors = Object.entries(errorsByChar)
-    .map(([c, n]) => [c.toLowerCase(), n] as [string, number])
-    .filter(([c]) => c !== ' ' && c.trim() !== '' && tierOf(c) >= 0)
+    .filter(([c, n]) => n > 0 && c.trim() !== '' && tierOf(c.toLowerCase()) >= 0)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 6);
 
@@ -148,7 +188,7 @@ export function generateGlobalErrorExerciseText(
   // Build pools per letter; drop letters with no available words at all.
   const entries: { ch: string; weight: number; pool: string[] }[] = [];
   for (const [ch, n] of sortedErrors) {
-    const pool = findUsablePool(ch);
+    const pool = buildTokenPool(ch);
     if (pool.length > 0) entries.push({ ch, weight: n, pool });
   }
 
