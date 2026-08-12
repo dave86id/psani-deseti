@@ -31,7 +31,8 @@ export const keyboardRows: KeyDef[][] = [
     { label: 'i', key: 'i' },
     { label: 'o', key: 'o' },
     { label: 'p', key: 'p' },
-    { label: 'ú', key: 'ú', shift: 'Ú' },
+    // Velké Ú se píše přes čárku + Shift+u, ne Shift+ú (stejně jako Ů).
+    { label: 'ú', key: 'ú' },
     { label: ')', key: ')' },
     { label: '¨', key: '¨', wide: true },
   ],
