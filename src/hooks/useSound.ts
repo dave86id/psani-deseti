@@ -28,7 +28,31 @@ if (typeof window !== 'undefined') {
   window.addEventListener('touchstart', resume, { once: true });
 }
 
+const SOUND_KEY = 'psani-deseti-sound';
+
+let soundEnabled = (() => {
+  try {
+    return localStorage.getItem(SOUND_KEY) !== 'off';
+  } catch {
+    return true;
+  }
+})();
+
+export function isSoundEnabled() {
+  return soundEnabled;
+}
+
+export function setSoundEnabled(enabled: boolean) {
+  soundEnabled = enabled;
+  try {
+    localStorage.setItem(SOUND_KEY, enabled ? 'on' : 'off');
+  } catch {
+    // ignore
+  }
+}
+
 export function playKeyAudio() {
+  if (!soundEnabled) return;
   if (!ctx || !buf || ctx.state !== 'running') return;
   const s = ctx.createBufferSource();
   s.buffer = buf;
