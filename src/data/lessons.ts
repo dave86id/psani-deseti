@@ -391,7 +391,7 @@ export const sections: Section[] = [
     lessons: makeLessons([
       {
         id: '9.1', title: 'Jednou řečí', newLetters: [], allLetters: withNumbers,
-        numExercises: 10,
+        numExercises: 14,
         customTexts: [
           'Česká republika leží ve středu Evropy. Je to krásná země s bohatou historií.',
           'Praha je hlavní město České republiky. Každý rok ji navštíví miliony turistů.',
@@ -403,6 +403,10 @@ export const sections: Section[] = [
           'Karel IV. byl významný český král a římský císař. Vládl ve 14. století.',
           'Česká kuchyně je známá svíčkovou, knedlíky a svými pečenými pokrmy.',
           'Bedřich Smetana a Antonín Dvořák jsou nejslavnější čeští skladatelé.',
+          'Příliš žluťoučký kůň úpěl ďábelské ódy. Tuhle větu zná v Čechách úplně každý.',
+          'Nechť již hříšné saxofony ďáblů rozezvučí síň úděsnými tóny waltzu, tanga a quickstepu.',
+          'Zvlášť zákeřný učeň s ďolíčky běží podél zóny úlů. Loď čeří kýlem tůň v Grónské úžině.',
+          'Hleď, toť přízračný kůň v mlze! Šíleně žluťoučký kůň se napil žluté vody z tůně.',
         ],
       },
       {
