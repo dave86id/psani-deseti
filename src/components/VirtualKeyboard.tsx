@@ -50,8 +50,15 @@ const SHIFT_SIDE_FOR_KEY: Record<string, 'ShiftLeft' | 'ShiftRight'> = {
   '6': 'ShiftLeft', '7': 'ShiftLeft', '8': 'ShiftLeft', '9': 'ShiftLeft', '0': 'ShiftLeft',
   'z': 'ShiftLeft', 'u': 'ShiftLeft', 'i': 'ShiftLeft', 'o': 'ShiftLeft', 'p': 'ShiftLeft', 'ú': 'ShiftLeft',
   'h': 'ShiftLeft', 'j': 'ShiftLeft', 'k': 'ShiftLeft', 'l': 'ShiftLeft', 'ů': 'ShiftLeft',
-  'n': 'ShiftLeft', 'm': 'ShiftLeft', 'ˇ': 'ShiftLeft',
+  'n': 'ShiftLeft', 'm': 'ShiftLeft', ',': 'ShiftLeft', '.': 'ShiftLeft', 'ˇ': 'ShiftLeft',
 };
+
+// Chars that require Shift on their own key (e.g. ':' = Shift + '.') -> that key.
+// Diacritics on the number row are handled earlier via DIRECT_DIACRITIC_KEY.
+const SHIFT_CHAR_BASE: Record<string, string> = {};
+keyboardRows.forEach(row => row.forEach(k => {
+  if (k.shift) SHIFT_CHAR_BASE[k.shift] = k.key;
+}));
 
 interface VirtualKeyboardProps {
   activeKey?: string;
@@ -110,10 +117,11 @@ function getKeyStyle(
     isTarget = keyDef.key === activeKey ||
                !!(keyDef.shift && keyDef.shift === activeKey) ||
                !!(keyDef.altChar && keyDef.altChar === activeKey);
-    // Highlight Shift when the active key is an uppercase letter
+    // Highlight Shift for uppercase letters and for Shift-level chars (':' = Shift + '.')
     const isUpperLetter = activeKey.length === 1 && activeKey === activeKey.toUpperCase() && activeKey !== activeKey.toLowerCase();
-    if (isUpperLetter) {
-      const shiftSide = SHIFT_SIDE_FOR_KEY[activeKey.toLowerCase()];
+    const shiftBase = isUpperLetter ? activeKey.toLowerCase() : SHIFT_CHAR_BASE[activeKey];
+    if (shiftBase) {
+      const shiftSide = SHIFT_SIDE_FOR_KEY[shiftBase];
       isShiftTarget = !!shiftSide && keyDef.key === shiftSide;
     }
   }

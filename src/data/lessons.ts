@@ -32,7 +32,7 @@ const homeRow = ['f','j','d','k','s','l','a','ů','g','h'];
 const topRow = [...homeRow, 'r','u','t','z','e','i','w','o','p','q','ú'];
 const allRows = [...topRow, 'v','m','b','n','c','x','y',',',' ','.', '-'];
 const withDiacritics = [...allRows, 'í','á','é','ě','ý','š','č','ř','ž','ó','ď','ť','ň'];
-const withSpecial = [...withDiacritics, '?', '!'];
+const withSpecial = [...withDiacritics, '?', '!', ':'];
 const withNumbers = [...withSpecial, '1','2','3','4','5','6','7','8','9','0'];
 
 export const sections: Section[] = [
@@ -339,7 +339,7 @@ export const sections: Section[] = [
         ],
       },
       {
-        id: '7.2', title: 'Vykřičník', newLetters: ['!'], allLetters: withSpecial,
+        id: '7.2', title: 'Vykřičník', newLetters: ['!'], allLetters: [...withDiacritics,'?','!'],
         customTexts: [
           'Ahoj! Čau! Hej! Nazdar! Zdravím!',
           'Pozor! Stop! Pomoc! Stůj!',
@@ -349,6 +349,19 @@ export const sections: Section[] = [
           'Kde jsi? Pojď! Čekám na tebe!',
           'Nevěřím! To je nemožné! Fakt?',
           'Ahoj světe! Jak se máš? Fajn!',
+        ],
+      },
+      {
+        id: '7.3', title: 'Dvojtečka', newLetters: [':'], allLetters: withSpecial,
+        customTexts: [
+          'a: b: c: d: e: f: g: h:',
+          'ano: ne: dnes: zítra: tady: tam:',
+          'Ovoce: jablko, hruška, švestka.',
+          'Nakup: chleba, máslo, mléko a sýr.',
+          'Pozor: cesta je uzavřená! Objížďka: přes Beroun.',
+          'Otázka: kdy začneme? Odpověď: hned teď!',
+          'Barvy: červená, modrá, zelená. Tvary: kruh, čtverec, kříž.',
+          'Úkol: napsat text bez chyby. Cíl: psát plynule. Odměna: dobrý pocit!',
         ],
       },
     ]),

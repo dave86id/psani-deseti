@@ -63,7 +63,7 @@ export const keyboardRows: KeyDef[][] = [
     { label: 'n', key: 'n' },
     { label: 'm', key: 'm' },
     { label: ',', key: ',' },
-    { label: '.', key: '.' },
+    { label: '.', key: '.', shift: ':' },
     { label: '-', key: '-' },
     { label: 'Shift', key: 'ShiftRight', wide: true },
   ],

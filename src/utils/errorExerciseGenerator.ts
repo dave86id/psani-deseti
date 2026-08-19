@@ -87,11 +87,11 @@ const ROW_TIERS: string[][] = [
   ['r','u','t','z','e','i','w','o','p','q','ú'],                    // 1: top
   ['v','m','b','n','c','x','y',',','.','-'],                        // 2: bottom
   ['ř','ě','š','č','á','é','í','ý','ž','ó','ď','ť','ň'],            // 3: diacritics
-  ['?','!','1','2','3','4','5','6','7','8','9','0'],                // 4: special/numbers
+  ['?','!',':','1','2','3','4','5','6','7','8','9','0'],            // 4: special/numbers
 ];
 
 const DIGITS = '0123456789';
-const PUNCT = ',.-?!';
+const PUNCT = ',.-?!:';
 
 function tierOf(ch: string): number {
   const c = ch.toLowerCase();
