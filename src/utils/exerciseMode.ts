@@ -15,8 +15,11 @@ function isFallingCandidate(text: string): boolean {
  * Determines the display mode for an exercise.
  * Among exercises that are falling candidates, every other one gets 'falling'
  * (starting with classic for the first candidate).
+ * Section 8 (Čísla) is always classic.
  */
 export function getExerciseMode(lesson: Lesson, exerciseIndex: number): 'classic' | 'falling' {
+  if (lesson.id.startsWith('8.')) return 'classic';
+
   const text = lesson.exercises[exerciseIndex]?.text ?? '';
   if (!isFallingCandidate(text)) return 'classic';
 
