@@ -50,7 +50,7 @@ const SHIFT_SIDE_FOR_KEY: Record<string, 'ShiftLeft' | 'ShiftRight'> = {
   '6': 'ShiftLeft', '7': 'ShiftLeft', '8': 'ShiftLeft', '9': 'ShiftLeft', '0': 'ShiftLeft',
   'z': 'ShiftLeft', 'u': 'ShiftLeft', 'i': 'ShiftLeft', 'o': 'ShiftLeft', 'p': 'ShiftLeft', 'ú': 'ShiftLeft',
   'h': 'ShiftLeft', 'j': 'ShiftLeft', 'k': 'ShiftLeft', 'l': 'ShiftLeft', 'ů': 'ShiftLeft',
-  'n': 'ShiftLeft', 'm': 'ShiftLeft', ',': 'ShiftLeft', '.': 'ShiftLeft', 'ˇ': 'ShiftLeft',
+  'n': 'ShiftLeft', 'm': 'ShiftLeft', ',': 'ShiftLeft', '.': 'ShiftLeft', 'ˇ': 'ShiftLeft', '§': 'ShiftLeft',
 };
 
 // Chars that require Shift on their own key (e.g. ':' = Shift + '.') -> that key.

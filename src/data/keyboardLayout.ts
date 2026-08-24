@@ -49,7 +49,7 @@ export const keyboardRows: KeyDef[][] = [
     { label: 'k', key: 'k' },
     { label: 'l', key: 'l' },
     { label: 'ů', key: 'ů' },
-    { label: '§', key: '§' },
+    { label: '§', key: '§', shift: '!' },
     { label: '⏎', key: 'Enter', wide: true },
   ],
   // Bottom row
