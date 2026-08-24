@@ -175,7 +175,7 @@ function getKeyStyle(
     const base = isShiftKey ? SHIFT_HIGHLIGHT : (finger && HIGHLIGHT_COLORS[finger]) || '#4f22ab';
     return {
       backgroundColor: base,
-      borderColor: '#ffffff',
+      borderColor: base,
       color: '#ffffff',
       boxShadow: `0 0 14px ${base}, 0 0 4px ${base}`,
     };
