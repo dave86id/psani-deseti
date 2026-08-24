@@ -134,7 +134,9 @@ function getKeyStyle(
                !!(isUpperLetter && keyDef.key === activeKey.toLowerCase()) ||
                !!(keyDef.shift && keyDef.shift === activeKey) ||
                !!(keyDef.altChar && keyDef.altChar === activeKey);
-    const shiftBase = isUpperLetter ? activeKey.toLowerCase() : SHIFT_CHAR_BASE[activeKey];
+    // Číslice se na české klávesnici píší se Shiftem (základní úroveň je +ěščřžýáíé).
+    const isDigit = /^[0-9]$/.test(activeKey);
+    const shiftBase = isUpperLetter ? activeKey.toLowerCase() : isDigit ? activeKey : SHIFT_CHAR_BASE[activeKey];
     if (shiftBase) {
       const shiftSide = SHIFT_SIDE_FOR_KEY[shiftBase];
       isShiftTarget = !!shiftSide && keyDef.key === shiftSide;
