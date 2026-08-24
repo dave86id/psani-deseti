@@ -3,7 +3,7 @@ import type { KeyDef } from '../types';
 export const keyboardRows: KeyDef[][] = [
   // Number row
   [
-    { label: '°', key: '°', shift: '`' },
+    { label: '<', key: '<', shift: '>', altChar: '>' },
     { label: '1', key: '1', shift: '+', altChar: '+' },
     { label: '2', key: '2', shift: 'ě', altChar: 'ě' },
     { label: '3', key: '3', shift: 'š', altChar: 'š' },
@@ -14,8 +14,8 @@ export const keyboardRows: KeyDef[][] = [
     { label: '8', key: '8', shift: 'á', altChar: 'á' },
     { label: '9', key: '9', shift: 'í', altChar: 'í' },
     { label: '0', key: '0', shift: 'é', altChar: 'é' },
-    { label: '%', key: '%', shift: '=' },
-    { label: 'ˇ', key: 'ˇ', shift: '´' },
+    { label: '%', key: '%', shift: '=', altChar: '=' },
+    { label: 'ˇ', key: 'ˇ', shift: '´', altChar: '´' },
     { label: '⌫', key: 'Backspace', wide: true },
   ],
   // Top row
@@ -32,8 +32,8 @@ export const keyboardRows: KeyDef[][] = [
     { label: 'o', key: 'o' },
     { label: 'p', key: 'p' },
     // Velké Ú se píše přes čárku + Shift+u, ne Shift+ú (stejně jako Ů).
-    { label: 'ú', key: 'ú' },
-    { label: ')', key: ')' },
+    { label: 'ú', key: 'ú', shift: '/', altChar: '/' },
+    { label: ')', key: ')', shift: '(', altChar: '(' },
     { label: '¨', key: '¨', wide: true },
   ],
   // Home row
@@ -48,8 +48,8 @@ export const keyboardRows: KeyDef[][] = [
     { label: 'j', key: 'j' },
     { label: 'k', key: 'k' },
     { label: 'l', key: 'l' },
-    { label: 'ů', key: 'ů' },
-    { label: '§', key: '§', shift: '!' },
+    { label: 'ů', key: 'ů', shift: '"', altChar: '"' },
+    { label: '§', key: '§', shift: '!', altChar: '!' },
     { label: '⏎', key: 'Enter', wide: true },
   ],
   // Bottom row
@@ -62,8 +62,8 @@ export const keyboardRows: KeyDef[][] = [
     { label: 'b', key: 'b' },
     { label: 'n', key: 'n' },
     { label: 'm', key: 'm' },
-    { label: ',', key: ',', shift: '?' },
-    { label: '.', key: '.', shift: ':' },
+    { label: ',', key: ',', shift: '?', altChar: '?' },
+    { label: '.', key: '.', shift: ':', altChar: ':' },
     { label: '-', key: '-' },
     { label: 'Shift', key: 'ShiftRight', wide: true },
   ],

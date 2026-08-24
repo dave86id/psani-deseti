@@ -42,7 +42,7 @@ const DIRECT_DIACRITIC_KEY: Record<string, string> = {
 // the opposite-hand Shift (left half of keyboard → right Shift, right half → left Shift).
 const SHIFT_SIDE_FOR_KEY: Record<string, 'ShiftLeft' | 'ShiftRight'> = {
   // Left half keys → right Shift
-  '1': 'ShiftRight', '2': 'ShiftRight', '3': 'ShiftRight', '4': 'ShiftRight', '5': 'ShiftRight',
+  '<': 'ShiftRight', '1': 'ShiftRight', '2': 'ShiftRight', '3': 'ShiftRight', '4': 'ShiftRight', '5': 'ShiftRight',
   'q': 'ShiftRight', 'w': 'ShiftRight', 'e': 'ShiftRight', 'r': 'ShiftRight', 't': 'ShiftRight',
   'a': 'ShiftRight', 's': 'ShiftRight', 'd': 'ShiftRight', 'f': 'ShiftRight', 'g': 'ShiftRight',
   'y': 'ShiftRight', 'x': 'ShiftRight', 'c': 'ShiftRight', 'v': 'ShiftRight', 'b': 'ShiftRight',
@@ -50,7 +50,7 @@ const SHIFT_SIDE_FOR_KEY: Record<string, 'ShiftLeft' | 'ShiftRight'> = {
   '6': 'ShiftLeft', '7': 'ShiftLeft', '8': 'ShiftLeft', '9': 'ShiftLeft', '0': 'ShiftLeft',
   'z': 'ShiftLeft', 'u': 'ShiftLeft', 'i': 'ShiftLeft', 'o': 'ShiftLeft', 'p': 'ShiftLeft', 'ú': 'ShiftLeft',
   'h': 'ShiftLeft', 'j': 'ShiftLeft', 'k': 'ShiftLeft', 'l': 'ShiftLeft', 'ů': 'ShiftLeft',
-  'n': 'ShiftLeft', 'm': 'ShiftLeft', ',': 'ShiftLeft', '.': 'ShiftLeft', 'ˇ': 'ShiftLeft', '§': 'ShiftLeft',
+  'n': 'ShiftLeft', 'm': 'ShiftLeft', ',': 'ShiftLeft', '.': 'ShiftLeft', 'ˇ': 'ShiftLeft', '§': 'ShiftLeft', ')': 'ShiftLeft', '%': 'ShiftLeft',
 };
 
 // Chars that require Shift on their own key (e.g. ':' = Shift + '.') -> that key.
@@ -114,11 +114,12 @@ function getKeyStyle(
                  !!(keyDef.shift && keyDef.shift === needsDiacritic.dead);
     }
   } else {
-    isTarget = keyDef.key === activeKey ||
-               !!(keyDef.shift && keyDef.shift === activeKey) ||
-               !!(keyDef.altChar && keyDef.altChar === activeKey);
     // Highlight Shift for uppercase letters and for Shift-level chars (':' = Shift + '.')
     const isUpperLetter = activeKey.length === 1 && activeKey === activeKey.toUpperCase() && activeKey !== activeKey.toLowerCase();
+    isTarget = keyDef.key === activeKey ||
+               !!(isUpperLetter && keyDef.key === activeKey.toLowerCase()) ||
+               !!(keyDef.shift && keyDef.shift === activeKey) ||
+               !!(keyDef.altChar && keyDef.altChar === activeKey);
     const shiftBase = isUpperLetter ? activeKey.toLowerCase() : SHIFT_CHAR_BASE[activeKey];
     if (shiftBase) {
       const shiftSide = SHIFT_SIDE_FOR_KEY[shiftBase];
@@ -240,7 +241,7 @@ export default function VirtualKeyboard({
                   <span className="text-gray-500" style={{ fontSize: '0.45rem' }}>MEZERNÍK</span>
                 ) : keyDef.altChar ? (
                   <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1, gap: '1px' }}>
-                    <span style={{ fontSize: '0.65rem' }}>{keyDef.label}</span>
+                    <span style={{ fontSize: '0.65rem', textTransform: /^[a-záčďéěíňóřšťůúýž]$/.test(keyDef.label) ? 'uppercase' : 'none' }}>{keyDef.label}</span>
                     <span style={{ fontSize: '0.6rem', color: '#d1d5db' }}>{keyDef.altChar}</span>
                   </span>
                 ) : (

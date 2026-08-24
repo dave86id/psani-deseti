@@ -23,7 +23,7 @@ export const fingerColors: Record<Finger, string> = {
 
 export const keyFingerMap: Record<string, Finger> = {
   // Number row
-  '°': 'left-pinky', '1': 'left-pinky', '+': 'left-pinky',
+  '<': 'left-pinky', '>': 'left-pinky', '1': 'left-pinky', '+': 'left-pinky',
   '2': 'left-ring', 'ě': 'left-ring',
   '3': 'left-middle', 'š': 'left-middle',
   '4': 'left-index', 'č': 'left-index',
