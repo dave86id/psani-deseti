@@ -30,7 +30,7 @@ export default function ProfileSetup({ googleDisplayName, googleAvatar, onSave }
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}>
       <div className="rounded-2xl p-8 w-full max-w-sm text-center" style={{ backgroundColor: '#242424', border: '1px solid #333' }}>
-        <h2 className="text-xl font-bold mb-1" style={{ color: '#8b5cf6' }}>Nastavte si profil</h2>
+        <h2 className="text-xl font-bold mb-1" style={{ color: '#ffffff' }}>Nastavte si profil</h2>
         <p className="text-sm mb-6" style={{ color: '#9ca3af' }}>Jak se zobrazíte v žebříčku?</p>
 
         {/* Avatar */}

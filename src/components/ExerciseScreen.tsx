@@ -185,7 +185,7 @@ export default function ExerciseScreen({
           </div>
           <span className="text-sm text-gray-400">
             {isErrorPractice 
-              ? <span style={{ color: '#a78bfa', fontWeight: 700 }}>Procvičování chyb</span>
+              ? <span style={{ color: '#9ca3af', fontWeight: 700 }}>Procvičování chyb</span>
               : `Lekce ${lessonId} — ${lessonTitle} — Cvičení ${exerciseIndex + 1}/${totalExercises}`
             }
           </span>

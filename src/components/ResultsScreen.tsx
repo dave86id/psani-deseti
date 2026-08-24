@@ -70,7 +70,7 @@ export default function ResultsScreen({
           <div style={{ fontSize: '1.8rem', marginBottom: '0.2rem' }}>
             {result.accuracy >= 95 ? '🎯' : result.accuracy >= 80 ? '👍' : '💪'}
           </div>
-          <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#8b5cf6', marginBottom: '0.2rem' }}>
+          <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.2rem' }}>
             Cvičení dokončeno!
           </h2>
           <p style={{ color: '#6b7280', fontSize: '0.55rem' }}>

@@ -25,7 +25,7 @@ export default function LessonMenu({ lesson, progress, onSelectExercise, onPract
           ← Zpět
         </button>
         <div>
-          <h1 className="font-bold" style={{ color: '#8b5cf6' }}>Lekce {lesson.id} — {lesson.title}</h1>
+          <h1 className="font-bold" style={{ color: '#ffffff' }}>Lekce {lesson.id} — {lesson.title}</h1>
           {lesson.newLetters.length > 0 && (
             <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>
               Nová písmena: {lesson.newLetters.join(', ')}
