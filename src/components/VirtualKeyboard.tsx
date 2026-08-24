@@ -70,25 +70,19 @@ interface VirtualKeyboardProps {
   heatmap?: Record<string, string>;
 }
 
-// Sytější varianta barvy prstu pro zvýraznění cílové klávesy.
-function intensify(hex: string): string {
-  const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255);
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  const l = (max + min) / 2;
-  let h = 0;
-  if (max !== min) {
-    const d = max - min;
-    h = max === r ? ((g - b) / d + (g < b ? 6 : 0)) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
-    h *= 60;
-  }
-  // Plná sytost, mírně tmavší odstín – barva prstu, ale výrazně intenzivnější.
-  return `hsl(${Math.round(h)}, 100%, ${Math.round(Math.min(l, 0.5) * 100)}%)`;
-}
-
-function textOn(hex: string): string {
-  const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
-  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6 ? '#1a1a1a' : '#ffffff';
-}
+// Barvy pro zvýraznění cílové klávesy – sytá varianta barvy prstu.
+const HIGHLIGHT_COLORS: Record<string, string> = {
+  'left-pinky': '#ab1762',
+  'left-ring': '#b24a00',
+  'left-middle': '#a98000',
+  'left-index': '#09993c',
+  'right-index': '#00859a',
+  'right-middle': '#0c4db3',
+  'right-ring': '#4f22ab',
+  'right-pinky': '#9816af',
+  'thumb': '#464d5c',
+};
+const SHIFT_HIGHLIGHT = '#6a97d3';
 
 function getKeyStyle(
   keyDef: KeyDef,
@@ -147,9 +141,7 @@ function getKeyStyle(
     }
   }
                     
-  // Shift nemá vlastní záznam v keyFingerMap – barvu bere podle své strany.
-  const finger = keyFingerMap[keyDef.key] ?? keyFingerMap[keyDef.label]
-    ?? (keyDef.key === 'ShiftLeft' ? 'left-pinky' : keyDef.key === 'ShiftRight' ? 'right-pinky' : undefined);
+  const finger = keyFingerMap[keyDef.key] ?? keyFingerMap[keyDef.label];
   const fingerColor = finger ? fingerColors[finger] : null;
 
   const isWrong = keyDef.key === wrongKeyFlash || 
@@ -179,11 +171,12 @@ function getKeyStyle(
   }
 
   if (isTarget || isShiftTarget) {
-    const base = fingerColor ?? '#8b5cf6';
+    const isShiftKey = keyDef.key === 'ShiftLeft' || keyDef.key === 'ShiftRight';
+    const base = isShiftKey ? SHIFT_HIGHLIGHT : (finger && HIGHLIGHT_COLORS[finger]) || '#4f22ab';
     return {
-      backgroundColor: intensify(base),
+      backgroundColor: base,
       borderColor: '#ffffff',
-      color: textOn(base),
+      color: '#ffffff',
       boxShadow: `0 0 14px ${base}, 0 0 4px ${base}`,
     };
   }
@@ -240,7 +233,7 @@ export default function VirtualKeyboard({
                   width,
                   flex: keyDef.extraWide ? '4 1 0' : keyDef.wide ? '2 1 0' : '1 1 0',
                   height: '2.4rem',
-                  fontSize: keyDef.extraWide ? '0.5rem' : '0.75rem',
+                  fontSize: keyDef.extraWide ? '0.625rem' : '0.875rem',
                   userSelect: 'none',
                   ...style,
                 }}
@@ -261,11 +254,11 @@ export default function VirtualKeyboard({
                   />
                 )}
                 {keyDef.label === ' ' ? (
-                  <span className="text-gray-500" style={{ fontSize: '0.45rem' }}>MEZERNÍK</span>
+                  <span className="text-gray-500" style={{ fontSize: '0.575rem' }}>MEZERNÍK</span>
                 ) : keyDef.altChar ? (
-                  <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1, gap: '1px' }}>
-                    <span style={{ fontSize: '0.65rem', textTransform: /^[a-záčďéěíňóřšťůúýž]$/.test(keyDef.label) ? 'uppercase' : 'none' }}>{keyDef.label}</span>
-                    <span style={{ fontSize: '0.6rem', color: '#d1d5db' }}>{keyDef.altChar}</span>
+                  <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1, gap: '4px' }}>
+                    <span style={{ fontSize: '0.775rem', textTransform: /^[a-záčďéěíňóřšťůúýž]$/.test(keyDef.label) ? 'uppercase' : 'none' }}>{keyDef.label}</span>
+                    <span style={{ fontSize: '0.725rem', color: '#d1d5db' }}>{keyDef.altChar}</span>
                   </span>
                 ) : (
                   <span style={{ textTransform: /^[a-záčďéěíňóřšťůúýž]$/.test(keyDef.label) ? 'uppercase' : 'none' }}>{keyDef.label}</span>
