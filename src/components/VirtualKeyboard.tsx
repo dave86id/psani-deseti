@@ -70,6 +70,26 @@ interface VirtualKeyboardProps {
   heatmap?: Record<string, string>;
 }
 
+// Sytější varianta barvy prstu pro zvýraznění cílové klávesy.
+function intensify(hex: string): string {
+  const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  let h = 0;
+  if (max !== min) {
+    const d = max - min;
+    h = max === r ? ((g - b) / d + (g < b ? 6 : 0)) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    h *= 60;
+  }
+  // Plná sytost, mírně tmavší odstín – barva prstu, ale výrazně intenzivnější.
+  return `hsl(${Math.round(h)}, 100%, ${Math.round(Math.min(l, 0.5) * 100)}%)`;
+}
+
+function textOn(hex: string): string {
+  const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6 ? '#1a1a1a' : '#ffffff';
+}
+
 function getKeyStyle(
   keyDef: KeyDef,
   activeKey: string,
@@ -127,6 +147,11 @@ function getKeyStyle(
     }
   }
                     
+  // Shift nemá vlastní záznam v keyFingerMap – barvu bere podle své strany.
+  const finger = keyFingerMap[keyDef.key] ?? keyFingerMap[keyDef.label]
+    ?? (keyDef.key === 'ShiftLeft' ? 'left-pinky' : keyDef.key === 'ShiftRight' ? 'right-pinky' : undefined);
+  const fingerColor = finger ? fingerColors[finger] : null;
+
   const isWrong = keyDef.key === wrongKeyFlash || 
                   !!(keyDef.shift && keyDef.shift === wrongKeyFlash);
   
@@ -154,16 +179,14 @@ function getKeyStyle(
   }
 
   if (isTarget || isShiftTarget) {
+    const base = fingerColor ?? '#8b5cf6';
     return {
-      backgroundColor: '#8b5cf6',
-      borderColor: '#a78bfa',
-      color: '#ffffff',
-      boxShadow: '0 0 12px rgba(139, 92, 246, 0.6)',
+      backgroundColor: intensify(base),
+      borderColor: '#ffffff',
+      color: textOn(base),
+      boxShadow: `0 0 14px ${base}, 0 0 4px ${base}`,
     };
   }
-
-  const finger = keyFingerMap[keyDef.key] ?? keyFingerMap[keyDef.label];
-  const fingerColor = finger ? fingerColors[finger] : null;
 
   if (fingerColor) {
     return {

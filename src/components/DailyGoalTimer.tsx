@@ -144,7 +144,7 @@ export default function DailyGoalTimer({ elapsedSeconds, isComplete }: Props) {
             cy="28"
             r={RADIUS}
             fill="none"
-            stroke={isComplete ? '#22c55e' : '#8b5cf6'}
+            stroke="#22c55e"
             strokeWidth="3"
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}

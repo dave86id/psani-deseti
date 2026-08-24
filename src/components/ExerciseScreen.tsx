@@ -179,7 +179,7 @@ export default function ExerciseScreen({
             >
               ← Zpět
             </button>
-            <h1 className="text-xl font-bold tracking-wide" style={{ color: '#8b5cf6' }}>
+            <h1 className="text-xl font-bold tracking-wide" style={{ color: '#9ca3af' }}>
               psaní deseti
             </h1>
           </div>
