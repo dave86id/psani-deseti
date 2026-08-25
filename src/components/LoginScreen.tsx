@@ -19,7 +19,7 @@ export default function LoginScreen({ onSignIn, onSkip }: LoginScreenProps) {
       <div style={{ textAlign: 'center', maxWidth: '32rem', width: '100%', padding: '0 1.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
           <img src="/logo.png" alt="logo" style={{ height: '1.8rem', width: 'auto' }} />
-          <span style={{ fontWeight: 700, color: '#8b5cf6', fontSize: '1.1rem' }}>psaní deseti</span>
+          <span style={{ fontWeight: 700, color: '#d1d5db', fontSize: '1.1rem' }}>psaní deseti</span>
         </div>
 
         <p style={{ color: '#9ca3af', fontSize: '0.7rem', marginBottom: '1.5rem' }}>

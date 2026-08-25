@@ -38,7 +38,7 @@ export default function ProfileSetup({ googleDisplayName, googleAvatar, onSave }
           <div
             onClick={() => fileRef.current?.click()}
             className="rounded-full cursor-pointer flex items-center justify-center overflow-hidden"
-            style={{ width: '5rem', height: '5rem', backgroundColor: '#333', border: '2px solid #8b5cf6' }}
+            style={{ width: '5rem', height: '5rem', backgroundColor: '#333', border: '2px solid #4b5563' }}
           >
             {avatar
               ? <img src={avatar} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -47,7 +47,7 @@ export default function ProfileSetup({ googleDisplayName, googleAvatar, onSave }
           </div>
           <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} style={{ display: 'none' }} />
         </div>
-        <button onClick={() => fileRef.current?.click()} className="text-xs mb-4 block mx-auto" style={{ color: '#8b5cf6' }}>
+        <button onClick={() => fileRef.current?.click()} className="text-xs mb-4 block mx-auto" style={{ color: '#9ca3af' }}>
           Nahrát foto
         </button>
 
@@ -66,7 +66,7 @@ export default function ProfileSetup({ googleDisplayName, googleAvatar, onSave }
           onClick={handleSave}
           disabled={!name.trim() || saving}
           className="w-full py-3 rounded-xl font-semibold text-white transition-all hover:opacity-90"
-          style={{ backgroundColor: '#8b5cf6', opacity: !name.trim() ? 0.5 : 1 }}
+          style={{ backgroundColor: '#4b5563', opacity: !name.trim() ? 0.5 : 1 }}
         >
           {saving ? 'Ukládání…' : 'Začít →'}
         </button>

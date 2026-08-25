@@ -137,7 +137,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
                 <span className="text-xs" style={{ color: '#6b7280' }}>Host</span>
                 {onSignIn && (
                   <button onClick={onSignIn} className="text-xs px-2 py-0.5 rounded font-medium"
-                    style={{ backgroundColor: '#8b5cf6', color: '#fff' }}>
+                    style={{ backgroundColor: '#4b5563', color: '#fff' }}>
                     Přihlásit se
                   </button>
                 )}
@@ -145,7 +145,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
             ) : profile ? (
               <>
                 <div className="rounded-full overflow-hidden flex items-center justify-center flex-shrink-0"
-                  style={{ width: '1.4rem', height: '1.4rem', backgroundColor: '#333', border: '1px solid #8b5cf6' }}>
+                  style={{ width: '1.4rem', height: '1.4rem', backgroundColor: '#333', border: '1px solid #4b5563' }}>
                   {profile.avatarBase64
                     ? <img src={profile.avatarBase64} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     : <span style={{ fontSize: '0.65rem' }}>👤</span>
@@ -162,7 +162,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
             ) : (
               onSignIn && (
                 <button onClick={onSignIn} className="text-xs px-2 py-0.5 rounded font-medium"
-                  style={{ backgroundColor: '#8b5cf6', color: '#fff' }}>
+                  style={{ backgroundColor: '#4b5563', color: '#fff' }}>
                   Přihlásit se
                 </button>
               )
@@ -185,7 +185,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
             <button
               onClick={() => nextLesson && handleSelectLesson(nextLesson.id)}
               style={{
-                backgroundColor: '#8b5cf6',
+                backgroundColor: '#4b5563',
                 color: '#fff',
                 fontSize: '0.95rem',
                 fontWeight: 700,
@@ -193,7 +193,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
                 borderRadius: '0.75rem',
                 border: 'none',
                 cursor: 'pointer',
-                boxShadow: '0 0 24px #8b5cf655',
+                boxShadow: '0 0 24px #9ca3af33',
               }}
             >
               Jdu na to! →
@@ -202,12 +202,12 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
               onClick={() => document.getElementById('lekce-sekce')?.scrollIntoView({ behavior: 'smooth' })}
               style={{
                 backgroundColor: 'transparent',
-                color: '#8b5cf6',
+                color: '#d1d5db',
                 fontSize: '0.95rem',
                 fontWeight: 600,
                 padding: '0.65rem 1.5rem',
                 borderRadius: '0.75rem',
-                border: '1px solid #8b5cf6',
+                border: '1px solid #4b5563',
                 cursor: 'pointer',
               }}
             >
@@ -273,7 +273,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
           <div className="rounded-xl p-4" style={{ backgroundColor: '#242424', border: '1px solid #333', flex: '0 0 30%' }}>
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm" style={{ color: '#9ca3af' }}>Tvůj postup</span>
-              <span className="font-bold" style={{ color: '#8b5cf6' }}>{completedPct}%</span>
+              <span className="font-bold" style={{ color: '#d1d5db' }}>{completedPct}%</span>
             </div>
             <div className="rounded-full h-2 mb-4" style={{ backgroundColor: '#333' }}>
               <div
@@ -287,7 +287,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
                 <div className="text-xs" style={{ color: '#6b7280' }}>Lekcí dokončeno</div>
               </div>
               <div>
-                <div className="font-bold text-lg" style={{ color: '#8b5cf6' }}>{avgCpm > 0 ? avgCpm : '—'}</div>
+                <div className="font-bold text-lg" style={{ color: '#d1d5db' }}>{avgCpm > 0 ? avgCpm : '—'}</div>
                 <div className="text-xs" style={{ color: '#6b7280' }}>Průměr CPM</div>
               </div>
               <div>
@@ -314,7 +314,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
                   border: 'none',
                   padding: 0,
                   fontSize: '0.6rem',
-                  color: '#8b5cf6',
+                  color: '#9ca3af',
                   textDecoration: 'underline',
                   cursor: 'pointer',
                 }}
@@ -365,7 +365,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
                         {completed && medal && <span style={{ fontSize: '1.3rem' }}>{medal}</span>}
                         {completed
                           ? <span style={{ color: '#22c55e', fontSize: '0.75rem' }}>✓</span>
-                          : <span style={{ color: '#8b5cf6', fontSize: '0.7rem' }}>→</span>
+                          : <span style={{ color: '#9ca3af', fontSize: '0.7rem' }}>→</span>
                         }
                       </div>
                     </div>

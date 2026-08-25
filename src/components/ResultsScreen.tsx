@@ -81,11 +81,11 @@ export default function ResultsScreen({
         {/* Stats grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.75rem' }}>
           <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
-            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: '#8b5cf6' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: '#d1d5db' }}>
               {result.cpm}
             </div>
             <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>CPM</div>
-            <div style={{ fontSize: '0.5rem', color: '#8b5cf6', marginTop: '0.1rem' }}>
+            <div style={{ fontSize: '0.5rem', color: '#9ca3af', marginTop: '0.1rem' }}>
               {getCpmRating(result.cpm)}
             </div>
           </div>
@@ -118,7 +118,7 @@ export default function ResultsScreen({
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.15rem' }}>
               <button
                 onClick={onNext}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: '0.6rem', fontWeight: 600, fontSize: '0.7rem', color: '#fff', backgroundColor: '#8b5cf6', border: 'none' }}
+                style={{ width: '100%', padding: '0.5rem', borderRadius: '0.6rem', fontWeight: 600, fontSize: '0.7rem', color: '#fff', backgroundColor: '#4b5563', border: 'none' }}
               >
                 Další cvičení →
               </button>

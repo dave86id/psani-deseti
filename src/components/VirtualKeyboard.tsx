@@ -166,9 +166,9 @@ function getKeyStyle(
   if (isPressed) {
     return {
       backgroundColor: '#4b5563',
-      borderColor: '#8b5cf6',
+      borderColor: '#d1d5db',
       color: '#ffffff',
-      boxShadow: '0 0 8px rgba(139, 92, 246, 0.4)',
+      boxShadow: '0 0 8px rgba(209, 213, 219, 0.4)',
     };
   }
 

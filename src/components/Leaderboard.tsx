@@ -47,8 +47,8 @@ export default function Leaderboard({ entries, loading, currentUid, onRefresh }:
                   key={entry.uid}
                   style={{
                     borderBottom: '1px solid #2a2a2a',
-                    backgroundColor: isCurrent ? '#8b5cf611' : 'transparent',
-                    borderLeft: isCurrent ? '3px solid #8b5cf6' : '3px solid transparent',
+                    backgroundColor: isCurrent ? '#ffffff0a' : 'transparent',
+                    borderLeft: isCurrent ? '3px solid #9ca3af' : '3px solid transparent',
                   }}
                 >
                   {/* Rank */}
@@ -75,9 +75,9 @@ export default function Leaderboard({ entries, loading, currentUid, onRefresh }:
                           : <span style={{ fontSize: '0.7rem' }}>👤</span>
                         }
                       </div>
-                      <span style={{ color: isCurrent ? '#a78bfa' : '#e5e7eb', fontSize: '0.8rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
+                      <span style={{ color: isCurrent ? '#ffffff' : '#e5e7eb', fontSize: '0.8rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
                         {entry.displayName}
-                        {isCurrent && <span style={{ marginLeft: '4px', fontSize: '0.65rem', color: '#8b5cf6' }}>(vy)</span>}
+                        {isCurrent && <span style={{ marginLeft: '4px', fontSize: '0.65rem', color: '#9ca3af' }}>(vy)</span>}
                       </span>
                     </div>
                   </td>
@@ -89,7 +89,7 @@ export default function Leaderboard({ entries, loading, currentUid, onRefresh }:
                   <td style={{ padding: '10px 8px', textAlign: 'right', fontSize: '0.8rem', whiteSpace: 'nowrap', color: entry.avgAccuracy >= 90 ? '#22c55e' : '#eab308' }}>
                     {entry.avgAccuracy}%
                   </td>
-                  <td style={{ padding: '10px 8px', textAlign: 'right', color: '#8b5cf6', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+                  <td style={{ padding: '10px 8px', textAlign: 'right', color: '#d1d5db', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
                     {entry.avgCpm}
                   </td>
                 </tr>

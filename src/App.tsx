@@ -62,7 +62,7 @@ function TransferDialog({ onYes, onNo }: { onYes: () => void; onNo: () => void }
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button
             onClick={onYes}
-            style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', backgroundColor: '#8b5cf6', color: '#fff', border: 'none', fontWeight: 600, fontSize: '0.7rem' }}
+            style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', backgroundColor: '#4b5563', color: '#fff', border: 'none', fontWeight: 600, fontSize: '0.7rem' }}
           >
             Ano, převést
           </button>

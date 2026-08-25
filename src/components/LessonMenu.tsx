@@ -63,7 +63,7 @@ export default function LessonMenu({ lesson, progress, onSelectExercise, onPract
                   <div className="flex items-center gap-2 flex-shrink-0" style={{ whiteSpace: 'nowrap' }}>
                     {score ? (
                       <>
-                        <span style={{ color: '#8b5cf6', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>⚡{score.cpm}</span>
+                        <span style={{ color: '#d1d5db', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>⚡{score.cpm}</span>
                         <span style={{ color: score.accuracy >= 95 ? '#22c55e' : score.accuracy >= 80 ? '#eab308' : '#ef4444', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>🎯{score.accuracy}%</span>
                         <span style={{ color: score.errors === 0 ? '#22c55e' : '#ef4444', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>✕{score.errors}</span>
                         <span style={{ color: '#06b6d4', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>⏱{formatTime(score.timeSeconds)}</span>
@@ -87,7 +87,7 @@ export default function LessonMenu({ lesson, progress, onSelectExercise, onPract
             disabled={!hasErrors}
             className="w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-3"
             style={{
-              backgroundColor: hasErrors ? '#8b5cf6' : '#2a2a2a',
+              backgroundColor: hasErrors ? '#4b5563' : '#2a2a2a',
               color: hasErrors ? '#ffffff' : '#4b5563',
               border: hasErrors ? 'none' : '1px dashed #444',
               cursor: hasErrors ? 'pointer' : 'not-allowed',

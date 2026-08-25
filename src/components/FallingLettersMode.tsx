@@ -139,7 +139,7 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
         >
           ← Zpět
         </button>
-        <span style={{ color: '#8b5cf6', fontWeight: 700, fontSize: '0.8rem' }}>
+        <span style={{ color: '#9ca3af', fontWeight: 700, fontSize: '0.8rem' }}>
           🧪 Padající písmena — {lessonTitle}
         </span>
         <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: '#6b7280' }}>
@@ -161,8 +161,8 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
             top: `${(VISIBLE_ROWS - 1) * ROW_HEIGHT}px`,
             left: 0, right: 0,
             height: `${ROW_HEIGHT}px`,
-            backgroundColor: '#8b5cf60a',
-            borderBottom: '2px solid #8b5cf633',
+            backgroundColor: '#ffffff08',
+            borderBottom: '2px solid #9ca3af33',
           }} />
 
           {/* Gradient connector: from active slot bottom down to the keyboard key */}
@@ -173,7 +173,7 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
               top: `${lineTop}px`,
               width: '3px',
               height: `${lineHeight}px`,
-              background: `linear-gradient(to bottom, #8b5cf6cc 0%, #8b5cf688 30%, #8b5cf622 80%, transparent 100%)`,
+              background: `linear-gradient(to bottom, #d1d5dbcc 0%, #d1d5db88 30%, #d1d5db22 80%, transparent 100%)`,
               transform: 'translateX(-50%)',
               borderRadius: '2px',
               pointerEvents: 'none',
@@ -208,10 +208,10 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
                   fontWeight: 700,
                   fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                   textTransform: 'uppercase',
-                  backgroundColor: isActive ? '#8b5cf633' : '#1e1e1e',
-                  border: isActive ? '2px solid #8b5cf6' : '1px solid #2a2a2a',
+                  backgroundColor: isActive ? '#9ca3af33' : '#1e1e1e',
+                  border: isActive ? '2px solid #d1d5db' : '1px solid #2a2a2a',
                   color: isActive ? '#fff' : '#9ca3af',
-                  boxShadow: isActive ? '0 0 24px #8b5cf644' : 'none',
+                  boxShadow: isActive ? '0 0 24px #9ca3af44' : 'none',
                   opacity,
                   zIndex: isActive ? 3 : 1,
                 }}

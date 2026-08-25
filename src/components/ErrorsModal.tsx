@@ -175,7 +175,7 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
                 onPracticeErrors();
               }}
               style={{
-                backgroundColor: '#8b5cf6',
+                backgroundColor: '#4b5563',
                 color: '#fff',
                 fontSize: '0.8rem',
                 fontWeight: 700,
@@ -183,7 +183,7 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
                 borderRadius: '0.6rem',
                 border: 'none',
                 cursor: 'pointer',
-                boxShadow: '0 0 18px #8b5cf655',
+                boxShadow: '0 0 18px #9ca3af33',
               }}
             >
               Procvičovat moje chyby →
