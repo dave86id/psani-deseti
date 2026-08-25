@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import VirtualKeyboard from './VirtualKeyboard';
+import { useKeyboardVisible } from '../hooks/useKeyboardVisible';
 import { playKeyAudio, prewarmAudio } from '../hooks/useSound';
 import { composeDeadKey } from '../utils/composeDeadKey';
 
@@ -25,6 +26,7 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
     }
     return result.split('');
   }, [text]);
+  const keyboardVisible = useKeyboardVisible();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [errors, setErrors] = useState(0);
   const [startTime] = useState(() => Date.now());
@@ -222,7 +224,7 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
         </div>
 
         {/* Virtual keyboard */}
-        <div ref={kbRef} style={{ width: '100%' }}>
+        <div ref={kbRef} style={{ width: '100%', visibility: keyboardVisible ? 'visible' : 'hidden' }}>
           <VirtualKeyboard activeKey={activeChar ?? ''} wrongKeyFlash={wrongFlash} pendingDeadKey={pendingDeadKey} />
         </div>
       </div>

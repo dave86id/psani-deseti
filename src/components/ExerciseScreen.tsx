@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ExerciseState } from '../types';
 import VirtualKeyboard from './VirtualKeyboard';
+import { useKeyboardVisible } from '../hooks/useKeyboardVisible';
 import ProgressBar from './ProgressBar';
 import { playKeyAudio, prewarmAudio } from '../hooks/useSound';
 import { composeDeadKey } from '../utils/composeDeadKey';
@@ -38,8 +39,8 @@ function CharDisplay({
   let textColor = '#9ca3af';
 
   if (isCurrent) {
-    bgColor = '#7c3aed';
-    textColor = '#ffffff';
+    bgColor = '#d1d5db';
+    textColor = '#1a1a1a';
   } else if (isTyped) {
     if (hasError) {
       textColor = '#ef4444';
@@ -160,6 +161,7 @@ export default function ExerciseScreen({
     };
   }, [onKey, onDeadKey]);
 
+  const keyboardVisible = useKeyboardVisible();
   const activeKey = state.text[state.currentIndex] ?? '';
   const chars = state.text.split('');
 
@@ -236,7 +238,8 @@ export default function ExerciseScreen({
         </div>
       </div>
 
-      <div className="w-full max-w-3xl flex justify-center">
+      {/* Skrytí přes visibility – místo zůstává, obsah nad ním se nehne. */}
+      <div className="w-full max-w-3xl flex justify-center" style={{ visibility: keyboardVisible ? 'visible' : 'hidden' }}>
         <VirtualKeyboard 
           activeKey={activeKey} 
           wrongKeyFlash={wrongKeyFlash} 
@@ -246,7 +249,7 @@ export default function ExerciseScreen({
       </div>
 
       <div className="mt-4 flex gap-4 text-xs text-gray-500">
-        <span><span style={{ color: '#8b5cf6' }}>■</span> Aktuální znak</span>
+        <span><span style={{ color: '#d1d5db' }}>■</span> Aktuální znak</span>
         <span><span style={{ color: '#22c55e' }}>■</span> Správně</span>
         <span><span style={{ color: '#ef4444' }}>■</span> Chyba</span>
       </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { isSoundEnabled, setSoundEnabled } from '../hooks/useSound';
+import { useKeyboardVisible, setKeyboardVisible } from '../hooks/useKeyboardVisible';
 
 const GOAL_SECONDS = 900;
 const RADIUS = 22;
@@ -15,6 +16,8 @@ export default function DailyGoalTimer({ elapsedSeconds, isComplete }: Props) {
   const [hovered, setHovered] = useState(false);
   const [soundOn, setSoundOn] = useState(isSoundEnabled);
   const [soundHovered, setSoundHovered] = useState(false);
+  const keyboardVisible = useKeyboardVisible();
+  const [kbHovered, setKbHovered] = useState(false);
   const progress = Math.min(elapsedSeconds / GOAL_SECONDS, 1);
   const strokeDashoffset = CIRCUMFERENCE * (1 - progress);
 
@@ -60,6 +63,64 @@ export default function DailyGoalTimer({ elapsedSeconds, isComplete }: Props) {
         pointerEvents: 'none',
       }}>
         Splnili jste denní cíl!
+      </div>
+
+      {/* Keyboard toggle */}
+      <div
+        style={{ position: 'relative', flexShrink: 0 }}
+        onMouseEnter={() => setKbHovered(true)}
+        onMouseLeave={() => setKbHovered(false)}
+      >
+        <button
+          type="button"
+          aria-label={keyboardVisible ? 'Skrýt klávesnici' : 'Zobrazit klávesnici'}
+          // Keep focus on the exercise — a focused button would swallow Space.
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => setKeyboardVisible(!keyboardVisible)}
+          style={{
+            width: 36,
+            height: 36,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#1a1a1a',
+            border: '1px solid #3a3a3a',
+            borderRadius: '999px',
+            color: keyboardVisible ? '#d1d5db' : '#6b7280',
+            cursor: 'pointer',
+            padding: 0,
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="6" width="20" height="12" rx="2" />
+            <line x1="6" y1="10" x2="6" y2="10" />
+            <line x1="10" y1="10" x2="10" y2="10" />
+            <line x1="14" y1="10" x2="14" y2="10" />
+            <line x1="18" y1="10" x2="18" y2="10" />
+            <line x1="8" y1="14" x2="16" y2="14" />
+            {!keyboardVisible && <line x1="3" y1="21" x2="21" y2="3" />}
+          </svg>
+        </button>
+
+        {/* Tooltip */}
+        <div style={{
+          position: 'absolute',
+          bottom: 'calc(100% + 8px)',
+          right: 0,
+          backgroundColor: '#1a1a1a',
+          border: '1px solid #3a3a3a',
+          borderRadius: '0.5rem',
+          padding: '0.4rem 0.75rem',
+          color: '#d1d5db',
+          fontSize: '0.7rem',
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+          opacity: kbHovered ? 1 : 0,
+          transform: kbHovered ? 'translateY(0)' : 'translateY(4px)',
+          transition: 'opacity 0.15s ease, transform 0.15s ease',
+        }}>
+          {keyboardVisible ? 'Skrýt klávesnici' : 'Zobrazit klávesnici'}
+        </div>
       </div>
 
       {/* Sound toggle */}
