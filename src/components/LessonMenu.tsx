@@ -27,7 +27,7 @@ export default function LessonMenu({ lesson, progress, onSelectExercise, onPract
         <div>
           <h1 className="font-bold" style={{ color: '#ffffff' }}>Lekce {lesson.id} — {lesson.title}</h1>
           {lesson.newLetters.length > 0 && (
-            <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>
+            <p className="text-sm mt-0.5" style={{ color: '#6b7280' }}>
               Nová písmena: {lesson.newLetters.join(', ')}
             </p>
           )}
@@ -63,16 +63,16 @@ export default function LessonMenu({ lesson, progress, onSelectExercise, onPract
                   <div className="flex items-center gap-2 flex-shrink-0" style={{ whiteSpace: 'nowrap' }}>
                     {score ? (
                       <>
-                        <span style={{ color: '#d1d5db', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>⚡{score.cpm}</span>
-                        <span style={{ color: score.accuracy >= 95 ? '#22c55e' : score.accuracy >= 80 ? '#eab308' : '#ef4444', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>🎯{score.accuracy}%</span>
-                        <span style={{ color: score.errors === 0 ? '#22c55e' : '#ef4444', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>✕{score.errors}</span>
-                        <span style={{ color: '#06b6d4', fontSize: '0.65rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>⏱{formatTime(score.timeSeconds)}</span>
+                        <span style={{ color: '#d1d5db', fontSize: '0.875rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>⚡{score.cpm}</span>
+                        <span style={{ color: score.accuracy >= 95 ? '#22c55e' : score.accuracy >= 80 ? '#eab308' : '#ef4444', fontSize: '0.875rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>🎯{score.accuracy}%</span>
+                        <span style={{ color: score.errors === 0 ? '#22c55e' : '#ef4444', fontSize: '0.875rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>✕{score.errors}</span>
+                        <span style={{ color: '#06b6d4', fontSize: '0.875rem', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>⏱{formatTime(score.timeSeconds)}</span>
                         {medal && <span style={{ fontSize: '1.1rem' }}>{medal}</span>}
                       </>
                     ) : (
-                      <span style={{ color: '#4b5563', fontSize: '0.65rem' }}>—</span>
+                      <span style={{ color: '#4b5563', fontSize: '0.875rem' }}>—</span>
                     )}
-                    {done && <span style={{ color: '#22c55e', fontSize: '0.75rem' }}>✓</span>}
+                    {done && <span style={{ color: '#22c55e', fontSize: '0.875rem' }}>✓</span>}
                   </div>
                 </div>
               </button>

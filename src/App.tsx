@@ -57,19 +57,19 @@ function TransferDialog({ onYes, onNo }: { onYes: () => void; onNo: () => void }
       <div style={{ backgroundColor: '#242424', border: '1px solid #3a3a3a', borderRadius: '1rem', padding: '1.5rem', maxWidth: '22rem', width: '90%', textAlign: 'center' }}>
         <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📦</div>
         <h2 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>Převést pokrok do účtu?</h2>
-        <p style={{ fontSize: '0.65rem', color: '#9ca3af', marginBottom: '1.25rem', lineHeight: 1.6 }}>
+        <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginBottom: '1.25rem', lineHeight: 1.6 }}>
           Máš rozdělaný kurz jako host. Chceš ho převést do svého nového účtu?
         </p>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button
             onClick={onYes}
-            style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', backgroundColor: '#4b5563', color: '#fff', border: 'none', fontWeight: 600, fontSize: '0.7rem' }}
+            style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', backgroundColor: '#4b5563', color: '#fff', border: 'none', fontWeight: 600, fontSize: '0.875rem' }}
           >
             Ano, převést
           </button>
           <button
             onClick={onNo}
-            style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', backgroundColor: 'transparent', color: '#9ca3af', border: '1px solid #444', fontSize: '0.7rem' }}
+            style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', backgroundColor: 'transparent', color: '#9ca3af', border: '1px solid #444', fontSize: '0.875rem' }}
           >
             Ne, začít znovu
           </button>

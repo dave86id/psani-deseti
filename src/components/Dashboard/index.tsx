@@ -127,16 +127,16 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
         <div className="flex items-center justify-between max-w-3xl mx-auto">
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="logo" style={{ height: '1.6rem', width: 'auto' }} />
-            <span style={{ fontSize: '0.6rem', color: 'rgb(138 138 138)', letterSpacing: '0.02em' }}>
+            <span style={{ fontSize: '0.875rem', color: 'rgb(138 138 138)', letterSpacing: '0.02em' }}>
               v{__APP_VERSION__} · Sestaveno: {__BUILD_TIME__}
             </span>
           </div>
           <div className="flex items-center gap-2">
             {isGuest ? (
               <>
-                <span className="text-xs" style={{ color: '#6b7280' }}>Host</span>
+                <span className="text-sm" style={{ color: '#6b7280' }}>Host</span>
                 {onSignIn && (
-                  <button onClick={onSignIn} className="text-xs px-2 py-0.5 rounded font-medium"
+                  <button onClick={onSignIn} className="text-sm px-2 py-0.5 rounded font-medium"
                     style={{ backgroundColor: '#4b5563', color: '#fff' }}>
                     Přihlásit se
                   </button>
@@ -148,12 +148,12 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
                   style={{ width: '1.4rem', height: '1.4rem', backgroundColor: '#333', border: '1px solid #4b5563' }}>
                   {profile.avatarBase64
                     ? <img src={profile.avatarBase64} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : <span style={{ fontSize: '0.65rem' }}>👤</span>
+                    : <span style={{ fontSize: '0.875rem' }}>👤</span>
                   }
                 </div>
-                <span className="text-xs" style={{ color: '#e5e7eb' }}>{profile.displayName}</span>
+                <span className="text-sm" style={{ color: '#e5e7eb' }}>{profile.displayName}</span>
                 {onSignOut && (
-                  <button onClick={onSignOut} className="text-xs px-2 py-0.5 rounded"
+                  <button onClick={onSignOut} className="text-sm px-2 py-0.5 rounded"
                     style={{ backgroundColor: '#333', color: '#9ca3af', border: '1px solid #444' }}>
                     Odhlásit
                   </button>
@@ -161,7 +161,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
               </>
             ) : (
               onSignIn && (
-                <button onClick={onSignIn} className="text-xs px-2 py-0.5 rounded font-medium"
+                <button onClick={onSignIn} className="text-sm px-2 py-0.5 rounded font-medium"
                   style={{ backgroundColor: '#4b5563', color: '#fff' }}>
                   Přihlásit se
                 </button>
@@ -178,7 +178,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
             {HEADING.slice(0, typedLen)}
             <span style={{ display: 'inline-block', width: '2px', height: '1.4em', backgroundColor: '#fff', marginLeft: '2px', verticalAlign: 'middle', opacity: cursorVisible && !cursorDone ? 1 : 0 }} />
           </h1>
-          <p className="mb-5" style={{ fontSize: '0.8rem', color: '#9ca3af', maxWidth: '32rem', margin: '0 auto 1.5rem' }}>
+          <p className="mb-5" style={{ fontSize: '0.875rem', color: '#9ca3af', maxWidth: '32rem', margin: '0 auto 1.5rem' }}>
             Procházej cvičení krok za krokem a sleduj, jak se zlepšuješ.
           </p>
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
@@ -232,7 +232,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
             )}
           </div>
           {nextLessonHint && (
-            <div style={{ marginTop: '0.6rem', fontSize: '0.65rem', color: '#6b7280' }}>
+            <div style={{ marginTop: '0.6rem', fontSize: '0.875rem', color: '#6b7280' }}>
               {hasStarted ? 'Pokračuješ v' : ''} {nextLessonHint}
             </div>
           )}
@@ -284,23 +284,23 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
                 <div className="font-bold text-lg" style={{ color: '#22c55e' }}>{completedCount}/{totalCount}</div>
-                <div className="text-xs" style={{ color: '#6b7280' }}>Lekcí dokončeno</div>
+                <div className="text-sm" style={{ color: '#6b7280' }}>Lekcí dokončeno</div>
               </div>
               <div>
                 <div className="font-bold text-lg" style={{ color: '#d1d5db' }}>{avgCpm > 0 ? avgCpm : '—'}</div>
-                <div className="text-xs" style={{ color: '#6b7280' }}>Průměr CPM</div>
+                <div className="text-sm" style={{ color: '#6b7280' }}>Průměr CPM</div>
               </div>
               <div>
                 <div className="font-bold text-lg" style={{ color: '#06b6d4' }}>{avgAcc > 0 ? `${avgAcc}%` : '—'}</div>
-                <div className="text-xs" style={{ color: '#6b7280' }}>Průměr přesnost</div>
+                <div className="text-sm" style={{ color: '#6b7280' }}>Průměr přesnost</div>
               </div>
             </div>
             <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid #333', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f59e0b' }}>
+              <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f59e0b' }}>
                 🔥 {completedDays}× splněný denní cíl
               </div>
               {lastCompletedLabel && (
-                <div style={{ fontSize: '0.6rem', color: '#6b7280', marginTop: '0.2rem' }}>
+                <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.2rem' }}>
                   Naposledy: {lastCompletedLabel}
                 </div>
               )}
@@ -313,7 +313,7 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
                   background: 'none',
                   border: 'none',
                   padding: 0,
-                  fontSize: '0.6rem',
+                  fontSize: '0.875rem',
                   color: '#9ca3af',
                   textDecoration: 'underline',
                   cursor: 'pointer',
@@ -360,19 +360,19 @@ export default function Dashboard({ progress, onSelectLesson, onPracticeGlobalEr
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                      <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: '#6b7280' }}>{lesson.id}</span>
+                      <span style={{ fontSize: '0.875rem', fontFamily: 'monospace', color: '#6b7280' }}>{lesson.id}</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         {completed && medal && <span style={{ fontSize: '1.3rem' }}>{medal}</span>}
                         {completed
-                          ? <span style={{ color: '#22c55e', fontSize: '0.75rem' }}>✓</span>
-                          : <span style={{ color: '#9ca3af', fontSize: '0.7rem' }}>→</span>
+                          ? <span style={{ color: '#22c55e', fontSize: '0.875rem' }}>✓</span>
+                          : <span style={{ color: '#9ca3af', fontSize: '0.875rem' }}>→</span>
                         }
                       </div>
                     </div>
-                    <div style={{ fontSize: '0.75rem', fontWeight: 500, color: '#e5e7eb', marginBottom: '4px', lineHeight: 1.2 }}>
+                    <div style={{ fontSize: '0.875rem', fontWeight: 500, color: '#e5e7eb', marginBottom: '4px', lineHeight: 1.2 }}>
                       {lesson.title}
                     </div>
-                    <div style={{ fontSize: '0.6rem', color: completed ? '#22c55e99' : '#4b5563' }}>
+                    <div style={{ fontSize: '0.875rem', color: completed ? '#22c55e99' : '#4b5563' }}>
                       {completedCount}/{totalCount} cvičení
                     </div>
                   </button>

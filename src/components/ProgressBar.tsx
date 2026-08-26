@@ -8,7 +8,7 @@ export default function ProgressBar({ current, total }: ProgressBarProps) {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between text-xs text-gray-400 mb-1">
+      <div className="flex justify-between text-sm text-gray-400 mb-1">
         <span>Průběh</span>
         <span>{percentage}%</span>
       </div>
