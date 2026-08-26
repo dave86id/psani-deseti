@@ -230,12 +230,12 @@ export default function VirtualKeyboard({
               <div
                 key={keyIndex}
                 data-key={keyDef.key}
-                className="flex items-center justify-center rounded border text-sm font-mono transition-all duration-100 cursor-default relative"
+                className="flex items-center justify-center rounded border text-xs font-mono transition-all duration-100 cursor-default relative"
                 style={{
                   width,
                   flex: keyDef.extraWide ? '4 1 0' : keyDef.wide ? '2 1 0' : '1 1 0',
                   height: '2.4rem',
-                  fontSize: keyDef.extraWide ? '0.875rem' : '0.875rem',
+                  fontSize: keyDef.extraWide ? '0.625rem' : '0.875rem',
                   userSelect: 'none',
                   ...style,
                 }}
@@ -256,11 +256,11 @@ export default function VirtualKeyboard({
                   />
                 )}
                 {keyDef.label === ' ' ? (
-                  <span className="text-gray-500" style={{ fontSize: '0.875rem' }}>MEZERNÍK</span>
+                  <span className="text-gray-500" style={{ fontSize: '0.575rem' }}>MEZERNÍK</span>
                 ) : keyDef.altChar ? (
                   <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1, gap: '4px' }}>
-                    <span style={{ fontSize: '0.875rem', textTransform: /^[a-záčďéěíňóřšťůúýž]$/.test(keyDef.label) ? 'uppercase' : 'none' }}>{keyDef.label}</span>
-                    <span style={{ fontSize: '0.875rem', color: '#d1d5db' }}>{keyDef.altChar}</span>
+                    <span style={{ fontSize: '0.775rem', textTransform: /^[a-záčďéěíňóřšťůúýž]$/.test(keyDef.label) ? 'uppercase' : 'none' }}>{keyDef.label}</span>
+                    <span style={{ fontSize: '0.725rem', color: '#d1d5db' }}>{keyDef.altChar}</span>
                   </span>
                 ) : (
                   <span style={{ textTransform: /^[a-záčďéěíňóřšťůúýž]$/.test(keyDef.label) ? 'uppercase' : 'none' }}>{keyDef.label}</span>

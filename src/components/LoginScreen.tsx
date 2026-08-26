@@ -22,7 +22,7 @@ export default function LoginScreen({ onSignIn, onSkip }: LoginScreenProps) {
           <span style={{ fontWeight: 700, color: '#d1d5db', fontSize: '1.1rem' }}>psaní deseti</span>
         </div>
 
-        <p style={{ color: '#9ca3af', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
+        <p style={{ color: '#9ca3af', fontSize: '0.7rem', marginBottom: '1.5rem' }}>
           Přihlas se, aby se tvůj pokrok uložil. Nebo pokračuj jako host.
         </p>
 
@@ -34,7 +34,7 @@ export default function LoginScreen({ onSignIn, onSkip }: LoginScreenProps) {
               display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
               padding: '0.45rem 1rem', borderRadius: '0.6rem',
               backgroundColor: '#ffffff', color: '#1a1a1a',
-              fontSize: '0.875rem', fontWeight: 600, border: 'none',
+              fontSize: '0.65rem', fontWeight: 600, border: 'none',
             }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@ export default function LoginScreen({ onSignIn, onSkip }: LoginScreenProps) {
             style={{
               padding: '0.45rem 1rem', borderRadius: '0.6rem',
               backgroundColor: 'transparent', color: '#9ca3af',
-              fontSize: '0.875rem', fontWeight: 500,
+              fontSize: '0.65rem', fontWeight: 500,
               border: '1px solid #444',
             }}
           >

@@ -47,7 +47,7 @@ export default function ProfileSetup({ googleDisplayName, googleAvatar, onSave }
           </div>
           <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} style={{ display: 'none' }} />
         </div>
-        <button onClick={() => fileRef.current?.click()} className="text-sm mb-4 block mx-auto" style={{ color: '#9ca3af' }}>
+        <button onClick={() => fileRef.current?.click()} className="text-xs mb-4 block mx-auto" style={{ color: '#9ca3af' }}>
           Nahrát foto
         </button>
 

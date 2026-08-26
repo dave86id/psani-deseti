@@ -84,7 +84,7 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
             <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#fff', marginBottom: '0.2rem' }}>
               Nejčastější chyby
             </h2>
-            <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
+            <p style={{ fontSize: '0.65rem', color: '#9ca3af' }}>
               {count === 0
                 ? 'Zatím žádná dokončená cvičení'
                 : `Z posledních ${count} cvičení (max. 15) · top ${Math.min(TOP_N, allRows.length)}`}
@@ -111,7 +111,7 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
           <div style={{ marginBottom: '0.9rem' }}>
             <VirtualKeyboard heatmap={heatColors} />
             <div style={{ marginTop: '0.6rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem' }}>
-              <span style={{ fontSize: '0.875rem', color: '#9ca3af' }}>nejméně chyb</span>
+              <span style={{ fontSize: '0.6rem', color: '#9ca3af' }}>nejméně chyb</span>
               <div
                 style={{
                   width: '12rem',
@@ -120,23 +120,23 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
                   background: `linear-gradient(to right, ${[0, 1, 2, 3, 4, 5, 6].map(i => heatColor(i, 6)).join(', ')})`,
                 }}
               />
-              <span style={{ fontSize: '0.875rem', color: '#9ca3af' }}>nejvíc chyb ({heatMax})</span>
+              <span style={{ fontSize: '0.6rem', color: '#9ca3af' }}>nejvíc chyb ({heatMax})</span>
             </div>
           </div>
         )}
 
         <div style={{ overflowY: 'auto', flex: 1 }}>
           {rows.length === 0 ? (
-            <div style={{ padding: '1.5rem 0', textAlign: 'center', color: '#6b7280', fontSize: '0.875rem' }}>
+            <div style={{ padding: '1.5rem 0', textAlign: 'center', color: '#6b7280', fontSize: '0.75rem' }}>
               {count === 0 ? 'Dokonči cvičení a uvidíš, kde děláš nejvíc chyb.' : '🎯 Žádné chyby v posledních cvičeních!'}
             </div>
           ) : (
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.75rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid #333' }}>
-                  <th style={{ textAlign: 'left', padding: '0.4rem 0.5rem', color: '#6b7280', fontWeight: 500, fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Znak</th>
-                  <th style={{ textAlign: 'right', padding: '0.4rem 0.5rem', color: '#6b7280', fontWeight: 500, fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Chyb</th>
-                  <th style={{ textAlign: 'right', padding: '0.4rem 0.5rem', color: '#6b7280', fontWeight: 500, fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Podíl</th>
+                  <th style={{ textAlign: 'left', padding: '0.4rem 0.5rem', color: '#6b7280', fontWeight: 500, fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Znak</th>
+                  <th style={{ textAlign: 'right', padding: '0.4rem 0.5rem', color: '#6b7280', fontWeight: 500, fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Chyb</th>
+                  <th style={{ textAlign: 'right', padding: '0.4rem 0.5rem', color: '#6b7280', fontWeight: 500, fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Podíl</th>
                 </tr>
               </thead>
               <tbody>
@@ -155,7 +155,7 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
                           <div style={{ width: '4rem', height: '4px', backgroundColor: '#333', borderRadius: '2px', overflow: 'hidden' }}>
                             <div style={{ width: `${pct}%`, height: '100%', backgroundColor: '#ef4444' }} />
                           </div>
-                          <span style={{ color: '#9ca3af', fontSize: '0.875rem', minWidth: '2.2rem', textAlign: 'right' }}>{pct}%</span>
+                          <span style={{ color: '#9ca3af', fontSize: '0.65rem', minWidth: '2.2rem', textAlign: 'right' }}>{pct}%</span>
                         </div>
                       </td>
                     </tr>
@@ -177,7 +177,7 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
               style={{
                 backgroundColor: '#4b5563',
                 color: '#fff',
-                fontSize: '0.875rem',
+                fontSize: '0.8rem',
                 fontWeight: 700,
                 padding: '0.55rem 1.4rem',
                 borderRadius: '0.6rem',
@@ -195,7 +195,7 @@ export default function ErrorsModal({ onClose, onPracticeErrors }: ErrorsModalPr
                 background: 'none',
                 border: 'none',
                 padding: '0.2rem 0.4rem',
-                fontSize: '0.875rem',
+                fontSize: '0.6rem',
                 color: '#6b7280',
                 textDecoration: 'underline',
                 cursor: 'pointer',

@@ -135,14 +135,14 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
       <div style={{ backgroundColor: '#1a1a1a', padding: '0.4rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', borderBottom: '1px solid #2a2a2a' }}>
         <button
           onClick={onBack}
-          style={{ backgroundColor: '#333', color: '#9ca3af', padding: '0.2rem 0.6rem', borderRadius: '0.5rem', border: 'none', fontSize: '0.875rem' }}
+          style={{ backgroundColor: '#333', color: '#9ca3af', padding: '0.2rem 0.6rem', borderRadius: '0.5rem', border: 'none', fontSize: '0.75rem' }}
         >
           ← Zpět
         </button>
-        <span style={{ color: '#9ca3af', fontWeight: 700, fontSize: '0.875rem' }}>
+        <span style={{ color: '#9ca3af', fontWeight: 700, fontSize: '0.8rem' }}>
           🧪 Padající písmena — {lessonTitle}
         </span>
-        <span style={{ marginLeft: 'auto', fontSize: '0.875rem', color: '#6b7280' }}>
+        <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: '#6b7280' }}>
           {currentIndex}/{chars.length} · chyby: {errors}
         </span>
       </div>
@@ -204,7 +204,7 @@ export default function FallingLettersMode({ text, lessonTitle, onComplete, onBa
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: isActive ? '0.9rem' : '0.875rem',
+                  fontSize: isActive ? '0.9rem' : '0.75rem',
                   fontWeight: 700,
                   fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                   textTransform: 'uppercase',

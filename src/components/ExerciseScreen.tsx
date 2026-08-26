@@ -252,13 +252,13 @@ export default function ExerciseScreen({
         />
       </div>
 
-      <div className="mt-4 flex gap-4 text-sm text-gray-500">
+      <div className="mt-4 flex gap-4 text-xs text-gray-500">
         <span><span style={{ color: '#d1d5db' }}>■</span> Aktuální znak</span>
         <span><span style={{ color: '#22c55e' }}>■</span> Správně</span>
         <span><span style={{ color: '#ef4444' }}>■</span> Chyba</span>
       </div>
 
-      <div className="mt-1 text-sm text-gray-500">
+      <div className="mt-1 text-xs text-gray-500">
         {previousScore
           ? `Minule: ${previousScore.cpm} CPM · ${previousScore.accuracy} % přesnost · ${previousScore.errors} chyb · ${formatTime(previousScore.timeSeconds)}`
           : 'Toto cvičení děláš poprvé'}

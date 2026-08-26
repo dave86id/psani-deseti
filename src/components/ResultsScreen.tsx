@@ -26,7 +26,7 @@ function Trend({ improvedBy }: { improvedBy: number }) {
 }
 
 function LastTime({ children }: { children: React.ReactNode }) {
-  return <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.2rem' }}>{children}</div>;
+  return <div style={{ fontSize: '0.5rem', color: '#6b7280', marginTop: '0.2rem' }}>{children}</div>;
 }
 
 function chybyLabel(n: number) {
@@ -87,7 +87,7 @@ export default function ResultsScreen({
           <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.2rem' }}>
             Cvičení dokončeno!
           </h2>
-          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+          <p style={{ color: '#6b7280', fontSize: '0.55rem' }}>
             {isErrorPractice ? 'Speciální cvičení: Procvičování chyb' : `Lekce ${lessonId} — ${lessonTitle} — Cvičení ${exerciseIndex + 1}/${totalExercises}`}
           </p>
         </div>
@@ -99,7 +99,7 @@ export default function ResultsScreen({
               {result.cpm}
               {previousScore && <Trend improvedBy={result.cpm - previousScore.cpm} />}
             </div>
-            <div style={{ color: '#9ca3af', fontSize: '0.875rem', marginTop: '0.1rem' }}>CPM</div>
+            <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>CPM</div>
             {previousScore && <LastTime>minule {previousScore.cpm} CPM</LastTime>}
           </div>
 
@@ -108,7 +108,7 @@ export default function ResultsScreen({
               {result.accuracy}%
               {previousScore && <Trend improvedBy={result.accuracy - previousScore.accuracy} />}
             </div>
-            <div style={{ color: '#9ca3af', fontSize: '0.875rem', marginTop: '0.1rem' }}>Přesnost</div>
+            <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>Přesnost</div>
             {previousScore && <LastTime>minule {previousScore.accuracy} %</LastTime>}
           </div>
 
@@ -117,7 +117,7 @@ export default function ResultsScreen({
               {result.errors}
               {previousScore && <Trend improvedBy={previousScore.errors - result.errors} />}
             </div>
-            <div style={{ color: '#9ca3af', fontSize: '0.875rem', marginTop: '0.1rem' }}>Chyby</div>
+            <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>Chyby</div>
             {previousScore && <LastTime>minule {chybyLabel(previousScore.errors)}</LastTime>}
           </div>
 
@@ -126,7 +126,7 @@ export default function ResultsScreen({
               {formatTime(result.timeSeconds)}
               {previousScore && <Trend improvedBy={previousScore.timeSeconds - result.timeSeconds} />}
             </div>
-            <div style={{ color: '#9ca3af', fontSize: '0.875rem', marginTop: '0.1rem' }}>Čas</div>
+            <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>Čas</div>
             {previousScore && <LastTime>minule {formatTime(previousScore.timeSeconds)}</LastTime>}
           </div>
         </div>
@@ -134,7 +134,7 @@ export default function ResultsScreen({
         {/* Action buttons */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           {isLastExercise && (
-            <div style={{ padding: '0.4rem', borderRadius: '0.6rem', fontSize: '0.875rem', marginBottom: '0.2rem', backgroundColor: '#22c55e22', color: '#22c55e', border: '1px solid #22c55e55' }}>
+            <div style={{ padding: '0.4rem', borderRadius: '0.6rem', fontSize: '0.6rem', marginBottom: '0.2rem', backgroundColor: '#22c55e22', color: '#22c55e', border: '1px solid #22c55e55' }}>
               Gratulujeme! Dokončil jsi všechna cvičení lekce {lessonId}!
             </div>
           )}
@@ -143,26 +143,26 @@ export default function ResultsScreen({
             {!isLastExercise && (
               <button
                 onClick={onNext}
-                style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', fontWeight: 600, fontSize: '0.875rem', color: '#fff', backgroundColor: '#4b5563', border: 'none' }}
+                style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', fontWeight: 600, fontSize: '0.7rem', color: '#fff', backgroundColor: '#4b5563', border: 'none' }}
               >
                 Další cvičení →
               </button>
             )}
             <button
               onClick={onRestart}
-              style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', fontWeight: 600, fontSize: '0.875rem', backgroundColor: 'transparent', border: '1px solid #4b5563', color: '#d1d5db' }}
+              style={{ flex: 1, padding: '0.5rem', borderRadius: '0.6rem', fontWeight: 600, fontSize: '0.7rem', backgroundColor: 'transparent', border: '1px solid #4b5563', color: '#d1d5db' }}
             >
               Zopakovat cvičení
             </button>
           </div>
 
           {!isLastExercise && (
-            <span style={{ color: '#6b7280', fontSize: '0.875rem' }}>nebo stiskni mezerník</span>
+            <span style={{ color: '#6b7280', fontSize: '0.5rem' }}>nebo stiskni mezerník</span>
           )}
 
           <button
             onClick={onBack}
-            style={{ width: '100%', padding: '0.35rem', borderRadius: '0.6rem', fontSize: '0.875rem', color: '#6b7280', backgroundColor: 'transparent', border: 'none' }}
+            style={{ width: '100%', padding: '0.35rem', borderRadius: '0.6rem', fontSize: '0.6rem', color: '#6b7280', backgroundColor: 'transparent', border: 'none' }}
           >
             ← Zpět na seznam lekcí
           </button>
