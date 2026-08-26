@@ -15,6 +15,23 @@ interface ResultsScreenProps {
   onBack: () => void;
 }
 
+// Zelená šipka nahoru = zlepšení, žlutá pomlčka = beze změny, červená dolů = zhoršení.
+function Trend({ improvedBy }: { improvedBy: number }) {
+  const color = improvedBy > 0 ? '#22c55e' : improvedBy < 0 ? '#ef4444' : '#eab308';
+  const mark = improvedBy > 0 ? '↑' : improvedBy < 0 ? '↓' : '–';
+  return <span style={{ fontSize: '0.9rem', marginLeft: '0.15rem', color }}>{mark}</span>;
+}
+
+function LastTime({ children }: { children: React.ReactNode }) {
+  return <div style={{ fontSize: '0.45rem', color: '#6b7280', marginTop: '0.2rem' }}>{children}</div>;
+}
+
+function chybyLabel(n: number) {
+  if (n === 1) return '1 chyba';
+  if (n >= 2 && n <= 4) return `${n} chyby`;
+  return `${n} chyb`;
+}
+
 export default function ResultsScreen({
   result,
   exerciseIndex,
@@ -85,40 +102,41 @@ export default function ResultsScreen({
           <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
             <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: '#d1d5db' }}>
               {result.cpm}
+              {previousScore && <Trend improvedBy={result.cpm - previousScore.cpm} />}
             </div>
             <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>CPM</div>
             <div style={{ fontSize: '0.5rem', color: '#9ca3af', marginTop: '0.1rem' }}>
               {getCpmRating(result.cpm)}
             </div>
+            {previousScore && <LastTime>minule {previousScore.cpm} CPM</LastTime>}
           </div>
 
           <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
             <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: getAccuracyColor(result.accuracy) }}>
               {result.accuracy}%
+              {previousScore && <Trend improvedBy={result.accuracy - previousScore.accuracy} />}
             </div>
             <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>Přesnost</div>
+            {previousScore && <LastTime>minule {previousScore.accuracy} %</LastTime>}
           </div>
 
           <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
             <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: result.errors === 0 ? '#22c55e' : '#ef4444' }}>
               {result.errors}
+              {previousScore && <Trend improvedBy={previousScore.errors - result.errors} />}
             </div>
             <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>Chyby</div>
+            {previousScore && <LastTime>minule {chybyLabel(previousScore.errors)}</LastTime>}
           </div>
 
           <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
             <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: '#06b6d4' }}>
               {formatTime(result.timeSeconds)}
+              {previousScore && <Trend improvedBy={previousScore.timeSeconds - result.timeSeconds} />}
             </div>
             <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>Čas</div>
+            {previousScore && <LastTime>minule {formatTime(previousScore.timeSeconds)}</LastTime>}
           </div>
-        </div>
-
-        {/* Předchozí výsledek */}
-        <div style={{ color: '#6b7280', fontSize: '0.55rem', marginBottom: '0.6rem' }}>
-          {previousScore
-            ? `Minule: ${previousScore.cpm} CPM · ${previousScore.accuracy} % přesnost · ${previousScore.errors} chyb · ${formatTime(previousScore.timeSeconds)}`
-            : 'První dokončení tohoto cvičení'}
         </div>
 
         {/* Action buttons */}
