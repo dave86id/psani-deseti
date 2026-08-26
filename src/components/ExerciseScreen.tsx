@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import type { ExerciseState } from '../types';
 import VirtualKeyboard from './VirtualKeyboard';
 import { useKeyboardVisible } from '../hooks/useKeyboardVisible';
+import { formatTime } from '../utils/stats';
+import type { ExerciseScore } from '../types';
 import ProgressBar from './ProgressBar';
 import { playKeyAudio, prewarmAudio } from '../hooks/useSound';
 import { composeDeadKey } from '../utils/composeDeadKey';
@@ -17,6 +19,7 @@ interface ExerciseScreenProps {
   onDeadKey: (isShift: boolean) => void;
   onBack: () => void;
   isErrorPractice?: boolean;
+  previousScore?: ExerciseScore | null;
   pendingDeadKey: string | null;
 }
 
@@ -98,6 +101,7 @@ export default function ExerciseScreen({
   onDeadKey,
   onBack,
   isErrorPractice,
+  previousScore,
   pendingDeadKey,
 }: ExerciseScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -252,6 +256,12 @@ export default function ExerciseScreen({
         <span><span style={{ color: '#d1d5db' }}>■</span> Aktuální znak</span>
         <span><span style={{ color: '#22c55e' }}>■</span> Správně</span>
         <span><span style={{ color: '#ef4444' }}>■</span> Chyba</span>
+      </div>
+
+      <div className="mt-1 text-xs text-gray-500">
+        {previousScore
+          ? `Minule: ${previousScore.cpm} CPM · ${previousScore.accuracy} % přesnost · ${previousScore.errors} chyb · ${formatTime(previousScore.timeSeconds)}`
+          : 'Toto cvičení děláš poprvé'}
       </div>
     </div>
   );

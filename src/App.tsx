@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useProgress } from './hooks/useProgress';
 import { useExercise } from './hooks/useExercise';
 import { useAuth } from './hooks/useAuth';
@@ -18,8 +18,9 @@ import ProfileSetup from './components/ProfileSetup';
 import Leaderboard from './components/Leaderboard';
 import FallingLettersMode from './components/FallingLettersMode';
 import DailyGoalTimer from './components/DailyGoalTimer';
+import { getLastErrorPractice, setLastErrorPractice } from './utils/lastErrorPractice';
 import { useDailyGoal } from './hooks/useDailyGoal';
-import type { ExerciseResult } from './types';
+import type { ExerciseResult, ExerciseScore } from './types';
 
 // Dead key to display names for virtual keyboard highlighting
 // When e.key === 'Dead', we use e.shiftKey to determine which dead key was pressed
@@ -193,6 +194,20 @@ export default function App() {
     resetExercise,
   } = useExercise(currentExerciseText);
 
+  // Výsledek posledního dokončení tohoto cvičení (zapisuje se až po dokončení,
+  // takže během psaní tu pořád sedí ten předchozí).
+  const lastErrorPractice = useMemo(getLastErrorPractice, [screen, isErrorPractice]);
+  const previousScore = isErrorPractice
+    ? lastErrorPractice
+    : progress.lessons[currentLessonId]?.exerciseScores?.[currentExerciseId] ?? null;
+
+  const progressRef = useRef(progress);
+  useEffect(() => {
+    progressRef.current = progress;
+  }, [progress]);
+
+  const [previousScoreAtFinish, setPreviousScoreAtFinish] = useState<ExerciseScore | null>(null);
+
   const isTimerActive = screen === 'exercise' || screen === 'falling';
   const { elapsedSeconds, isComplete } = useDailyGoal(isTimerActive);
 
@@ -214,7 +229,11 @@ export default function App() {
     if (exerciseResult && exerciseResult !== processedResultRef.current && screen === 'exercise') {
       processedResultRef.current = exerciseResult;
       setLastResult(exerciseResult);
-      if (!isErrorPractice) {
+      if (isErrorPractice) {
+        setPreviousScoreAtFinish(getLastErrorPractice());
+        setLastErrorPractice(exerciseResult);
+      } else {
+        setPreviousScoreAtFinish(progressRef.current.lessons[currentLessonId]?.exerciseScores?.[currentExerciseId] ?? null);
         completeExercise(currentLessonId, currentExerciseId, exerciseResult.cpm, exerciseResult.accuracy, currentLesson?.exercises.length ?? 1, exerciseResult.errors, exerciseResult.timeSeconds, exerciseResult.errorsByChar);
       }
       setScreen('results');
@@ -402,6 +421,7 @@ export default function App() {
               errorsByChar: {},
             };
             setLastResult(result);
+            setPreviousScoreAtFinish(progress.lessons[currentLessonId]?.exerciseScores?.[currentExerciseId] ?? null);
             completeExercise(currentLessonId, currentExerciseId, result.cpm, result.accuracy, currentLesson?.exercises.length ?? 1, result.errors, result.timeSeconds, result.errorsByChar);
             setScreen('results');
           }}
@@ -445,6 +465,7 @@ export default function App() {
           lessonId={currentLessonId}
           lessonTitle={currentLesson?.title ?? ''}
           isErrorPractice={isErrorPractice}
+          previousScore={previousScoreAtFinish}
           onNext={isErrorPractice ? handleErrorPracticeNext : handleNext}
           onRestart={handleRestart}
           onBack={() => { setIsErrorPractice(false); setScreen('dashboard'); }}
@@ -464,6 +485,7 @@ export default function App() {
         onDeadKey={onDeadKey}
         onBack={() => { setIsErrorPractice(false); setScreen('lesson-menu'); }}
         isErrorPractice={isErrorPractice}
+        previousScore={previousScore}
         pendingDeadKey={pendingDeadKey}
       />
     );

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import type { ExerciseResult } from '../types';
+import type { ExerciseResult, ExerciseScore } from '../types';
 import { formatTime } from '../utils/stats';
 
 interface ResultsScreenProps {
@@ -9,6 +9,7 @@ interface ResultsScreenProps {
   lessonId: string;
   lessonTitle: string;
   isErrorPractice?: boolean;
+  previousScore?: ExerciseScore | null;
   onNext: () => void;
   onRestart: () => void;
   onBack: () => void;
@@ -21,6 +22,7 @@ export default function ResultsScreen({
   lessonId,
   lessonTitle,
   isErrorPractice,
+  previousScore,
   onNext,
   onRestart,
   onBack,
@@ -110,6 +112,13 @@ export default function ResultsScreen({
             </div>
             <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>Čas</div>
           </div>
+        </div>
+
+        {/* Předchozí výsledek */}
+        <div style={{ color: '#6b7280', fontSize: '0.55rem', marginBottom: '0.6rem' }}>
+          {previousScore
+            ? `Minule: ${previousScore.cpm} CPM · ${previousScore.accuracy} % přesnost · ${previousScore.errors} chyb · ${formatTime(previousScore.timeSeconds)}`
+            : 'První dokončení tohoto cvičení'}
         </div>
 
         {/* Action buttons */}
