@@ -23,7 +23,7 @@ function Trend({ improvedBy }: { improvedBy: number }) {
 }
 
 function LastTime({ children }: { children: React.ReactNode }) {
-  return <div style={{ fontSize: '0.45rem', color: '#6b7280', marginTop: '0.2rem' }}>{children}</div>;
+  return <div style={{ fontSize: '0.5rem', color: '#6b7280', marginTop: '0.2rem' }}>{children}</div>;
 }
 
 function chybyLabel(n: number) {
@@ -67,14 +67,6 @@ export default function ResultsScreen({
     return '#ef4444';
   };
 
-  const getCpmRating = (cpm: number): string => {
-    if (cpm >= 200) return 'Výborně!';
-    if (cpm >= 150) return 'Skvěle!';
-    if (cpm >= 100) return 'Dobře!';
-    if (cpm >= 60) return 'Slušně';
-    return 'Trénuj dál';
-  };
-
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen"
@@ -105,9 +97,6 @@ export default function ResultsScreen({
               {previousScore && <Trend improvedBy={result.cpm - previousScore.cpm} />}
             </div>
             <div style={{ color: '#9ca3af', fontSize: '0.5rem', marginTop: '0.1rem' }}>CPM</div>
-            <div style={{ fontSize: '0.5rem', color: '#9ca3af', marginTop: '0.1rem' }}>
-              {getCpmRating(result.cpm)}
-            </div>
             {previousScore && <LastTime>minule {previousScore.cpm} CPM</LastTime>}
           </div>
 
