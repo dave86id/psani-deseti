@@ -15,11 +15,14 @@ interface ResultsScreenProps {
   onBack: () => void;
 }
 
-// Zelená šipka nahoru = zlepšení, žlutá pomlčka = beze změny, červená dolů = zhoršení.
+// Zelená = zlepšení, žlutá = beze změny, červená = zhoršení.
+function trendColor(improvedBy: number) {
+  return improvedBy > 0 ? '#22c55e' : improvedBy < 0 ? '#ef4444' : '#eab308';
+}
+
 function Trend({ improvedBy }: { improvedBy: number }) {
-  const color = improvedBy > 0 ? '#22c55e' : improvedBy < 0 ? '#ef4444' : '#eab308';
   const mark = improvedBy > 0 ? '↑' : improvedBy < 0 ? '↓' : '–';
-  return <span style={{ fontSize: '0.9rem', marginLeft: '0.15rem', color }}>{mark}</span>;
+  return <span style={{ fontSize: '0.9rem', marginLeft: '0.15rem', color: trendColor(improvedBy) }}>{mark}</span>;
 }
 
 function LastTime({ children }: { children: React.ReactNode }) {
@@ -92,7 +95,7 @@ export default function ResultsScreen({
         {/* Stats grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.75rem' }}>
           <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
-            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: '#d1d5db' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: previousScore ? trendColor(result.cpm - previousScore.cpm) : '#d1d5db' }}>
               {result.cpm}
               {previousScore && <Trend improvedBy={result.cpm - previousScore.cpm} />}
             </div>
@@ -101,7 +104,7 @@ export default function ResultsScreen({
           </div>
 
           <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
-            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: getAccuracyColor(result.accuracy) }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: previousScore ? trendColor(result.accuracy - previousScore.accuracy) : getAccuracyColor(result.accuracy) }}>
               {result.accuracy}%
               {previousScore && <Trend improvedBy={result.accuracy - previousScore.accuracy} />}
             </div>
@@ -110,7 +113,7 @@ export default function ResultsScreen({
           </div>
 
           <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
-            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: result.errors === 0 ? '#22c55e' : '#ef4444' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: previousScore ? trendColor(previousScore.errors - result.errors) : (result.errors === 0 ? '#22c55e' : '#ef4444') }}>
               {result.errors}
               {previousScore && <Trend improvedBy={previousScore.errors - result.errors} />}
             </div>
@@ -119,7 +122,7 @@ export default function ResultsScreen({
           </div>
 
           <div style={{ backgroundColor: '#2a2a2a', borderRadius: '0.6rem', padding: '0.5rem 0.4rem' }}>
-            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: '#06b6d4' }}>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'monospace', color: previousScore ? trendColor(previousScore.timeSeconds - result.timeSeconds) : '#06b6d4' }}>
               {formatTime(result.timeSeconds)}
               {previousScore && <Trend improvedBy={previousScore.timeSeconds - result.timeSeconds} />}
             </div>
