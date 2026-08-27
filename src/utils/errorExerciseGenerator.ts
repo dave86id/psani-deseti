@@ -1,70 +1,4 @@
 import { czechWords } from '../data/words';
-import { filterWords, pickWords } from './wordFilter';
-
-/**
- * Generate a personalized exercise text based on characters where the user makes the most mistakes.
- * characterErrors: Record of char -> error count
- * allLetters: all letters available in the current context (to mix in)
- */
-export function generateErrorExerciseText(
-  errorsByChar: Record<string, number>,
-  allLetters: string[],
-  length = 60,
-  wordCount = 10
-): string {
-  // Sort characters by error count descending
-  const sortedErrors = Object.entries(errorsByChar)
-    .filter(([char]) => char !== ' ') // Ignore spaces
-    .sort((a, b) => b[1] - a[1]);
-
-  if (sortedErrors.length === 0) {
-    // Fallback if no errors recorded yet
-    return generateSimpleSequence(allLetters.slice(0, 4), length);
-  }
-
-  // Take top 4 most problematic characters
-  const problematicChars = sortedErrors.slice(0, 4).map(([char]) => char.toLowerCase());
-
-  // Try to find words containing these characters
-  const wordsWithErrors = filterWords(allLetters, 2, 8).filter(word =>
-    problematicChars.some(char => word.toLowerCase().includes(char))
-  );
-
-  if (wordsWithErrors.length >= 5) {
-    // Generate a mix of words and sequences
-    const pickedWords = pickWords(wordsWithErrors, wordCount);
-    return pickedWords.join(' ');
-  }
-
-  // If not enough words, generate sequences focusing on the problematic characters
-  return generateErrorSequence(problematicChars, allLetters, length);
-}
-
-function generateErrorSequence(problemChars: string[], allChars: string[], length: number): string {
-  const result: string[] = [];
-  let groupCount = 0;
-
-  while (result.join('').replace(/ /g, '').length < length) {
-    // 70% chance to pick a problematic character, 30% chance for a random context character
-    const isErrorChar = Math.random() < 0.7;
-    const char = isErrorChar
-      ? problemChars[Math.floor(Math.random() * problemChars.length)]
-      : allChars[Math.floor(Math.random() * allChars.length)];
-
-    // Group of 2-4 same characters
-    const groupLen = 2 + Math.floor(Math.random() * 3);
-    for (let i = 0; i < groupLen; i++) {
-      result.push(char);
-    }
-
-    groupCount++;
-    if (groupCount % 2 === 0) {
-      result.push(' ');
-    }
-  }
-
-  return result.join('').trim().slice(0, length * 1.5);
-}
 
 function generateSimpleSequence(letters: string[], length: number): string {
   const result: string[] = [];
@@ -87,11 +21,12 @@ const ROW_TIERS: string[][] = [
   ['r','u','t','z','e','i','w','o','p','q','ú'],                    // 1: top
   ['v','m','b','n','c','x','y',',','.','-'],                        // 2: bottom
   ['ř','ě','š','č','á','é','í','ý','ž','ó','ď','ť','ň'],            // 3: diacritics
-  ['?','!',':','1','2','3','4','5','6','7','8','9','0'],            // 4: special/numbers
+  ['?','!',':','1','2','3','4','5','6','7','8','9','0','+','%','='], // 4: special/numbers
 ];
 
 const DIGITS = '0123456789';
 const PUNCT = ',.-?!:';
+const MATH = '+%=';
 
 function tierOf(ch: string): number {
   const c = ch.toLowerCase();
@@ -140,34 +75,107 @@ function findUsablePool(match: WordMatch, startTier: number): string[] {
 
 // Practice tokens for one problem character, preserving its case and kind:
 // capital → capitalized words, punctuation → attached to a word, digit →
-// short number groups, lowercase letter → plain words containing it.
-function buildTokenPool(ch: string): string[] {
+// short number groups, math sign → between digits, lowercase letter → plain
+// words containing it. `poolFor` supplies the words allowed in the current
+// scope (row tiers globally, the lesson's own letters per lesson).
+function buildTokenPool(ch: string, poolFor: (match: WordMatch) => string[]): string[] {
   const lower = ch.toLowerCase();
-  const tier = tierOf(lower);
-  if (tier < 0) return [];
+  const digit = () => DIGITS[Math.floor(Math.random() * DIGITS.length)];
 
   if (lower !== ch) {
     // Capital letter: words beginning with it, first letter uppercased.
-    const starting = findUsablePool(startingWith(lower), tier).map(w => ch + w.slice(1));
+    const starting = poolFor(startingWith(lower)).map(w => ch + w.slice(1));
     // Rare initial (Ň, Ů, Ó…): add a Xx drill so the key still gets practiced.
     if (starting.length >= MIN_POOL_SIZE) return starting;
     return [...starting, ch + lower, ch + lower + ch + lower];
   }
 
+  // Number pools are sampled from, so build enough variants to avoid repeats.
+  const variants = (make: () => string) => Array.from({ length: 12 }, make);
+
   if (DIGITS.includes(ch)) {
-    const other = () => DIGITS[Math.floor(Math.random() * DIGITS.length)];
-    return [ch + ch, ch + other(), other() + ch, ch + other() + ch, other() + ch + other()];
+    return variants(() => ch + digit() + (Math.random() < 0.5 ? '' : ch + digit()));
+  }
+
+  if (MATH.includes(ch)) {
+    if (ch === '%') return variants(() => digit() + (Math.random() < 0.5 ? '' : digit()) + ch);
+    return variants(() => digit() + ch + digit());
   }
 
   if (PUNCT.includes(ch)) {
-    const words = findUsablePool(ANY_WORD, tier);
+    const words = poolFor(ANY_WORD);
     if (words.length === 0) return [];
     const pick = () => words[Math.floor(Math.random() * words.length)];
     if (ch === '-') return words.map(() => `${pick()}-${pick()}`);
     return words.map(w => w + ch);
   }
 
-  return findUsablePool(containing(ch), tier);
+  return poolFor(containing(ch));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Lesson error practice: same per-character token pools as the global variant,
+// but words are restricted to the lesson's own letters instead of row tiers.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function buildLessonWordPool(match: WordMatch, allowed: Set<string>): string[] {
+  return czechWords.filter(w => {
+    if (w.length < 2 || w.length > 8) return false;
+    if (!match(w.toLowerCase())) return false;
+    for (const c of w) if (!allowed.has(c)) return false;
+    return true;
+  });
+}
+
+/**
+ * Generate a personalized exercise text based on characters where the user makes
+ * the most mistakes in this lesson. Case and character kind are preserved, so
+ * capitals, punctuation, digits and math signs stay part of the practice.
+ */
+export function generateErrorExerciseText(
+  errorsByChar: Record<string, number>,
+  allLetters: string[],
+  wordCount = 10
+): string {
+  const allowed = new Set(allLetters.map(c => c.toLowerCase()));
+  const fallback = () => generateSimpleSequence(allLetters.slice(0, 4), 60);
+
+  const sortedErrors = Object.entries(errorsByChar)
+    .filter(([c, n]) => n > 0 && c.trim() !== '')
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4);
+
+  if (sortedErrors.length === 0) return fallback();
+
+  const entries: { weight: number; pool: string[] }[] = [];
+  for (const [ch, n] of sortedErrors) {
+    const pool = buildTokenPool(ch, m => buildLessonWordPool(m, allowed));
+    if (pool.length > 0) entries.push({ weight: n, pool });
+  }
+
+  if (entries.length === 0) return fallback();
+
+  return weightedShuffledPicks(entries, wordCount).join(' ');
+}
+
+// Weighted sampling from per-character pools, interleaved so one character
+// never dominates a whole stretch of the text.
+function weightedShuffledPicks(entries: { weight: number; pool: string[] }[], wordCount: number): string[] {
+  const totalWeight = entries.reduce((s, e) => s + e.weight, 0);
+  const picks: string[] = [];
+  for (const e of entries) {
+    const slots = Math.max(1, Math.round((e.weight / totalWeight) * wordCount));
+    for (let i = 0; i < slots; i++) {
+      picks.push(e.pool[Math.floor(Math.random() * e.pool.length)]);
+    }
+  }
+
+  for (let i = picks.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [picks[i], picks[j]] = [picks[j], picks[i]];
+  }
+
+  return picks;
 }
 
 export function generateGlobalErrorExerciseText(
@@ -188,7 +196,8 @@ export function generateGlobalErrorExerciseText(
   // Build pools per letter; drop letters with no available words at all.
   const entries: { ch: string; weight: number; pool: string[] }[] = [];
   for (const [ch, n] of sortedErrors) {
-    const pool = buildTokenPool(ch);
+    const tier = tierOf(ch.toLowerCase());
+    const pool = buildTokenPool(ch, m => findUsablePool(m, tier));
     if (pool.length > 0) entries.push({ ch, weight: n, pool });
   }
 
@@ -196,20 +205,5 @@ export function generateGlobalErrorExerciseText(
     return generateSimpleSequence(['f','j','d','k'], 280);
   }
 
-  const totalWeight = entries.reduce((s, e) => s + e.weight, 0);
-  const picks: string[] = [];
-  for (const e of entries) {
-    const slots = Math.max(1, Math.round((e.weight / totalWeight) * wordCount));
-    for (let i = 0; i < slots; i++) {
-      picks.push(e.pool[Math.floor(Math.random() * e.pool.length)]);
-    }
-  }
-
-  // Shuffle to interleave letters
-  for (let i = picks.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [picks[i], picks[j]] = [picks[j], picks[i]];
-  }
-
-  return picks.join(' ');
+  return weightedShuffledPicks(entries, wordCount).join(' ');
 }
