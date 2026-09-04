@@ -46,6 +46,7 @@ export function calculateStats(
     errors: totalErrors,
     timeSeconds: Math.round(timeSeconds),
     errorsByChar: {},
+    attemptsByChar: {},
   };
 }
 

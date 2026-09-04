@@ -4,6 +4,10 @@ export interface ExerciseResult {
   errors: number;
   timeSeconds: number;
   errorsByChar: Record<string, number>;
+  // How often each character was the expected one. Needed to rank problem
+  // characters by error rate rather than raw count — rare keys (capitals,
+  // punctuation) would never win on raw count alone.
+  attemptsByChar: Record<string, number>;
 }
 
 export interface ExerciseState {
@@ -11,6 +15,7 @@ export interface ExerciseState {
   currentIndex: number;
   totalErrors: number;
   errorsByChar: Record<string, number>;
+  attemptsByChar: Record<string, number>;
   errors: Set<number>;
   status: 'idle' | 'running' | 'completed';
 }
@@ -59,6 +64,7 @@ export interface LessonProgress {
   completed: boolean;
   exerciseScores: Record<number, ExerciseScore>; // exerciseId -> last score
   errorsByChar: Record<string, number>; // cumulative errors for this lesson
+  attemptsByChar?: Record<string, number>; // cumulative attempts (absent in older saved progress)
 }
 
 export interface UserProgress {

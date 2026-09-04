@@ -8,6 +8,7 @@ function createInitialState(text: string): ExerciseState {
     currentIndex: 0,
     totalErrors: 0,
     errorsByChar: {},
+    attemptsByChar: {},
     errors: new Set<number>(),
     status: 'idle',
   };
@@ -32,6 +33,10 @@ export function useExercise(initialText: string) {
         }
 
         const expectedChar = prev.text[prev.currentIndex];
+        const attemptsByChar = {
+          ...prev.attemptsByChar,
+          [expectedChar]: (prev.attemptsByChar[expectedChar] || 0) + 1,
+        };
 
         if (key === expectedChar) {
           // Correct key
@@ -49,10 +54,11 @@ export function useExercise(initialText: string) {
               startTimeRef.current,
               endTimeRef.current
             );
-            setExerciseResult({ ...res, errorsByChar: prev.errorsByChar });
+            setExerciseResult({ ...res, errorsByChar: prev.errorsByChar, attemptsByChar });
             return {
               ...prev,
               currentIndex: newIndex,
+              attemptsByChar,
               status: 'completed',
             };
           }
@@ -60,14 +66,13 @@ export function useExercise(initialText: string) {
           return {
             ...prev,
             currentIndex: newIndex,
+            attemptsByChar,
           };
         } else {
           // Wrong key
-          const char = prev.text[prev.currentIndex];
+          const char = expectedChar;
           const newTotalErrors = prev.totalErrors + 1;
-          const newErrorsByChar = { ...prev.errorsByChar };
-          newErrorsByChar[char] = (newErrorsByChar[char] || 0) + 1;
-          
+
           const newErrors = new Set(prev.errors);
           newErrors.add(prev.currentIndex);
 
@@ -79,6 +84,7 @@ export function useExercise(initialText: string) {
             ...prev,
             totalErrors: newTotalErrors,
             errorsByChar: { ...prev.errorsByChar, [char]: (prev.errorsByChar[char] || 0) + 1 },
+            attemptsByChar,
             errors: newErrors,
           };
         }
@@ -93,6 +99,7 @@ export function useExercise(initialText: string) {
       currentIndex: 0,
       totalErrors: 0,
       errorsByChar: {},
+      attemptsByChar: {},
       errors: new Set<number>(),
       status: 'idle',
     });

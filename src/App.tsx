@@ -234,7 +234,7 @@ export default function App() {
         setLastErrorPractice(exerciseResult);
       } else {
         setPreviousScoreAtFinish(progressRef.current.lessons[currentLessonId]?.exerciseScores?.[currentExerciseId] ?? null);
-        completeExercise(currentLessonId, currentExerciseId, exerciseResult.cpm, exerciseResult.accuracy, currentLesson?.exercises.length ?? 1, exerciseResult.errors, exerciseResult.timeSeconds, exerciseResult.errorsByChar);
+        completeExercise(currentLessonId, currentExerciseId, exerciseResult.cpm, exerciseResult.accuracy, currentLesson?.exercises.length ?? 1, exerciseResult.errors, exerciseResult.timeSeconds, exerciseResult.errorsByChar, exerciseResult.attemptsByChar);
       }
       setScreen('results');
     }
@@ -305,7 +305,7 @@ export default function App() {
     const lessonProg = progress.lessons[currentLessonId];
     if (!lessonProg) return;
 
-    const text = generateErrorExerciseText(lessonProg.errorsByChar, currentLesson.allLetters);
+    const text = generateErrorExerciseText(lessonProg.errorsByChar, currentLesson.allLetters, lessonProg.attemptsByChar || {});
     setErrorPracticeText(text);
     setIsErrorPractice(true);
     setErrorPracticeScope('lesson');
@@ -315,10 +315,10 @@ export default function App() {
   }, [currentLesson, currentLessonId, progress, resetExercise]);
 
   const handlePracticeGlobalErrors = useCallback(() => {
-    const { aggregated } = loadRecentErrors();
+    const { aggregated, attempts } = loadRecentErrors();
     // ~4x normal exercise length (normal ~10-12 words). Per-letter row tier
     // constraint is applied inside generateGlobalErrorExerciseText.
-    const text = generateGlobalErrorExerciseText(aggregated, 48);
+    const text = generateGlobalErrorExerciseText(aggregated, 48, attempts);
     setErrorPracticeText(text);
     setIsErrorPractice(true);
     setErrorPracticeScope('global');
@@ -419,10 +419,11 @@ export default function App() {
               errors: stats.errors,
               timeSeconds: stats.timeSeconds,
               errorsByChar: {},
+              attemptsByChar: {},
             };
             setLastResult(result);
             setPreviousScoreAtFinish(progress.lessons[currentLessonId]?.exerciseScores?.[currentExerciseId] ?? null);
-            completeExercise(currentLessonId, currentExerciseId, result.cpm, result.accuracy, currentLesson?.exercises.length ?? 1, result.errors, result.timeSeconds, result.errorsByChar);
+            completeExercise(currentLessonId, currentExerciseId, result.cpm, result.accuracy, currentLesson?.exercises.length ?? 1, result.errors, result.timeSeconds, result.errorsByChar, result.attemptsByChar);
             setScreen('results');
           }}
         />

@@ -60,8 +60,8 @@ export function useProgress(onSave?: (p: UserProgress) => void) {
     });
   }, []);
 
-  const completeExercise = useCallback((lessonId: string, exerciseId: number, cpm: number, accuracy: number, totalExercises: number, errors: number, timeSeconds: number, errorsByChar?: Record<string, number>) => {
-    recordExerciseErrors(errorsByChar);
+  const completeExercise = useCallback((lessonId: string, exerciseId: number, cpm: number, accuracy: number, totalExercises: number, errors: number, timeSeconds: number, errorsByChar?: Record<string, number>, attemptsByChar?: Record<string, number>) => {
+    recordExerciseErrors(errorsByChar, attemptsByChar);
     setProgress(prev => {
       const lesson = prev.lessons[lessonId] || emptyLesson(lessonId);
       
@@ -78,6 +78,13 @@ export function useProgress(onSave?: (p: UserProgress) => void) {
         });
       }
 
+      const mergedAttempts = { ...(prev.lessons[lessonId]?.attemptsByChar || {}) };
+      if (attemptsByChar) {
+        Object.entries(attemptsByChar).forEach(([char, count]) => {
+          mergedAttempts[char] = (mergedAttempts[char] || 0) + count;
+        });
+      }
+
       const updatedLesson: LessonProgress = {
         ...lesson,
         bestCpm: Math.max(lesson.bestCpm, cpm),
@@ -89,6 +96,7 @@ export function useProgress(onSave?: (p: UserProgress) => void) {
           [exerciseId]: { cpm, accuracy, errors, timeSeconds, errorsByChar: errorsByChar || {} },
         },
         errorsByChar: mergedErrors,
+        attemptsByChar: mergedAttempts,
       };
 
       const newState = {

@@ -114,6 +114,44 @@ function buildTokenPool(ch: string, poolFor: (match: WordMatch) => string[]): st
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Ranking problem characters
+//
+// Ranking by raw error count only ever surfaces the letters that appear most
+// often in the texts (e, a, o, …). Rare-but-hard keys — capitals, capitals with
+// diacritics, colons, question marks, digits — can be missed almost every time
+// they show up and still never reach the top of a raw-count list. So rank by
+// error rate instead, smoothed so a single slip on a single attempt does not
+// outrank a genuine weakness.
+//
+// With no attempt data (progress saved before attempts were tracked) the score
+// degrades to errors / SMOOTHING, i.e. the old raw-count ordering.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const SMOOTHING = 4;
+
+export interface RankedChar {
+  ch: string;
+  weight: number;
+}
+
+function rankProblemChars(
+  errorsByChar: Record<string, number>,
+  attemptsByChar: Record<string, number>,
+  limit: number,
+  isEligible: (ch: string) => boolean
+): RankedChar[] {
+  return Object.entries(errorsByChar)
+    .filter(([c, n]) => n > 0 && c.trim() !== '' && isEligible(c))
+    .map(([ch, errors]) => ({
+      ch,
+      // Attempts can lag errors in old data; never let the rate exceed 1.
+      weight: errors / (Math.max(attemptsByChar[ch] || 0, errors) + SMOOTHING),
+    }))
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, limit);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Lesson error practice: same per-character token pools as the global variant,
 // but words are restricted to the lesson's own letters instead of row tiers.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -135,22 +173,19 @@ function buildLessonWordPool(match: WordMatch, allowed: Set<string>): string[] {
 export function generateErrorExerciseText(
   errorsByChar: Record<string, number>,
   allLetters: string[],
-  wordCount = 10
+  attemptsByChar: Record<string, number> = {},
+  wordCount = 12
 ): string {
   const allowed = new Set(allLetters.map(c => c.toLowerCase()));
   const fallback = () => generateSimpleSequence(allLetters.slice(0, 4), 60);
 
-  const sortedErrors = Object.entries(errorsByChar)
-    .filter(([c, n]) => n > 0 && c.trim() !== '')
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4);
-
-  if (sortedErrors.length === 0) return fallback();
+  const ranked = rankProblemChars(errorsByChar, attemptsByChar, 5, () => true);
+  if (ranked.length === 0) return fallback();
 
   const entries: { weight: number; pool: string[] }[] = [];
-  for (const [ch, n] of sortedErrors) {
+  for (const { ch, weight } of ranked) {
     const pool = buildTokenPool(ch, m => buildLessonWordPool(m, allowed));
-    if (pool.length > 0) entries.push({ weight: n, pool });
+    if (pool.length > 0) entries.push({ weight, pool });
   }
 
   if (entries.length === 0) return fallback();
@@ -180,25 +215,28 @@ function weightedShuffledPicks(entries: { weight: number; pool: string[] }[], wo
 
 export function generateGlobalErrorExerciseText(
   errorsByChar: Record<string, number>,
-  wordCount = 48
+  wordCount = 48,
+  attemptsByChar: Record<string, number> = {}
 ): string {
   // Case is preserved — a capital is a different practice target than its
   // lowercase form (Shift + key vs. key alone).
-  const sortedErrors = Object.entries(errorsByChar)
-    .filter(([c, n]) => n > 0 && c.trim() !== '' && tierOf(c.toLowerCase()) >= 0)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 6);
+  const ranked = rankProblemChars(
+    errorsByChar,
+    attemptsByChar,
+    8,
+    c => tierOf(c.toLowerCase()) >= 0
+  );
 
-  if (sortedErrors.length === 0) {
+  if (ranked.length === 0) {
     return generateSimpleSequence(['f','j','d','k'], 280);
   }
 
   // Build pools per letter; drop letters with no available words at all.
   const entries: { ch: string; weight: number; pool: string[] }[] = [];
-  for (const [ch, n] of sortedErrors) {
+  for (const { ch, weight } of ranked) {
     const tier = tierOf(ch.toLowerCase());
     const pool = buildTokenPool(ch, m => findUsablePool(m, tier));
-    if (pool.length > 0) entries.push({ ch, weight: n, pool });
+    if (pool.length > 0) entries.push({ ch, weight, pool });
   }
 
   if (entries.length === 0) {
