@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { ExerciseResult, ExerciseScore } from '../types';
-import { formatTime } from '../utils/stats';
+import { formatTime, getMedal } from '../utils/stats';
 
 interface ResultsScreenProps {
   result: ExerciseResult;
@@ -29,6 +29,12 @@ function LastTime({ children }: { children: React.ReactNode }) {
   return <div style={{ fontSize: '0.5rem', color: '#6b7280', marginTop: '0.2rem' }}>{children}</div>;
 }
 
+const MEDAL_LABEL: Record<string, string> = {
+  '\u{1F947}': 'Zlatá medaile',
+  '\u{1F948}': 'Stříbrná medaile',
+  '\u{1F949}': 'Bronzová medaile',
+};
+
 function chybyLabel(n: number) {
   if (n === 1) return '1 chyba';
   if (n >= 2 && n <= 4) return `${n} chyby`;
@@ -48,6 +54,8 @@ export default function ResultsScreen({
   onBack,
 }: ResultsScreenProps) {
   const isLastExercise = exerciseIndex >= totalExercises - 1;
+  // Procvičování chyb se neukládá jako skóre lekce, medaili proto neuděluje.
+  const medal = isErrorPractice ? null : getMedal(result);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -82,11 +90,16 @@ export default function ResultsScreen({
         {/* Header */}
         <div style={{ marginBottom: '0.75rem' }}>
           <div style={{ fontSize: '1.8rem', marginBottom: '0.2rem' }}>
-            {result.accuracy >= 95 ? '🎯' : result.accuracy >= 80 ? '👍' : '💪'}
+            {medal ?? (result.accuracy >= 95 ? '🎯' : result.accuracy >= 80 ? '👍' : '💪')}
           </div>
           <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.2rem' }}>
             Cvičení dokončeno!
           </h2>
+          {medal && (
+            <div style={{ fontSize: '0.65rem', fontWeight: 600, color: '#eab308', marginBottom: '0.2rem' }}>
+              {MEDAL_LABEL[medal]}
+            </div>
+          )}
           <p style={{ color: '#6b7280', fontSize: '0.55rem' }}>
             {isErrorPractice ? 'Speciální cvičení: Procvičování chyb' : `Lekce ${lessonId} — ${lessonTitle} — Cvičení ${exerciseIndex + 1}/${totalExercises}`}
           </p>
